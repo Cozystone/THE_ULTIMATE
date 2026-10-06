@@ -48,6 +48,7 @@ fn e1_door(seed: u64) -> (u32, u32, u32, u32, String) {
     let mut w = DeviceWorld::new(Scenario::Door, seed, "door-e1");
     let mut g = Grounder::new(seed);
     let mut rel = RelationEngine::with_policy(seed ^ 0xE1, wake_policy());
+    w.use_any = true;
     for _ in 0..600 {
         let (act, args) = w.random_action();
         let (ev, _) = w.step(act, args);
@@ -56,7 +57,7 @@ fn e1_door(seed: u64) -> (u32, u32, u32, u32, String) {
         }
     }
     w.power_varies = true;
-    for _ in 0..600 {
+    for _ in 0..1800 {
         let (act, args) = w.random_action();
         let (ev, _) = w.step(act, args);
         if let Some((_, ep)) = scene(&mut g, ev, true) {
@@ -70,7 +71,7 @@ fn e1_door(seed: u64) -> (u32, u32, u32, u32, String) {
     let desc = format!("{st:?}");
     // identical future: score USE predictions on the door before each outcome
     let (mut ok_s, mut ok_t, mut n_s, mut n_t) = (0, 0, 0, 0);
-    for _ in 0..800 {
+    for _ in 0..1600 {
         let (act, args) = w.random_action();
         let before = w.devs[dv::DOOR].on;
         let (ev, truth) = w.step(act, args.clone());
@@ -81,8 +82,18 @@ fn e1_door(seed: u64) -> (u32, u32, u32, u32, String) {
                 let q = ep.without_outcomes();
                 n_s += 1;
                 n_t += 1;
-                ok_s += (rel.predict(&q, t).value() == Some(truth_change)) as u32;
-                ok_t += (twin_rel.predict(&q, t).value() == Some(truth_change)) as u32;
+                let ps = rel.predict(&q, t).value();
+                let pt = twin_rel.predict(&q, t).value();
+                ok_s += (ps == Some(truth_change)) as u32;
+                ok_t += (pt == Some(truth_change)) as u32;
+                if std::env::var("DIAG_E").is_ok() {
+                    eprintln!("DIAG_E key={} power={} truth={truth_change} sleep={ps:?} twin={pt:?}", args[0] == dv::KEY, w.devs[dv::POWER].on);
+                    if args[0] == dv::KEY && w.devs[dv::POWER].on == 1 && ps.is_none() {
+                        for l in rel.debug_matching(&q, t).iter().filter(|x| x.contains(" & ")).take(12) {
+                            eprintln!("DIAG_L {l}");
+                        }
+                    }
+                }
             }
         }
         rel.observe(ep.clone());

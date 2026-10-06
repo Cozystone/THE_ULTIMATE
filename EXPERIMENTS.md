@@ -339,3 +339,98 @@ hard links (12 files, 7 inode groups). Perception through the grounder (no label
 
 Oracle-feasible: a held-out same-group pair is inferable only if its members are connected through
 same-group pairs probed in training; different-group pairs are always counted.
+
+### E-R0 v5 result (regression, seeds 1-20, raw: `experiments/results/r0_v5_report_fail.txt`)
+**FAIL**: C6 18/20 (all other conditions 20/20). Seeds 9 and 20: the unconditional law "always 1" in
+room-B (true exception rate 17%) was licensed after 11 consecutive confirmations and answered wrong
+once (the naive agent did the same on seed 20). Cause: D037 made base-rate laws licensable while no
+gate bounded the exception rate. Fix: D044 (rule of three). Phase B v5 and Phase C v1 runs were
+stopped before completion because D043/D044 change licensing; their partial results are discarded.
+
+### Regression v6 and E-C v1 (pre-registered before running)
+Learner changes: D043, D044. E-R0 v6 seeds 1-25 (21-25 new) and E-B v6 seeds 1-25 with unchanged
+criteria; E-C v1 seeds 1-10 with the criteria above.
+
+### Regression v6 result (2026-10-07)
+* E-R0 v6 (seeds 1-25): **PASS 150/150** (`r0_v6_report.txt`).
+* E-B v6 (seeds 1-25): **PASS 200/200** (`phase_b_v6_report.txt`).
+
+### E-C v1 result (2026-10-07, seeds 1-10, raw: `experiments/results/phase_c_v1_report.txt`)
+**FAIL.** C5 counterfactual 10/10; C1 9/10 and C2 9/10 (seed 2 abstained); C3 hidden condition 0/10
+(the phase-1 door law was never licensed); C4a latent micro 6/10 (seed 7: 4 wrong on
+infeasible pairs; seeds 3, 4, 6: abstentions); C4b real OS 4/10 (abstentions, one wrong on seed 9).
+Mechanisms: D044's 30 independent supports cannot be met in small combinatorial worlds (D044a);
+unestablished latent differences answered (D039b).
+
+### E-C v2 pre-registration (written before any v2 run)
+Learner changes: D044a, D039b. Criteria unchanged. Seeds 1-15 (11-15 new). Because D044a changes
+licensing, R0 (v7, seeds 1-25) and Phase B (v7, seeds 1-25) are re-run with unchanged criteria.
+
+### E-C v2 pre-registration amendment (before the formal v2 run; written after development runs
+on seeds 1, 2, 4 that are disclosed here)
+Learner changes after the v2 text above: D046 (state channels by acted-vs-other z-test), D017a
+(only licensed knowledge subsumes), D040a (one noise model per target), D047 (conjunction binding
+collision fix), D042b tried and withdrawn. Protocol changes:
+* C1 holds out 20% of (state, device) combinations from training so untrained combinations always
+  exist; C1 requires >= 50 tested combinations (a vacuous pass occurred on seed 4 in development).
+* Real-OS adapter: content is perceived as FNV-1a mod 256 instead of mod 16. Hard-linked files
+  share their inode, so equal content is an observable cue; with 16 classes, 1/16 of different
+  files collided and the remaining cases carried ~0.18 bits each for any extra hypothesis, which
+  is a property of the coarse sensor, not of cognition. Training probes 3,000.
+* C4b criterion no longer requires the licensed explanation to use a latent channel (on a real
+  filesystem the structure is legitimately observable); it requires >= 90% correct on
+  oracle-feasible never-probed pairs and <= 5% wrong, and reports whether latent or observable laws
+  answered. The latent mechanism itself is tested by C4a, where no observable cue exists.
+Seeds 1-15. R0 and Phase B are re-run (v7) because D046/D047/D017a/D040a change the learner.
+
+### E-R0 v7 and E-B v7 results; E-C v2 stopped (2026-10-07)
+* E-R0 v7 (seeds 1-25): **PASS 150/150** (`r0_v7_report.txt`).
+* E-B v7 (seeds 1-25): **FAIL 199/200**: seed 22 B5b post-reveal purity 84.1% (v6: 99.8%). Cause:
+  D046 classified the revealed MARK channel as a state (12% vs 8% change, re-tested every
+  classification), so the look-alike pair was merged and split again. Fixed by D046a
+  (`phase_b_v7_report.txt`).
+* E-C v2 was stopped before completion because D046a changes grounding; its partial output is not
+  a result. R0 does not use grounding or sleep, so E-R0 v7 stands for the final learner.
+
+### Final pre-registration: E-B v8, E-C v3, E-D v1, E-E v1 (written before these runs)
+Learner = v7 learner + D046a (grounding) + D048 (sleep only). Criteria unchanged where they
+existed.
+* E-B v8: seeds 1-25, criteria of v6.
+* E-C v3: seeds 1-15, criteria of the v2 amendment.
+* E-D v1 (seeds 1-15): D1 mean steps to 95% accuracy on all pairs, active <= 0.8 x random, and
+  active <= random on >= 70% of seeds; D2 act/ask/wait each chosen correctly in >= 9/10 cases per
+  seed; D3 forbidden option never chosen (even when it has the highest information gain), budget
+  never overdrawn and 5-10 of 10 bits used, stability-only ablation waits >= 285/300 and licenses
+  nothing while the epistemic agent licenses > 0.
+* E-E v1 (seeds 1-15): E1 door world with USE on any device (hidden conjunction key AND power): after
+  sleep >= 90% correct and >= twin + 10% of cases, and never-probed link pairs >= 85% and >= twin
+  + 10% (twin = identical evidence, no sleep). E2 calibrated ECE <= 5% and >= 95% accuracy where
+  the self-model says "known". E3 >= 60% of the first 30 wake actions test sleep-generated
+  hypotheses and >= 2x a fixed-rotation policy.
+  Disclosed development history for E1: the original door world (USE only on the key) was
+  solved by wake alone (twin 100%), so it could not test consolidation; with USE on any device,
+  sleep-born conjunctions could not be licensed in the closed world until D048. Dev seeds 1, 2.
+
+### E-F v1 pre-registration: generalization battery (written before any Phase F run)
+Bin `phase_f`; all measurements are made inside the battery, none copied from earlier phases.
+Development seeds 1, 2; formal seeds 1-15. Thresholds (fixed now):
+* F1 one-shot episodic recall: events seen once, cue with 30% of tokens removed: >= 95% correct,
+  <= 2% wrong; with 50% removed: <= 2% wrong (abstention allowed).
+* F2 compositional held-out: equality on never-seen colour values and order on never-seen
+  weights: each >= 95% correct and <= 1% wrong.
+* F3 causal intervention accuracy (confound world, do(toggle x) for every device, does I / L
+  change): >= 95% correct, <= 2% wrong. An association baseline is reported alongside.
+* F4 counterfactual ("had I toggled the switch instead, would the lamp have changed?"): >= 90%
+  correct, <= 5% wrong.
+* F5 calibration: ECE of calibrated confidence <= 5% over >= 500 answers.
+* F6 compression of consequences: two-part code (licensed laws named with log2 #hypotheses + 16
+  bits each; data at stated confidence; abstain = 1 bit) vs raw 1 bit per outcome: >= 5x.
+* F7 transfer speed: episodes until 95% on unseen values in a new context, experienced engine <=
+  1/3 of a fresh engine.
+* F8 resources: observe and predict median <= 1 ms, whole-battery peak working set <= 2 GB, CPU
+  only. Energy is an upper-bound estimate (no power meter): one loaded core of a 170 W / 16-core
+  package for the measured time.
+* Amendment before the formal run (dev seeds 1, 2 only): the F3 association baseline in the first
+  draft contained the true switch->lamp link (oracle knowledge) and scored 100%. It is replaced by
+  a baseline learned from passive co-change only (x influences y iff y changed in >= half of the
+  passive steps in which x changed). The baseline is reported, it is not a gate.

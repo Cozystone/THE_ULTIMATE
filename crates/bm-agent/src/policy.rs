@@ -15,7 +15,7 @@
 //! kept as a test.
 
 use bm_relation::{Episode, RelationEngine};
-use hdc_core::fixed::{expected_info_gain_q16, predictive_entropy_q16, Q};
+use hdc_core::fixed::{dirichlet_eig_q16, predictive_entropy_q16, Q};
 
 pub const INF: i64 = i64::MAX / 4;
 
@@ -73,6 +73,29 @@ pub struct Score {
     pub total: i64,
 }
 
+/// P(exception rate <= 10%) for a hypothesis confirmed k times without exception, Q16:
+/// 1 - 0.9^(k+1) (Beta posterior with a uniform prior on the exception rate).
+fn p_licensable_q16(k: u64) -> i64 {
+    let mut pow: i64 = Q * 9 / 10;
+    for _ in 0..k.min(400) {
+        pow = pow * 9 / 10;
+    }
+    Q - pow
+}
+
+/// D043c: expected information gain about the agent's own licensing question ("is the exception
+/// rate below 10%?") from one more intervention on a hypothesis confirmed k times so far.
+fn licence_eig_q16(k: u64) -> i64 {
+    let h = |p: i64| hdc_core::fixed::entropy_q16(&[p.max(0) as u64, (Q - p).max(0) as u64]);
+    let p0 = p_licensable_q16(k);
+    let p1 = p_licensable_q16(k + 1);
+    // with predictive probability (k+1)/(k+2) the hypothesis is confirmed again; otherwise it
+    // gains a counterexample and the question is settled (entropy ~0)
+    let s_num = (k + 1) as i64;
+    let s_den = (k + 2) as i64;
+    (h(p0) - h(p1) * s_num / s_den).max(0)
+}
+
 /// Epistemic value of observing `target` for the query `ep`.
 fn target_value(rel: &mut RelationEngine, ep: &Episode, target: u32) -> (i64, i64) {
     let u = rel.uncertainty(ep, target);
@@ -80,7 +103,16 @@ fn target_value(rel: &mut RelationEngine, ep: &Episode, target: u32) -> (i64, i6
         // known: nothing to learn, residual ambiguity from the licensed law's own spread
         return (0, predictive_entropy_q16(&u.counts).min(Q / 8));
     }
-    let ig = expected_info_gain_q16(&u.counts) + (u.near_licence.min(4) as i64) * (Q / 4);
+    // D043/D043b: mutual information with the unknown outcome distribution
+    let mut ig = dirichlet_eig_q16(&u.counts);
+    // D043c: and with the licensing question, for interventions on a still-consistent hypothesis
+    // D043d: counted in independent supports; only a new combination advances a hypothesis
+    // the outcome distribution and the licensing question are different unknowns: their
+    // information adds (the best licence question this case can advance)
+    if ep.kind == bm_relation::Kind::Intervention {
+        let best = u.licence_k.iter().map(|&k| licence_eig_q16(k as u64)).max().unwrap_or(0);
+        ig += best;
+    }
     let amb = 0; // unknown outcomes are epistemic, not aleatoric: counted as information gain
     (ig, amb)
 }

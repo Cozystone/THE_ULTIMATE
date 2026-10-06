@@ -62,6 +62,8 @@ pub struct RelationEngine {
     pub identity_channel: Option<u16>,
     /// (action, target, context) -> episodes seen; used to trigger latent induction.
     unexplained: HashMap<(u16, u32, u64), u32>,
+    /// D045: how often each action was taken in each context (evidence even when nothing changed).
+    trials: HashMap<(u16, u64), u32>,
 }
 
 /// What one sleep consolidation did.
@@ -81,6 +83,9 @@ pub struct Uncertainty {
     pub licensed: bool,
     pub counts: Vec<u64>,
     pub near_licence: u32,
+    /// Independent supports of consistent unlicensed hypotheses for which this query would be a
+    /// new combination (D043d).
+    pub licence_k: Vec<u32>,
 }
 
 /// One edge of the licensed causal model: under `action` and `condition`, `target` takes `value`.
@@ -152,6 +157,7 @@ impl RelationEngine {
             latent: Vec::new(),
             identity_channel: None,
             unexplained: HashMap::new(),
+            trials: HashMap::new(),
         }
     }
 
@@ -244,7 +250,7 @@ impl RelationEngine {
             .collect();
         for (l, t) in impure {
             let before = self.laws.len();
-            self.refine(l, ctx, t);
+            self.refine_ex(l, ctx, t, true);
             st.refined_children += (self.laws.len() - before) as u32;
         }
         // 2. latent induction
@@ -366,6 +372,23 @@ impl RelationEngine {
         h
     }
 
+    /// D047: condition vector from feature kinds. Single features bind directly; in a conjunction
+    /// the features are put in canonical (sorted) order and the k-th is permuted by k, so factors
+    /// shared by two features (e.g. the `same` tag) cannot cancel under XOR.
+    fn cond_hv_kinds(&mut self, action: u16, kinds: &[FeatureKind]) -> H {
+        let mut ks: Vec<FeatureKind> = kinds.to_vec();
+        ks.sort();
+        let mut h = self.cb.action(action);
+        if ks.len() == 1 {
+            h.bind_assign(&self.cb.feature_hv(&ks[0]));
+        } else {
+            for (pos, k) in ks.iter().enumerate() {
+                h.bind_assign(&self.cb.feature_hv(k).permute(pos as i64 + 1));
+            }
+        }
+        h
+    }
+
     fn transform_code(&mut self, cond: &[FeatureKind]) -> H {
         let mut t = H::zero();
         for f in cond {
@@ -421,10 +444,14 @@ impl RelationEngine {
         let base_fp = base_hv.fingerprint();
         let single_hv: Vec<H> = feats.iter().map(|f| base_hv.bind(&f.hv)).collect();
         let single_fp: Vec<u64> = single_hv.iter().map(|h| h.fingerprint()).collect();
+        // D047: positional permutation in canonical order for conjunctions
+        let first: Vec<H> = feats.iter().map(|f| base_hv.bind(&f.hv.permute(1))).collect();
+        let second: Vec<H> = feats.iter().map(|f| f.hv.permute(2)).collect();
         let mut pair_fp = Vec::with_capacity(feats.len() * feats.len() / 2);
         for i in 0..feats.len() {
             for j in (i + 1)..feats.len() {
-                pair_fp.push((i, j, single_hv[i].fingerprint_xor(&feats[j].hv)));
+                let (lo, hi) = if feats[i].kind <= feats[j].kind { (i, j) } else { (j, i) };
+                pair_fp.push((i, j, first[lo].fingerprint_xor(&second[hi])));
             }
         }
         CondCache { base_hv, base_fp, single_hv, single_fp, pair_fp }
@@ -453,7 +480,7 @@ impl RelationEngine {
     fn prediction(&self, law: usize, ctx: u64) -> Option<(i64, bool)> {
         let l = &self.laws[law];
         if let Some(e) = l.ctx(ctx) {
-            if e.total() > 0 && within_noise(e.counters(), e.total(), &self.policy) && !e.status.terminal() {
+            if e.total() > 0 && within_noise(e.counters(), e.total(), &self.policy_for(l.target)) && !e.status.terminal() {
                 return e.majority().map(|m| (m.0, false));
             }
         }
@@ -479,7 +506,7 @@ impl RelationEngine {
                 // D015a: a held-out compositional case is a new filler OR a combination of
                 // known fillers this law has never been supported by
                 !e.status.terminal()
-                    && within_noise(e.counters(), e.total(), &self.policy)
+                    && within_noise(e.counters(), e.total(), &self.policy_for(l.target))
                     && e.independent() >= 3
                     && (fps.iter().any(|f| !e.fillers_seen.contains(f)) || !e.bins.iter().any(|b| b.signatures.contains(&sig)))
             }
@@ -497,6 +524,7 @@ impl RelationEngine {
         self.tick += 1;
         let mut rep = ObserveReport::default();
         self.latent_bookkeeping(&ep);
+        *self.trials.entry((ep.action, ep.context)).or_insert(0) += 1;
         let mut ep = ep;
         self.augment(&mut ep);
         let feats = self.cb.features(&ep);
@@ -557,10 +585,9 @@ impl RelationEngine {
                 .iter()
                 .map(|&l| {
                     let (tot, cred) = match self.laws[l].ctx(ctx) {
-                        Some(e) => (
-                            e.total(),
-                            e.counters() == 0 && matches!(e.status, Status::Provisional | Status::Licensed),
-                        ),
+                        // D017a: only licensed knowledge subsumes (a provisional hypothesis that
+                        // never earns its licence must not block others)
+                        Some(e) => (e.total(), e.counters() == 0 && e.status == Status::Licensed),
                         None => (0, false),
                     };
                     (l, self.loss(l, ctx, actual, alpha), tot, cred)
@@ -588,10 +615,18 @@ impl RelationEngine {
             };
             let find = |l: usize| info.iter().find(|x| x.0 == l).copied().expect("info");
             let mut deltas: Vec<(usize, i64)> = vec![(base, uniform - base_loss)];
+            // D042b withdrawn: base rates and parents are statistical knowledge even when not
+            // licensed as deterministic laws; a law must beat them (D012)
+            let base_known = base_loss;
+            let dbg: Option<usize> = std::env::var("BM_DEBUG_LAW").ok().and_then(|x| x.parse().ok());
             for &s in &singles {
                 let (_, ls, ts, _) = find(s);
                 let gc = general_comp(s, ts);
-                deltas.push((s, incremental(s, ls, gc, base_loss)));
+                let d = incremental(s, ls, gc, base_known);
+                if dbg == Some(s) && self.tick % 40 == 0 {
+                    eprintln!("DBGLAW tick {} own {} base {} comp {:?} delta {} comp_desc {:?}", self.tick, ls, base_loss, gc, d, gc.1.map(|m| self.laws[m].describe()));
+                }
+                deltas.push((s, d));
             }
             for &(p, a, b) in &pairs {
                 let (_, lp, tp, _) = find(p);
@@ -661,10 +696,23 @@ impl RelationEngine {
     /// Hidden-condition search: rank co-present features by entropy reduction among the
     /// parent's episodes, create the best as child candidates initialised by replay.
     fn refine(&mut self, parent: usize, ctx: u64, target: u32) {
-        let ids = match self.laws[parent].ctx(ctx) {
+        self.refine_ex(parent, ctx, target, false)
+    }
+
+    /// D048: with `split`, the parent's episodes are divided by situation signature into a
+    /// selection half and a held-out half. Candidate conditions are ranked and the child is
+    /// initialised on the selection half only; on the held-out half the child pre-registers its
+    /// prediction before each outcome is counted, and situations it has never counted are
+    /// held-out transfer trials (a lookup table fitted on the selection half could not answer
+    /// them). Used in sleep, where the world may offer no new situations any more.
+    fn refine_ex(&mut self, parent: usize, ctx: u64, target: u32, split: bool) {
+        let all = match self.laws[parent].ctx(ctx) {
             Some(e) => e.all_ids(),
             None => return,
         };
+        let held_of = |s: &Self, id: u64| -> bool { split && mix64(s.store.get(id).signature(), 0xD048) & 1 == 1 };
+        let ids: Vec<u64> = all.iter().copied().filter(|&id| !held_of(self, id)).collect();
+        let held: Vec<u64> = all.iter().copied().filter(|&id| held_of(self, id)).collect();
         let pcond = self.laws[parent].condition.clone();
         let action = self.laws[parent].action;
         let mut tally: HashMap<FeatureKind, HashMap<i64, u64>> = HashMap::new();
@@ -707,12 +755,7 @@ impl RelationEngine {
             }
             let mut cond = pcond.clone();
             cond.push(g.clone());
-            let mut hvs = Vec::new();
-            for f in &cond {
-                hvs.push(self.cb.feature_hv(f));
-            }
-            let refs: Vec<&H> = hvs.iter().collect();
-            let h = self.cond_hv(action, &refs);
+            let h = self.cond_hv_kinds(action, &cond);
             let child = match self.lookup(&h, target) {
                 Some(c) => {
                     // hypothesis exists from another context: activate it here only if this
@@ -739,6 +782,40 @@ impl RelationEngine {
                 let ep = self.store.get(id);
                 let Some(out) = ep.outcome(target) else { continue };
                 let (sig, fps, iv) = (ep.signature(), ep.filler_fps(), ep.kind == Kind::Intervention);
+                if self.laws[child].ctx(ctx).map(|e| e.total() == 0).unwrap_or(true) {
+                    *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
+                }
+                self.laws[child].ctx_mut(ctx, t).add(out, id, sig, iv, &fps, t);
+            }
+            // D048: held-out half, pre-registered predictions on never-counted situations
+            for &id in &held {
+                if !self.feat_kinds[id as usize].contains(&g) {
+                    continue;
+                }
+                let ep = self.store.get(id);
+                let Some(out) = ep.outcome(target) else { continue };
+                let (sig, fps, iv) = (ep.signature(), ep.filler_fps(), ep.kind == Kind::Intervention);
+                let pol = self.policy_for(target);
+                // prequential utility against the parent's final counts (which include this very
+                // episode, so the comparison is biased towards the parent: conservative)
+                let alpha = self.alphabet_size(target);
+                let p_loss = self.laws[parent].ctx(ctx).map(|e| e.loss_q16(out, alpha));
+                let c_loss = self.laws[child].ctx(ctx).filter(|e| e.total() > 0).map(|e| e.loss_q16(out, alpha));
+                if let (Some(pl), Some(cl)) = (p_loss, c_loss) {
+                    let e = self.laws[child].ctx_mut(ctx, t);
+                    e.utility_q16 += pl - cl;
+                    if iv {
+                        e.utility_int_q16 += pl - cl;
+                    }
+                }
+                if let Some(e) = self.laws[child].ctx(ctx) {
+                    let new_sit = !e.bins.iter().any(|b| b.signatures.contains(&sig));
+                    if new_sit && !e.status.terminal() && within_noise(e.counters(), e.total(), &pol) && e.independent() >= 3 {
+                        if let Some((pred, _)) = e.majority() {
+                            self.laws[child].ctx_mut(ctx, t).transfer.record(id, pred, out);
+                        }
+                    }
+                }
                 if self.laws[child].ctx(ctx).map(|e| e.total() == 0).unwrap_or(true) {
                     *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
                 }
@@ -823,7 +900,13 @@ impl RelationEngine {
                 && e.utility_int_q16 > 0
             {
                 // D016: intervention data alone must pay the selection cost
-                if e.transfer.ok >= p.min_transfer_ok
+                // D044: rule of three on the exception rate
+                let excess = (counters as u64).saturating_sub(allow);
+                // D044a: reliability is measured on intervention trials (repeats of a situation are
+                // valid samples of the exception rate); breadth stays with min_independent
+                let bounded = (excess + 3) * p.max_exception_den as u64 <= e.interventions() as u64 * p.max_exception_num as u64;
+                if bounded
+                    && e.transfer.ok >= p.min_transfer_ok
                     && within_noise(e.transfer.fail, e.transfer.ok + e.transfer.fail, &p)
                     && e.utility_q16 >= thresh
                     && e.utility_int_q16 >= thresh
@@ -882,6 +965,8 @@ impl RelationEngine {
         let licensed = m.iter().any(|&l| self.laws[l].applicable(ctx));
         let mut best: Option<(i64, Vec<u64>)> = None;
         let mut near = 0u32;
+        let sig = aug.signature();
+        let mut licence_k: Vec<u32> = Vec::new();
         for &l in &m {
             let Some(e) = self.laws[l].ctx(ctx) else { continue };
             if e.status.terminal() || e.total() == 0 {
@@ -894,18 +979,60 @@ impl RelationEngine {
             if best.as_ref().map(|b| h < b.0).unwrap_or(true) {
                 best = Some((h, counts));
             }
-            if e.status != Status::Licensed
+            // D043d: independent supports of each consistent, unlicensed hypothesis this query
+            // would extend with a new combination
+            if ep.kind == Kind::Intervention
+                && e.status != Status::Licensed
+                && e.counters() == 0
+                && !e.bins.iter().any(|b| b.signatures.contains(&sig))
+            {
+                licence_k.push(e.independent());
+            }
+            // D043a: only an intervention can supply what an unlicensed hypothesis lacks
+            if ep.kind == Kind::Intervention
+                && e.status != Status::Licensed
                 && within_noise(e.counters(), e.total(), &self.policy)
                 && e.independent() >= 3
             {
                 near += 1;
             }
         }
-        let counts = best.map(|b| b.1).unwrap_or_else(|| vec![0; alpha.len() + 1]);
-        Uncertainty { licensed, counts, near_licence: near }
+        // D045: no hypothesis has data for this target: the action's trials in this context are
+        // evidence that nothing observable varied (status quo), untried actions stay uncertain
+        let counts = best.map(|b| b.1).unwrap_or_else(|| {
+            let mut c = vec![0u64; alpha.len().max(1) + 1];
+            c[0] = *self.trials.get(&(ep.action, ctx)).unwrap_or(&0) as u64;
+            c
+        });
+        Uncertainty { licensed, counts, near_licence: near, licence_k }
     }
 
     /// Ids of every active (non-pruned) hypothesis matching a query for a target.
+    /// Diagnostic: matching hypotheses with their evidence in the query's context.
+    pub fn debug_matching(&mut self, ep: &Episode, target: u32) -> Vec<String> {
+        let ctx = ep.context;
+        let m = self.matching_ids(ep, target);
+        m.into_iter()
+            .filter_map(|l| {
+                let law = &self.laws[l];
+                let e = law.ctx(ctx)?;
+                Some(format!(
+                    "{} [{:?}] tot {} ctr {} indep {} int {} xfer {}/{} util {} active {}",
+                    law.describe(),
+                    e.status,
+                    e.total(),
+                    e.counters(),
+                    e.independent(),
+                    e.interventions(),
+                    e.transfer.ok,
+                    e.transfer.fail,
+                    e.utility_q16 / 65536,
+                    law.active_ctx.contains(&ctx)
+                ))
+            })
+            .collect()
+    }
+
     pub fn matching_ids(&mut self, ep: &Episode, target: u32) -> Vec<usize> {
         let mut aug = ep.clone();
         self.augment(&mut aug);

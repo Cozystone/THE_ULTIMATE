@@ -12,7 +12,7 @@ fn ep(a: i64, b: i64, out: i64) -> Episode {
         context: context_of("A"),
         source: 0,
         action: 1,
-        roles: vec![Entity::new(&[(0, a)]), Entity::new(&[(0, b)])],
+        roles: vec![Entity::new(&[(0, a), (3, a * 1000 + b)]), Entity::new(&[(0, b), (3, b * 1000 + a + 7)])],
         n_args: 0,
         outcomes: vec![(0, out)],
         kind: Kind::Intervention,
@@ -39,10 +39,14 @@ fn forbidden_option_is_never_chosen_even_if_most_informative() {
 fn known_outcomes_carry_no_information_gain() {
     let mut rel = RelationEngine::new(2);
     let mut rng = Rng::new(3);
-    for _ in 0..500 {
+    for k in 0..500 {
         let a = rng.below(6) as i64;
         let b = if rng.below(3) == 0 { a } else { rng.below(6) as i64 };
-        rel.observe(ep(a, b, (a == b) as i64));
+        let mut e = ep(a, b, (a == b) as i64);
+        // distinct entities (identity channel) so cases are independent
+        e.roles[0].fillers[1].val = 2 * k;
+        e.roles[1].fillers[1].val = 2 * k + 1;
+        rel.observe(e);
     }
     let c = Candidate { kind: OptionKind::Act { action: 1, args: vec![] }, episode: Some(ep(40, 40, 0).without_outcomes()), targets: vec![0], tier: 0, cost_q16: 0, reliability_q16: Q };
     let s = score(&mut rel, &c, &Preferences::default());

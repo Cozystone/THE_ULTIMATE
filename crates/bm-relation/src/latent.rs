@@ -245,19 +245,47 @@ impl LatentInducer {
         true
     }
 
+    /// Whether any pair between the members of two classes of `part` was ever observed.
+    fn observed_between(&self, part: &BTreeMap<i64, i64>, c1: i64, c2: i64) -> bool {
+        self.obs.keys().any(|&(a, b)| {
+            let (x, y) = (part.get(&a), part.get(&b));
+            (x == Some(&c1) && y == Some(&c2)) || (x == Some(&c2) && y == Some(&c1))
+        })
+    }
+
     /// Add latent fillers to every role whose identity is known to the current partitions.
+    /// D039b: for the action's argument pair, a difference between two classes is only exported
+    /// if some pair between those classes was actually observed; an unestablished difference
+    /// (absence of evidence) yields no latent filler for the pair, so no relation can apply.
     pub fn augment(&self, ep: &mut Episode) {
         if self.block.is_empty() {
             return;
         }
         let (bch, lch) = self.channels();
-        for r in ep.roles.iter_mut() {
-            let Some(id) = r.get(self.id_ch) else { continue };
+        let ids: Vec<Option<i64>> = ep.roles.iter().map(|r| r.get(self.id_ch)).collect();
+        let pair_ok = |part: &BTreeMap<i64, i64>| -> bool {
+            match (ids.first().copied().flatten(), ids.get(1).copied().flatten()) {
+                (Some(a), Some(b)) => match (part.get(&a), part.get(&b)) {
+                    (Some(&ca), Some(&cb)) => ca == cb || self.observed_between(part, ca, cb),
+                    _ => true,
+                },
+                _ => true,
+            }
+        };
+        let block_ok = pair_ok(&self.block);
+        let link_ok = pair_ok(&self.link);
+        for (i, r) in ep.roles.iter_mut().enumerate() {
+            let Some(id) = ids[i] else { continue };
+            let arg = i < 2;
             if let Some(&c) = self.block.get(&id) {
-                r.fillers.push(Filler { ch: bch, val: c });
+                if !arg || block_ok {
+                    r.fillers.push(Filler { ch: bch, val: c });
+                }
             }
             if let Some(&c) = self.link.get(&id) {
-                r.fillers.push(Filler { ch: lch, val: c });
+                if !arg || link_ok {
+                    r.fillers.push(Filler { ch: lch, val: c });
+                }
             }
         }
     }

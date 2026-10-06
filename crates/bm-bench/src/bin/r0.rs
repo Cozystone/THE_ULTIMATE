@@ -334,7 +334,16 @@ fn negative_transfer(seed: u64, report: &mut String, json: &mut Vec<String>) -> 
         let (a, b, o) = wb.intervene(Pool::Train);
         let ep = wb.episode(&a, &b, o, Kind::Intervention);
         let q = ep.without_outcomes();
-        let pl = lived.predict(&q, TARGET).value();
+        let pl_ans = lived.predict(&q, TARGET);
+        let pl = pl_ans.value();
+        if pl.is_some() && pl != Some(o) {
+            if let Answer::Value { laws, .. } = &pl_ans {
+                eprintln!("WRONG seed {seed} step {i}: predicted {:?} actual {o} a={:?} b={:?}", pl, a, b);
+                for &l in laws {
+                    eprintln!("    {}", lived.summary(l, wb.context));
+                }
+            }
+        }
         let pa = lived.predict_with(&q, TARGET, true).value();
         let pn = naive.predict(&q, TARGET).value();
         if pl == Some(o) && lived_first.is_none() {

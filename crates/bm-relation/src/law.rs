@@ -54,6 +54,10 @@ pub struct LicensePolicy {
     pub refine_min_total: u32,
     pub refine_top: usize,
     pub max_children: usize,
+    /// D044: the evidence must bound the exception rate: (excess counterexamples + 3) / independent
+    /// supports <= max_exception_num / max_exception_den (rule of three, ~95% upper bound).
+    pub max_exception_num: u32,
+    pub max_exception_den: u32,
     /// Hidden-condition search during wake (false = only during sleep consolidation).
     pub online_refine: bool,
     /// Sensor-error tolerance: counterexample rate at or below num/den may be attributed to
@@ -77,6 +81,8 @@ impl Default for LicensePolicy {
             refine_top: 8,
             max_children: 24,
             online_refine: true,
+            max_exception_num: 1,
+            max_exception_den: 10,
             noise_tol_num: 0,
             noise_tol_den: 1,
         }

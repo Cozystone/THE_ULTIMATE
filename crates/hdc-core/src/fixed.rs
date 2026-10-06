@@ -127,3 +127,42 @@ pub fn best_posterior_q16(loglik: &[i64]) -> Option<(usize, i64)> {
     }
     Some((bi, (Q * Q) / z.max(1)))
 }
+
+/// ln(2) in Q16.
+pub const LN2_Q16: i64 = 45426;
+
+/// Harmonic number H_n = 1 + 1/2 + ... + 1/n in Q16 nats (exact sum up to 4096, asymptotic beyond).
+pub fn harmonic_q16(n: u64) -> i64 {
+    if n == 0 {
+        return 0;
+    }
+    if n <= 4096 {
+        let mut s: i64 = 0;
+        for k in 1..=n {
+            s += (Q << 16) / k as i64;
+        }
+        return s >> 16;
+    }
+    // H_n ~ ln n + gamma + 1/(2n); gamma = 0.5772156649 -> 37829 in Q16
+    let ln_n = log2_q16(n) * LN2_Q16 / Q;
+    ln_n + 37829 + Q / (2 * n as i64)
+}
+
+/// Expected information gain (mutual information between the next outcome and the unknown
+/// outcome distribution) for a categorical with a Dirichlet(counts + 1) posterior, in Q16 bits.
+/// EIG = H[predictive] - E_theta[H(outcome | theta)], with
+/// E[H] = H_A - sum_i (a_i / A) H_{a_i} (nats), a_i = counts_i + 1, A = sum a_i.
+pub fn dirichlet_eig_q16(counts: &[u64]) -> i64 {
+    if counts.len() < 2 {
+        return 0;
+    }
+    let a: Vec<u64> = counts.iter().map(|&c| c + 1).collect();
+    let big_a: u64 = a.iter().sum();
+    let h_pred_bits = entropy_q16(&a);
+    let mut e_h_nats = harmonic_q16(big_a);
+    for &ai in &a {
+        e_h_nats -= (ai as i128 * harmonic_q16(ai) as i128 / big_a as i128) as i64;
+    }
+    let e_h_bits = e_h_nats * Q / LN2_Q16;
+    (h_pred_bits - e_h_bits).max(0)
+}

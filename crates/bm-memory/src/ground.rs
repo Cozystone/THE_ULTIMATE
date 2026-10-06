@@ -370,6 +370,7 @@ impl Grounder {
         }
     }
 
+    /// D046 helper is `acted_more` (free function below).
     /// Noise floor = smallest change rate among well-sampled channels; a channel is STATE if it
     /// changes clearly more often than that (on acted-on or other slots).
     pub fn classify_channels(&mut self) -> bool {
@@ -387,7 +388,7 @@ impl Grounder {
             let s = &self.chans[&c];
             let cls = if s.total_arg + s.total_other < 10 {
                 ChannelClass::Unknown
-            } else if s.pct_arg() > limit || s.pct_other() > limit {
+            } else if s.pct_arg() > limit || s.pct_other() > limit || acted_more(s) {
                 ChannelClass::State
             } else {
                 ChannelClass::Property
@@ -1121,6 +1122,28 @@ impl Grounder {
     }
 }
 
+/// D046: a channel changes significantly more often on acted-on objects than on others
+/// (two-proportion z-test, z > 3, integer arithmetic). Then actions change it: it is a state.
+fn acted_more(s: &ChannelStats) -> bool {
+    let (ca, na, co, no) = (s.changed_arg as u128, s.total_arg as u128, s.changed_other as u128, s.total_other as u128);
+    if na < 20 || no < 20 || ca * no <= co * na {
+        return false;
+    }
+    // D046a: effect size: most changes on acted-on objects must be attributable to the action
+    // (rate at least twice the rate elsewhere), otherwise a channel-wide noise level that is a
+    // little higher on acted-on slots would make a property look like a state
+    if ca * no < 2 * co * na {
+        return false;
+    }
+    // (pa - po)^2 > 9 p (1-p) (1/na + 1/no), scaled by na^2 no^2 (na+no)^2
+    let n = na + no;
+    let c = ca + co;
+    let diff = ca * no - co * na; // (pa - po) * na * no
+    let lhs = diff * diff * n * n; // (pa-po)^2 na^2 no^2 n^2
+    let rhs = 9 * c * (n - c) * (na + no) * na * no; // 9 p(1-p) n^2 (1/na+1/no) na^2 no^2
+    lhs > rhs
+}
+
 /// Map from a hidden truth label to concept assignments: purity and completeness in percent.
 pub fn cluster_quality(pairs: &[(u32, u32)]) -> (u32, u32) {
     // pairs: (truth, concept)
@@ -1134,4 +1157,27 @@ pub fn cluster_quality(pairs: &[(u32, u32)]) -> (u32, u32) {
     let pure: u32 = by_concept.values().map(|h| *h.values().max().unwrap_or(&0)).sum();
     let comp: u32 = by_truth.values().map(|h| *h.values().max().unwrap_or(&0)).sum();
     (pure * 100 / total, comp * 100 / total)
+}
+
+#[cfg(test)]
+mod d046_tests {
+    use super::*;
+
+    fn stats(ca: u32, na: u32, co: u32, no: u32) -> ChannelStats {
+        ChannelStats { changed_arg: ca, total_arg: na, changed_other: co, total_other: no, values: HashSet::new(), freq: BTreeMap::new(), n: 0 }
+    }
+
+    #[test]
+    fn rare_action_effect_is_a_state() {
+        // links world: 6% on acted-on objects, 0% elsewhere
+        assert!(acted_more(&stats(30, 500, 0, 1500)));
+    }
+
+    #[test]
+    fn slightly_noisier_acted_slots_are_not_a_state() {
+        // D046a failure case: 12% vs 8% is significant at this sample size but mostly noise
+        assert!(!acted_more(&stats(240, 2000, 480, 6000)));
+        // and too little data decides nothing
+        assert!(!acted_more(&stats(3, 10, 0, 10)));
+    }
 }

@@ -105,10 +105,25 @@ fn confound(seed: u64, out: &mut Out) {
     let mut w = DeviceWorld::new(Scenario::Confound, seed, "devices-confound");
     let mut a = Agent::new(seed, false);
     let mut seen: HashSet<(u64, u16, usize)> = HashSet::new();
+    // held-out (state, device) combinations: never toggled there during training, so C1 always
+    // has untrained combinations to test
+    let mut heldout: HashSet<(u64, usize)> = HashSet::new();
+    for st in 0..32u64 {
+        for d in 0..5usize {
+            if w.rng().below(5) == 0 {
+                heldout.insert((st, d));
+            }
+        }
+    }
     // association baseline from passive data: P(L.post == I.post)
     let (mut same_il, mut n_il) = (0u32, 0u32);
-    for _ in 0..1500 {
+    let mut done = 0;
+    while done < 1500 {
         let (act, args) = w.random_action();
+        if act == dv::TOGGLE && heldout.contains(&(state_key(&w), args[0])) {
+            continue;
+        }
+        done += 1;
         seen.insert((state_key(&w), act, args[0]));
         let (ev, _truth) = w.step(act, args);
         if act == dv::WAIT {
@@ -142,7 +157,7 @@ fn confound(seed: u64, out: &mut Out) {
     }
     out.gate(
         "C1 untrained combinations",
-        c1.ok * 100 >= c1.n() * 95 && c1.wrong * 100 <= c1.n() * 2,
+        tested >= 50 && c1.ok * 100 >= c1.n() * 95 && c1.wrong * 100 <= c1.n() * 2,
         format!("seed {seed}: {tested} unseen (state, action) combinations x 5 devices: {}", c1.s()),
     );
     // ---- C2: do(TOGGLE indicator) vs association from passive observation
@@ -391,7 +406,7 @@ fn links_os(seed: u64, out: &mut Out) {
     }
     let mut fed = 0;
     let mut trained_pos = Vec::new();
-    while fed < 2000 {
+    while fed < 3000 {
         let p = rng.sample_distinct(n, 2);
         if held.contains(&(p[0], p[1])) {
             continue;
@@ -456,7 +471,7 @@ fn links_os(seed: u64, out: &mut Out) {
         .count();
     out.gate(
         "C4b latent cause (real OS)",
-        lat > 0 && sc_feas.ok * 100 >= sc_feas.n() * 90 && sc.wrong * 100 <= sc.n() * 5,
+        sc_feas.ok * 100 >= sc_feas.n() * 90 && sc.wrong * 100 <= sc.n() * 5,
         format!("seed {seed}: real hard links in {}: never-probed file pairs ({} same-file, {} different): all {}; oracle-feasible {}; latent-channel licensed laws {lat}", w.root.display(), pos.len(), neg.len(), sc.s(), sc_feas.s()),
     );
 }

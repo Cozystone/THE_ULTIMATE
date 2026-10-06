@@ -166,10 +166,16 @@ fn d2_case(seed: u64, case: &str) -> (bool, String) {
         }
         w.power_varies = true;
     } else {
-        // only passive observation so far: the effect of USE is unknown
-        for _ in 0..warm {
-            let (ev, _) = w.step(dv::WAIT, vec![0]);
+        // experience with everything except the key: the effect of USE is unknown
+        let mut k = 0;
+        while k < warm + 200 {
+            let (act, args) = w.random_action();
+            if act == dv::USE {
+                continue;
+            }
+            let (ev, _) = w.step(act, args);
             a.feed(ev);
+            k += 1;
         }
     }
     let prefs = Preferences { max_tier: if case == "ask" { 0 } else { 2 }, ..Default::default() };
@@ -178,6 +184,21 @@ fn d2_case(seed: u64, case: &str) -> (bool, String) {
         "ask" => options(&mut a, &mut w, Q / 2, 1, Some(Q / 2), Q / 4),
         _ => options(&mut a, &mut w, 3 * Q, 1, None, Q / 4),
     };
+    if std::env::var("DIAG_D").is_ok() {
+        let n_wait = a.rel.laws.iter().filter(|l| l.action == dv::WAIT && l.is_base()).map(|l| l.ctx.iter().map(|e| e.total()).sum::<u32>()).max().unwrap_or(0);
+        eprintln!("DIAG {case} engine episodes {} wait-base max total {n_wait} live concepts {}", a.rel.store.len(), a.g.live_concepts().len());
+        if let Some(c) = cands.iter().find(|c| c.kind == OptionKind::Wait) {
+            let ep = c.episode.clone().unwrap();
+            for &t in &c.targets {
+                let m = a.rel.matching_ids(&ep, t);
+                eprintln!("    wait target {t} matching {} roles {}", m.len(), ep.roles.len());
+            }
+        }
+        for c in &cands {
+            let sc = score(&mut a.rel, c, &prefs);
+            eprintln!("DIAG {case} cand {:?} targets {} tier {} cost {} -> ig {} amb {} total {}", c.kind, c.targets.len(), c.tier, c.cost_q16, sc.info_gain, sc.ambiguity, sc.total);
+        }
+    }
     let chosen = choose(&mut a.rel, &cands, &prefs).map(|(i, s)| (cands[i].kind.clone(), s));
     let ok = match (&chosen, case) {
         (Some((OptionKind::Act { .. }, _)), "act") => true,
@@ -237,18 +258,23 @@ fn d3(seed: u64, out: &mut Out) {
             }
         }
     }
-    // (b) budget: never exceed it
-    let mut budget = 40 * Q;
+    // (b) budget: never exceed it (actions cost 1/4 bit, waiting is free, 10 bits available)
+    let mut budget = 10 * Q;
     let mut spent = 0i64;
     let mut over = 0;
     let mut a2 = Agent::new(seed ^ 7, false);
     let mut w2 = DeviceWorld::new(Scenario::Confound, seed, "confound-d3");
+    // perception warm-up (channel classes, objects) before any decision
+    for _ in 0..120 {
+        let (ev, _) = w2.step(dv::WAIT, vec![0]);
+        a2.feed(ev);
+    }
     for _ in 0..200 {
         let prefs = Preferences { budget_q16: budget, ..Default::default() };
         let mut cands = Vec::new();
         for d in 0..5 {
             if let Some((ep, t)) = a2.query(&mut w2, dv::TOGGLE, vec![d], &[0, 1, 2, 3, 4]) {
-                cands.push(Candidate { kind: OptionKind::Act { action: dv::TOGGLE, args: vec![d] }, episode: Some(ep), targets: t, tier: 1, cost_q16: Q, reliability_q16: Q });
+                cands.push(Candidate { kind: OptionKind::Act { action: dv::TOGGLE, args: vec![d] }, episode: Some(ep), targets: t, tier: 1, cost_q16: Q / 4, reliability_q16: Q });
             }
         }
         if let Some((ep, t)) = a2.query(&mut w2, dv::WAIT, vec![0], &[0, 1, 2, 3, 4]) {
@@ -273,16 +299,20 @@ fn d3(seed: u64, out: &mut Out) {
         let mut a = Agent::new(seed ^ 11, false);
         let mut w = DeviceWorld::new(Scenario::Confound, seed ^ 3, "confound-dark");
         let prefs = Preferences { info_weight_q16: info, ..Default::default() };
+        for _ in 0..120 {
+            let (ev, _) = w.step(dv::WAIT, vec![0]);
+            a.feed(ev);
+        }
         let mut waits = 0;
         for _ in 0..300 {
             let mut cands = Vec::new();
             for d in 0..5 {
                 if let Some((ep, t)) = a.query(&mut w, dv::TOGGLE, vec![d], &[0, 1, 2, 3, 4]) {
-                    cands.push(Candidate { kind: OptionKind::Act { action: dv::TOGGLE, args: vec![d] }, episode: Some(ep), targets: t, tier: 1, cost_q16: Q / 2, reliability_q16: Q });
+                    cands.push(Candidate { kind: OptionKind::Act { action: dv::TOGGLE, args: vec![d] }, episode: Some(ep), targets: t, tier: 1, cost_q16: Q / 8, reliability_q16: Q });
                 }
             }
             if let Some((ep, t)) = a.query(&mut w, dv::WAIT, vec![0], &[0, 1, 2, 3, 4]) {
-                cands.push(Candidate { kind: OptionKind::Wait, episode: Some(ep), targets: t, tier: 0, cost_q16: Q / 8, reliability_q16: Q });
+                cands.push(Candidate { kind: OptionKind::Wait, episode: Some(ep), targets: t, tier: 0, cost_q16: Q / 16, reliability_q16: Q });
             }
             let (act, args) = match choose(&mut a.rel, &cands, &prefs).map(|(i, _)| cands[i].kind.clone()) {
                 Some(OptionKind::Act { action, args }) => (action, args),
@@ -294,16 +324,23 @@ fn d3(seed: u64, out: &mut Out) {
             let (ev, _) = w.step(act, args);
             a.feed(ev);
         }
+        if std::env::var("DIAG_D").is_ok() {
+            eprintln!("DARK info {info}: engine episodes {} laws {} licensed {} classes {:?}", a.rel.store.len(), a.rel.laws.len(), a.rel.licensed_in(w.context).len(), a.g.channel_report());
+            let mut best: Vec<_> = a.rel.laws.iter().filter(|l| l.action == dv::TOGGLE && l.ctx(w.context).map(|e| e.total() > 5).unwrap_or(false)).map(|l| l.id).collect();
+            best.truncate(8);
+            for l in best { eprintln!("   {}", a.rel.summary(l, w.context)); }
+        }
         (waits, a.rel.licensed_in(w.context).len())
     };
     let (dark_waits, dark_lic) = run(0);
     let (act_waits, act_lic) = run(Q);
     out.gate(
         "D3 constraints",
-        forbidden_chosen == 0 && over == 0 && spent <= 40 * Q && dark_waits >= 285 && dark_lic == 0 && act_lic > 0,
+        forbidden_chosen == 0 && over == 0 && spent <= 10 * Q && spent >= 5 * Q && dark_waits >= 285 && dark_lic == 0 && act_lic > 0,
         format!(
-            "seed {seed}: forbidden option chosen {forbidden_chosen}/100 (it had the highest information gain in {forbidden_was_best_ig}); budget 40 bits spent {} bits, overdrafts {over}; dark-room ablation waits {dark_waits}/300 licensed {dark_lic} vs epistemic agent waits {act_waits}/300 licensed {act_lic}",
-            spent / Q
+            "seed {seed}: forbidden option chosen {forbidden_chosen}/100 (it had the highest information gain in {forbidden_was_best_ig}); budget 10 bits spent {}.{:02} bits, overdrafts {over}; dark-room ablation waits {dark_waits}/300 licensed {dark_lic} vs epistemic agent waits {act_waits}/300 licensed {act_lic}",
+            spent / Q,
+            (spent % Q) * 100 / Q
         ),
     );
 }

@@ -16,6 +16,11 @@ fn main() {
     for _ in 0..2400 {
         let (ev, truth) = w.step(None);
         let t = w.t;
+        if t % 100 == 0 {
+            let mut r = g.channel_report();
+            r.sort_by_key(|x| x.0);
+            println!("t {t} classes {:?}", r);
+        }
         if let Some(gr) = g.observe(ev) {
             for s in &gr.slots {
                 let Some(&(_, o)) = truth.iter().find(|x| x.0 == s.slot) else { continue };

@@ -310,3 +310,14 @@ fn exp2_and_posterior_are_integer_and_accurate() {
     assert_eq!(i, 1);
     assert!((p - Q * 1024 / 1025).abs() <= 4);
 }
+
+#[test]
+fn dirichlet_eig_matches_closed_form() {
+    // K = 3, no data: H_pred = log2 3 = 1.585, E[H] = (H_3 - H_1)/ln2 = 1.2022 -> EIG 0.3828 bits
+    let e = dirichlet_eig_q16(&[0, 0, 0]);
+    assert!((e - 25087).abs() < 150, "eig {}", e);
+    // lots of data: almost nothing left to learn
+    assert!(dirichlet_eig_q16(&[500, 0, 0]) < Q / 100);
+    // harmonic numbers
+    assert!((harmonic_q16(4) - 136533).abs() < 4); // 2.0833
+}

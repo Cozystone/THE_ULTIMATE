@@ -371,3 +371,143 @@ Laplace learning cost on every shared case, cancelling the information it added 
 where contents collided. Choice: on a case where a credible, strictly more general competitor and the
 law both predicted the actual value as their majority, the law's utility change is 0; elsewhere it
 is the code-length difference as before. A hypothesis earns bits only where it adds information.
+
+## D043 Epistemic value is the mutual information with the unknown outcome distribution (2026-10-07)
+Evidence: Phase D development run: the agent waited almost always; the one-step reduction of
+predictive entropy of an untested action is tiny (0.085 bits for 3 outcomes), so any cost exceeded
+it. Active inference's epistemic value is the mutual information between the next outcome and the
+unknown parameters. For a Dirichlet(counts+1)-categorical it is exact with harmonic numbers:
+EIG = H[predictive] - (H_A - sum a_i/A H_{a_i}). Implemented in Q16 integer arithmetic
+(0.383 bits for an untested 3-outcome target, -> 0 with data).
+
+## D044 Rule of three: the evidence must bound the exception rate (2026-10-07)
+Evidence: E-R0 v5 C6 seeds 9 and 20: the unconditional law "always 1" (true exception rate 17%) was
+licensed after 11 consecutive confirmations (probability 0.13 by chance) and then answered wrong.
+D037 made such base-rate laws licensable. Choice: a law is licensable only if (excess
+counterexamples + 3) / independent supports <= 10%: with zero counterexamples at least 30
+independent supports, the ~95% upper bound on its exception rate.
+
+## D045 Trials without recorded change are evidence (2026-10-07)
+Evidence: Phase D development run: an agent that only waited never saw any channel change, so no
+state channel and no outcome target existed, every option looked equally unknown, the cheapest
+(waiting) always won, and the agent never learned anything (a perceptual dark room). Choice: the
+engine counts how often each action was taken in each context. For a target with no hypothesis
+data, those trials count as observations of the status quo, so repeated waiting loses epistemic
+value while an untried action keeps it.
+
+## D043a The licence-progress bonus applies only to options that can supply the missing evidence
+Evidence: Phase D development run: hypotheses about passive waiting can never be licensed (no
+interventions), so they stayed "near licence" forever and gave waiting a permanent bonus of up to
+1 bit per target. Choice: the bonus counts only for intervention options.
+
+## D043b The licence-progress bonus is removed
+Evidence: Phase D development run: in the "wait" scenario an expensive action won because up to four
+near-licence hypotheses per target each added 0.25 bits, many of them subsumed laws that can never
+be licensed. The bonus had no derivation. Choice: epistemic value is the Dirichlet mutual
+information alone; hypotheses with little data already carry high mutual information.
+
+## D043c Curiosity targets the agent's own licensing question (2026-10-07)
+Evidence: Phase D development run: the epistemic agent acted 58 times in 300 decisions and licensed
+nothing; the one-step Dirichlet information gain fades after a handful of trials, long before the
+rule of three (D044) can be met. The agent's curiosity and its standard of knowledge disagreed.
+Choice: for an intervention on a hypothesis confirmed k times without exception, the epistemic value
+also includes the expected information about the binary question "is its exception rate <= 10%?"
+(posterior 1 - 0.9^(k+1)); a counterexample settles the question. The larger of the two values is
+used. Observation options get none of it (they cannot license, D043a).
+
+## D043d The licensing question counts independent supports and new combinations
+Evidence: Phase D development run: the epistemic agent toggled the same device 58 times; its
+uncertainty was read from the most confident general hypothesis, so untested devices looked known,
+and repeated combinations gave only 4 independent supports (no licence possible). Choice: the
+licence-question value uses each consistent unlicensed matching hypothesis's independent supports,
+and only if the query is a combination that hypothesis has never been supported by; the maximum
+over such hypotheses is used.
+
+## D044a The rule of three counts intervention trials, not distinct combinations (2026-10-07)
+Evidence: E-C v1 C3 failed on 10/10 seeds: in the door world (5 binary devices, at most 32
+situations) "USE flips the door" had 182 consistent interventions but only 16 distinct situations,
+so D044 (30 independent supports) could never be met. Repeated trials of the same situation are
+valid samples of an exception rate; breadth of generalisation is gate 1's job (>= 5 independent).
+Choice: (excess counterexamples + 3) / intervention trials <= 10%.
+
+## D039b A latent difference is exported only when it was observed (2026-10-07)
+Evidence: E-C v1 C4a seed 7, 4 wrong answers on held-out same-class pairs whose classes had never
+been connected by evidence: the link partition kept them apart, `diff(latent)` applied, and absence
+of evidence acted as evidence of absence. Choice: for the action's argument pair, if their classes
+differ and no pair between those classes was ever observed, the argument roles get no latent filler
+for that partition, so no latent relation applies and the engine abstains.
+
+## D017a Only licensed knowledge subsumes (2026-10-07)
+Evidence: E-C v2 development on seed 2: a coincidental conjunction (colour difference and kind
+order, equivalent to "not the switch" under that seed's fixed properties) stayed PROVISIONAL, yet as
+a credible general competitor it held the specific law "toggling the indicator leaves the lamp
+unchanged" at zero utility; neither was licensed and every query abstained. Choice: the subsumption
+competitor of D017/D042 must be LICENSED with zero counterexamples. Redundant consistent laws may now
+both be licensed; sleep compression reports them as redundant.
+
+## D046 A channel is a state if actions change it significantly more than nothing does (2026-10-07)
+Evidence: E-C v2 development, links world seed 4: the ON channel changes only on the probed object
+when the hidden classes match (~6% of acted-on observations, 0% elsewhere). The fixed rule
+"change rate > 2 x floor + 4%" put it on the boundary, so it flipped between property and state,
+and 80% of the episodes had no outcome. Choice: in addition to the passive rule, a channel is a
+state when its change rate on acted-on objects is higher than on other objects by a two-proportion
+z-test with z > 3 (integer arithmetic).
+
+## D040a One noise model per target everywhere (2026-10-07)
+Evidence: E-C v2 development, real OS seed 2: `same(a,b; latent) => b changes` had 8/115
+counterexamples, inside the measured repeatability noise of its target (D040), but transfer
+eligibility used the global policy (noise 0), so it never received a transfer trial and could not be
+licensed. Choice: transfer eligibility and own-prediction checks use the same per-target policy as
+licensing.
+
+## D042b Utility is measured against the system's actual knowledge (2026-10-07)
+Evidence: E-C v2 development, real OS seed 2: `diff(a,b; latent) => unchanged` had 1,276 trials,
+0 counterexamples and 1,273/1,273 transfer successes but only 7 bits of utility, because on the
+cases where the licensed content cue did not apply (hash collisions) it was compared with the
+unlicensed base rate. The system never answers from an unlicensed law; on those cases its actual
+state was ignorance. Choice: competitors (base law, parents, general laws) count only if LICENSED;
+otherwise the reference is the uniform code over the open alphabet. Same principle as D017a: only
+knowledge is a competitor. Multiple-comparison cost (D012), rule of three (D044a), transfer and
+independence gates are unchanged.
+
+## D047 Conjunctions bind features with positional permutations (2026-10-07)
+Evidence: R0 regression after D042b: `diff(c0) & diff(c1) => 1` answered a pair whose colours AND
+weights were equal. Relational features are `tag ^ role ^ role' ^ channel`; XOR-binding two features
+with the same tag cancels the tag, so same(c0)&same(c1) and diff(c0)&diff(c1) had identical
+condition vectors. The defect was latent since R0 and only became visible once such conjunctions
+could earn licences. Choice: conjunction vectors bind features in canonical order with the k-th
+permuted by k (`act ^ rho1(f_lo) ^ rho2(f_hi)`); shared factors no longer cancel. A unit test
+reproduces the collision. Every earlier gate (R0, B, C) is re-run.
+
+## D042b withdrawn (2026-10-07)
+Evidence: R0 regression with D042b: in room-B, where 83% of outcomes are 1, coincidental feature
+laws ("shape order < => 1", 39 consecutive ones, p = 0.0007 each, many candidates) earned 1 bit per
+case against "ignorance" and were licensed (false licences in C4, wrong answers in C6). The system
+does know base rates statistically even when no deterministic law is licensed; a law that predicts
+the majority outcome must beat the base rate to carry information (D012). The real-OS latent law's
+limited utility is therefore a genuine information limit: beyond the licensed content cue it is
+informative only on hash collisions (~6% of cases, ~0.18 bits each).
+
+## D046a The acted-vs-other state test needs an effect size (2026-10-07)
+Evidence: E-B v7 seed 22, B5b FAIL (post-reveal purity 84.1%; v6 99.8%). The revealed MARK
+channel changed on 12% of acted-on observations and 8% elsewhere (noise on a wide-range channel).
+Re-tested every classification, the z > 3 test of D046 eventually fired at t=1900, MARK became a
+state, the look-alike pair lost its only distinguishing property, was merged at t=2000 and split
+again at t=2300. Disabling D046 restores purity on this seed (diag_b5). Choice: in addition to
+z > 3, the acted-on change rate must be at least twice the rate elsewhere (most acted-on changes
+are attributable to the action). The motivating case (6% vs 0%) still qualifies.
+
+## D048 Sleep tests its own hypotheses on held-out replay (2026-10-07)
+Evidence: E-E development, door world with USE on any device (the effect needs "argument is the
+key AND power is on"). After sleep the correct conjunction existed with 134 cases, 0 counterexamples,
+16 independent situations, but 0 transfer trials: the world has only 8 situations for that
+condition and replay had already shown all of them to the child, and replay earns no transfer credit
+(D014). In a small closed world a sleep-born hypothesis could therefore never be licensed.
+Choice: in sleep, the parent's episodes are split by a hash of the situation signature. Candidate
+conditions are ranked and the child is initialised on the selection half only. On the held-out
+half the child pre-registers its majority prediction before each outcome is counted; situations it
+has never counted are transfer trials, and prequential utility is measured against the parent's
+final counts (which include the scored episode: biased towards the parent, conservative). A lookup
+table fitted on the selection half could not answer held-out situations, so this is held-out
+transfer in the ATANOR sense. Online refinement (wake) is unchanged. Tests: a hidden conjunction is
+licensed after sleep; a coin-flip outcome in the same cells never is.

@@ -46,6 +46,9 @@ pub struct DeviceWorld {
     pub scenario: Scenario,
     pub devs: Vec<Device>,
     pub power_varies: bool,
+    /// Door variant: USE is applied to any device, so the effect needs the conjunction
+    /// "argument is the key AND power is on" (a hidden condition of two features).
+    pub use_any: bool,
     pub context: u64,
     pub visible: usize,
     rng: Rng,
@@ -87,7 +90,7 @@ impl DeviceWorld {
             }
         }
         let visible = if scenario == Scenario::Links { 4 } else { devs.len() };
-        DeviceWorld { scenario, devs, power_varies: false, context: context_of(label), visible, rng, t: 0 }
+        DeviceWorld { scenario, devs, power_varies: false, use_any: false, context: context_of(label), visible, rng, t: 0 }
     }
 
     pub fn rng(&mut self) -> &mut Rng {
@@ -218,6 +221,7 @@ impl DeviceWorld {
             }
             Scenario::Door => match self.rng.below(4) {
                 0 => (WAIT, vec![0]),
+                1 if self.use_any => (USE, vec![self.rng.below(5) as usize]),
                 1 => (USE, vec![KEY]),
                 _ => (TOGGLE, vec![self.rng.below(5) as usize]),
             },

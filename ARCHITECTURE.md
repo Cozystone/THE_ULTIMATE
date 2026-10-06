@@ -175,6 +175,17 @@ Layer 4  sleep consolidation: replay, compression, new hypothesis generation
 | `bm-agent` | 2-4 | belief state, active inference policy scoring, self-model, sleep consolidation | all above |
 | `bm-bench` | eval | benchmark harness, R0 falsification test, generalization battery; floats allowed here only | all |
 
+Sleep (Layer 4) is implemented in `bm-relation` (`RelationEngine::sleep`): hidden-condition
+refinement of impure laws with held-out replay (D048: hypotheses are selected on one half of the
+situations and must predict the other, never-counted half before they can be licensed), latent
+cause induction over unexplained targets, and pruning of unused single-case hypotheses. The agent
+crate decides when to sleep and which sleep-born hypotheses to verify while awake (E3).
+
+Evaluation binaries (`bm-bench`): `r0` (smallest falsification test), `phase_b` ... `phase_e`
+(phase gates), `phase_f` (generalization battery: one-shot recall, compositional held-out,
+intervention, counterfactual, calibration, compression, transfer speed, resources), `hdc_bench`
+(kernel throughput), `diag_*` (diagnostics behind recorded decisions).
+
 Information flow: world -> Layer 0 tokens -> episodes (immutable, with lineage) -> relational
 feature extraction -> candidate relations -> licensing via evidence, intervention, counterexample,
 scope and transfer -> licensed relations feed prediction, planning and self-model.

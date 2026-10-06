@@ -158,3 +158,88 @@ fn relational_features_come_from_substrate_transforms() {
     let s = cb.features(&e3).into_iter().find(|x| matches!(x.kind, FeatureKind::Same { .. })).unwrap();
     assert!(s.transform.unwrap().is_zero());
 }
+
+#[test]
+fn conjunctions_of_same_tagged_features_do_not_collide() {
+    // failure case found in E-C v2 development: XOR cancelled the shared `same` / `diff` tag, so
+    // same(c0)&same(c1) and diff(c0)&diff(c1) had the same condition vector
+    let mut e = RelationEngine::new(3);
+    let mk = |a: [i64; 2], b: [i64; 2], out: i64| Episode {
+        id: 0,
+        t: 0,
+        context: context_of("A"),
+        source: 0,
+        action: 1,
+        roles: vec![Entity::new(&[(0, a[0]), (1, a[1])]), Entity::new(&[(0, b[0]), (1, b[1])])],
+        n_args: 0,
+        outcomes: vec![(T, out)],
+        kind: Kind::Intervention,
+    };
+    let mut rng = Rng::new(4);
+    for _ in 0..600 {
+        let a = [rng.below(4) as i64, rng.below(4) as i64];
+        let b = [rng.below(4) as i64, rng.below(4) as i64];
+        // outcome 1 iff both channels differ
+        e.observe(mk(a, b, (a[0] != b[0] && a[1] != b[1]) as i64));
+    }
+    // a query where both channels are equal must never be answered by the diff&diff law
+    let q = mk([2, 3], [2, 3], 0).without_outcomes();
+    assert_ne!(e.predict(&q, T).value(), Some(1));
+}
+
+/// Closed world: 2 x 2 x 8 situations, all seen long before sleep. The outcome is
+/// `key AND power`; the wake learner (no online refinement) cannot express it.
+fn closed_world(rng: &mut Rng, noisy: bool) -> Episode {
+    let key = rng.below(2) as i64;
+    let power = rng.below(2) as i64;
+    let d = rng.below(8) as i64;
+    let out = if noisy && key == 1 && power == 1 { rng.below(2) as i64 } else { key & power };
+    let a = Entity::new(&[(0, 10 + key)]);
+    let b = Entity::new(&[(0, 30), (5, power)]);
+    let c = Entity::new(&[(0, 40), (5, d & 1), (6, (d >> 1) & 1), (7, d >> 2)]);
+    Episode { id: 0, t: 0, context: context_of("S"), source: 0, action: 1, roles: vec![a, b, c], n_args: 1, outcomes: vec![(T, out)], kind: Kind::Intervention }
+}
+
+#[test]
+fn sleep_licenses_a_hidden_conjunction_by_held_out_replay() {
+    let pol = LicensePolicy { online_refine: false, ..Default::default() };
+    let mut e = RelationEngine::with_policy(9, pol);
+    let mut rng = Rng::new(10);
+    for _ in 0..1500 {
+        e.observe(closed_world(&mut rng, false));
+    }
+    let mut q = closed_world(&mut rng, false);
+    while !(q.roles[0].get(0) == Some(11) && q.roles[1].get(5) == Some(1)) {
+        q = closed_world(&mut rng, false);
+    }
+    let q = q.without_outcomes();
+    assert_eq!(e.predict(&q, T).value(), None, "wake alone cannot express the conjunction");
+    e.sleep(context_of("S"), 200);
+    for _ in 0..300 {
+        e.observe(closed_world(&mut rng, false));
+    }
+    assert_eq!(e.predict(&q, T).value(), Some(1), "sleep-generated conjunction licensed");
+}
+
+#[test]
+fn sleep_never_licenses_a_conjunction_for_a_random_outcome() {
+    let pol = LicensePolicy { online_refine: false, ..Default::default() };
+    let mut e = RelationEngine::with_policy(11, pol);
+    let mut rng = Rng::new(12);
+    for _ in 0..1500 {
+        e.observe(closed_world(&mut rng, true));
+    }
+    e.sleep(context_of("S"), 200);
+    for _ in 0..300 {
+        e.observe(closed_world(&mut rng, true));
+    }
+    let mut asked = 0;
+    for _ in 0..200 {
+        let q = closed_world(&mut rng, true);
+        if q.roles[0].get(0) == Some(11) && q.roles[1].get(5) == Some(1) {
+            asked += 1;
+            assert_eq!(e.predict(&q.without_outcomes(), T).value(), None, "a coin flip is never a law");
+        }
+    }
+    assert!(asked > 10);
+}

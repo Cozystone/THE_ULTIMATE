@@ -5,7 +5,7 @@
 //! marker is present. Forbidden actions are refused and logged, never executed.
 //!
 //! Channels: 0 extension, 1 name id, 2 size bucket (bit length of the byte length),
-//! 3 content class (FNV-1a of the bytes mod 16).
+//! 3 content class (FNV-1a of the bytes mod 256).
 //! Actions: 1 WRITE(a) rewrites a, 2 APPEND(a), 3 PROBE(a,b) writes a fresh marker into a and
 //! observes b (b changes iff a and b are the same file through a hard link),
 //! 9 DELETE_OUTSIDE (tier 3, always refused).
@@ -103,7 +103,7 @@ impl FsWorld {
         out.push(Token { slot, ch: EXT, val: self.files[i].ext });
         out.push(Token { slot, ch: NAME, val: i as i64 });
         out.push(Token { slot, ch: SIZE, val: 64 - (bytes.len() as u64).leading_zeros() as i64 });
-        out.push(Token { slot, ch: CONTENT, val: (fnv1a64(&bytes) % 16) as i64 });
+        out.push(Token { slot, ch: CONTENT, val: (fnv1a64(&bytes) % 256) as i64 });
         Ok(())
     }
 
