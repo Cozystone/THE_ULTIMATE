@@ -70,3 +70,72 @@ Measured (E-A2): ~300 items at 99% recall at 16k, ~600 at 32k. Every bundled str
 record, concept prototype, scope set, interaction profile) must stay within budget or be split
 hierarchically with cleanup per level. Episode memory therefore stores one vector per episode in a
 cleanup memory, never one giant bundle of all episodes.
+
+## D012 Coincidence vs law: utility must pay for the search (multiple-comparison guard) (2026-10-06)
+Problem (ATANOR's open question): with hundreds of candidate conditions, some will look pure on a
+handful of episodes by chance (P(5 identical binary outcomes) = 1/16). Purity + support alone
+licenses coincidences.
+Choice: gate 5 utility is prequential description length. For every episode, before updating,
+each matching law pays `log2(1/p_law(actual))` bits with Laplace-smoothed counts; its competitor
+pays the same. Utility = bits saved versus the **best competing hypothesis**:
+* single-feature law: competitor = the base-rate law of the same action and target;
+* conjunction law: competitor = the better of its two single-feature parents.
+A law is licensable only if `utility >= log2(#candidate laws for this target) + margin` (margin
+4 bits). The hypothesis must save more bits than it costs to have picked it out of the space
+searched. Consequences: (a) a conjunction that adds nothing beyond a more general law earns no
+utility and is never licensed (subsumption); (b) chance-pure conjunctions with few supports cannot
+cover the selection cost.
+
+## D013 Licences are per context; scope extension is cheaper than first licensing (2026-10-06)
+Evidence, status and transfer records are kept per context signature. A law can be LICENSED in
+context X and REVOKED in Y (aggregate status RESTRICTED). In an unseen context the law starts as
+CANDIDATE: it may steer exploration but not answer. Scope extension to a new context requires
+`min_scope_support` consistent interventions there and zero counterexamples, not the full gate
+set again. This keeps transfer fast while forbidding confident wrongness (ATANOR DS1).
+
+## D014 Hidden-condition search is triggered by counterevidence, not by novelty (2026-10-06)
+Conjunction candidates are not enumerated blindly. When a single-feature law becomes impure, the
+engine replays its episodes from the immutable store and ranks every co-present feature by how
+much it reduces outcome entropy among those episodes (competing explanations of the
+counterexamples). The top 8 become child candidates with lineage `Refined{parent}`. Their counts
+are initialised by replay, but utility and transfer accrue only from live episodes after
+creation (no self-confirmation from data that produced the hypothesis). When a child is licensed
+and the parent's counterexample rate is above tolerance, the parent becomes SPLIT.
+
+## D015 Compositional novelty for transfer tests (2026-10-06)
+An episode is a held-out compositional case for a law if it contains a role-filler
+(role, channel, value) never present in that law's supporting episodes in that context. The
+prediction is recorded before the outcome is read. Only eligible laws (no counterexamples,
+>= 3 independent supports) are tested.
+
+## D016 Gate 2 pays the selection cost on intervention data alone (2026-10-07)
+Evidence: E-R0 v1 C5 licensed `r0.id=12 & r1.colour=2 => 1` from 28 passive observations plus
+4 lucky interventions (+2 bits). Choice: a law needs `utility_int >= log2(#candidates) + margin`,
+the same threshold as gate 5 but computed only on the agent's own interventions. Passive data may
+generate and rank hypotheses; it can never pay for a licence.
+
+## D017 Occam subsumption against existing knowledge (2026-10-07)
+Evidence: E-R0 v1 C4 licensed `r1.colour=3 & same(colour) => 1`, which adds nothing beyond the
+licensed `r0.colour=3 => 1`. Choice: on each episode, a law's prequential competitor is the
+lowest-loss hypothesis among (a) its base/parent competitors (D012) and (b) every other matching
+law in the same context that is at least PROVISIONAL, has zero counterexamples and strictly
+greater coverage (ties: lower id). A hypothesis earns utility only where it predicts better than
+the most general credible hypothesis that already covers the case. Specific laws subsumed by
+general ones stop accruing utility; equally specific peers do not cancel each other because the
+comparison is only against strictly more general (larger coverage) laws.
+
+## D018 Selection cost is counted per context (2026-10-07)
+Evidence: E-R0 v2 C6 seed 3, lived/naive learning-cost ratio 1.44. The licence threshold
+`log2(#candidates)` counted every candidate for the target in every context, so experience in
+room-A made licensing in room-B more expensive. Choice: the look-elsewhere count is the number of
+laws for this target that have evidence in the current context, i.e. the hypotheses actually tested
+here. Hypotheses searched elsewhere are not part of this context's selection.
+
+## D019 Conjunction hypotheses are activated per context by that context's own search (2026-10-07)
+Evidence: E-R0 v3 C6 seed 7, cost ratio 1.39. Refined conjunctions created to explain
+counterexamples in room-A were matched and counted in room-B, inflating room-B's hypothesis
+space and its selection cost. Choice: a refined hypothesis takes part in a context only if (a) that
+context's own hidden-condition search selected it, or (b) it is licensed somewhere (then it is
+tested in the new context through borrowed scope trials). When a context's search selects an
+existing hypothesis, its evidence there is initialised by replay of that context's episodes.
+Directly generated single-feature hypotheses remain active everywhere.

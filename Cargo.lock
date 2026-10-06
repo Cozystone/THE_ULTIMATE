@@ -34,6 +34,7 @@ name = "bm-bench"
 version = "0.1.0"
 dependencies = [
  "bm-relation",
+ "bm-worlds",
  "hdc-core",
 ]
 
@@ -41,6 +42,14 @@ dependencies = [
 name = "bm-relation"
 version = "0.1.0"
 dependencies = [
+ "hdc-core",
+]
+
+[[package]]
+name = "bm-worlds"
+version = "0.1.0"
+dependencies = [
+ "bm-relation",
  "hdc-core",
 ]
 
