@@ -30,11 +30,30 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ded4057c258ba199e2d26386d3af3780957ecaee6c4ef4041c6b4b8b97c0b06"
 
 [[package]]
+name = "bm-agent"
+version = "0.1.0"
+dependencies = [
+ "bm-memory",
+ "bm-relation",
+ "hdc-core",
+]
+
+[[package]]
 name = "bm-bench"
 version = "0.1.0"
 dependencies = [
+ "bm-agent",
+ "bm-memory",
  "bm-relation",
  "bm-worlds",
+ "hdc-core",
+]
+
+[[package]]
+name = "bm-memory"
+version = "0.1.0"
+dependencies = [
+ "bm-relation",
  "hdc-core",
 ]
 
@@ -49,6 +68,7 @@ dependencies = [
 name = "bm-worlds"
 version = "0.1.0"
 dependencies = [
+ "bm-memory",
  "bm-relation",
  "hdc-core",
 ]

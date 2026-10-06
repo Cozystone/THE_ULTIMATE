@@ -20,6 +20,38 @@ pub fn log2_q16(n: u64) -> i64 {
     ip * Q + frac
 }
 
+/// log2 of a Q16 fraction num/den (both > 0), in Q16.
+pub fn log2_ratio_q16(num: u64, den: u64) -> i64 {
+    log2_q16(num.max(1)) - log2_q16(den.max(1))
+}
+
+/// 2^(-x) for x >= 0 given in Q16, result in Q16 (0 when x >= 48 bits).
+pub fn exp2_neg_q16(x: i64) -> i64 {
+    if x <= 0 {
+        return Q;
+    }
+    let ip = x >> 16;
+    if ip >= 48 {
+        return 0;
+    }
+    let frac = (x & 0xFFFF) as u64; // fraction in Q16
+    // 2^(-f) for f in [0,1): 2^(-f) = 1 / 2^f ; compute 2^f by binary expansion of f
+    // using sqrt(2) powers: 2^(1/2), 2^(1/4), ... in Q30
+    const ROOTS: [u64; 16] = [
+        1518500250, 1276901417, 1170923762, 1121280436, 1097253708, 1085434106, 1079572006, 1076653045,
+        1075196444, 1074468868, 1074105258, 1073923493, 1073832616, 1073787178, 1073764459, 1073753100,
+    ];
+    let mut p: u128 = 1 << 30; // 2^f in Q30
+    for (i, r) in ROOTS.iter().enumerate() {
+        if frac & (1 << (15 - i)) != 0 {
+            p = (p * *r as u128) >> 30;
+        }
+    }
+    // 2^(-f) in Q16 = 2^46 / p(Q30) ; then shift by integer part
+    let inv = ((1u128 << 46) / p) as i64;
+    inv >> ip
+}
+
 /// `n * log2(n)` in Q16, with 0*log 0 = 0.
 pub fn nlog2n_q16(n: u64) -> i64 {
     if n == 0 {
@@ -83,4 +115,15 @@ pub fn ratio_q16(num: u64, den: u64) -> i64 {
     } else {
         ((num as i128 * Q as i128) / den as i128) as i64
     }
+}
+
+/// Posterior of the best of several hypotheses given their log2-likelihoods (Q16), uniform prior.
+/// Returns (index of best, posterior in Q16). Integer log-sum-exp.
+pub fn best_posterior_q16(loglik: &[i64]) -> Option<(usize, i64)> {
+    let (bi, &bmax) = loglik.iter().enumerate().max_by_key(|x| (*x.1, std::cmp::Reverse(x.0)))?;
+    let mut z: i64 = 0;
+    for &l in loglik {
+        z += exp2_neg_q16(bmax - l);
+    }
+    Some((bi, (Q * Q) / z.max(1)))
 }

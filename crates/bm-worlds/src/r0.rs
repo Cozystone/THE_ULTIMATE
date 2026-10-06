@@ -155,6 +155,7 @@ impl R0World {
             source: 0,
             action: ACTION,
             roles: vec![a.entity(), b.entity()],
+            n_args: 0,
             outcomes: vec![(TARGET, outcome)],
             kind,
         }

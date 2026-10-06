@@ -1,0 +1,10 @@
+{"overall_pass":true,"gates":[
+{"gate":"B1 structure","pass":true,"detail":"classes ok true, effects ok true, purity 99.97%, completeness 99.97%, live concepts 16/16"},
+{"gate":"B2 restoration","pass":true,"detail":"miss 0%: recall 300/300 wrong 0 abstain 0 [oracle 300 wrong 0] completion 42/42; miss 20%: recall 300/300 wrong 0 abstain 0 [oracle 300 wrong 0] completion 454/455; miss 40%: recall 298/300 wrong 0 abstain 2 [oracle 300 wrong 0] completion 1180/1192; miss 60%: recall 274/300 wrong 2 abstain 24 [oracle 300 wrong 0] completion 1919/1941; miss 80%: recall 126/300 wrong 1 abstain 173 [oracle 297 wrong 0] completion 1299/1312; "},
+{"gate":"B4 noise discipline","pass":true,"detail":"junk-majority concepts 0, decayed protos 233"},
+{"gate":"B3 novelty","pass":true,"detail":"seed 1: novel sightings assigned to old concepts 0/689; first born-concept sighting per novel object [Some(4), Some(6), Some(3), Some(3)]; novel purity 99.9%; old completeness 99.93%"},
+{"gate":"B5a merge","pass":true,"detail":"seed 1: merges 16 (proto absorptions 0), object-0 late sightings on one concept 99.5% (192 sightings), surviving partial duplicates 0; v1 criterion would give PASS"},
+{"gate":"B5b split","pass":true,"detail":"seed 1: splits 1, births 16, pre-reveal sightings on one concept 99.4%, post-reveal purity 100.0%; v2 criterion (split required) would give PASS"},
+{"gate":"B6 OS","pass":true,"detail":"seed 1: real files, classes ok true, file purity 100.00%, completeness 100.00%, live concepts 12 for 12 files"},
+{"gate":"B7 bridge","pass":true,"detail":"seed 1: 2900 grounded episodes, noise tolerance 6/100, licensed colour-relational COMBINE laws 2, unseen-colour COMBINE predictions correct 200 wrong 0 abstain 0"}
+]}

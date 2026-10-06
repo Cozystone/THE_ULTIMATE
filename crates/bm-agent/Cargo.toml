@@ -1,9 +1,9 @@
 [package]
-name = "bm-worlds"
+name = "bm-agent"
 edition.workspace = true
 version.workspace = true
 license.workspace = true
-description = "BITMIND microworlds and OS sandbox adapter. Ground truth lives here and never flows into cognition."
+description = "BITMIND agent: active inference policy scoring, self-model, sleep consolidation"
 
 [dependencies]
 hdc-core = { path = "../hdc-core" }

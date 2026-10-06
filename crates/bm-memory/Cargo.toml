@@ -1,11 +1,10 @@
 [package]
-name = "bm-worlds"
+name = "bm-memory"
 edition.workspace = true
 version.workspace = true
 license.workspace = true
-description = "BITMIND microworlds and OS sandbox adapter. Ground truth lives here and never flows into cognition."
+description = "BITMIND event memory and symbol grounding: immutable events, object concepts by MDL, event recall"
 
 [dependencies]
 hdc-core = { path = "../hdc-core" }
 bm-relation = { path = "../bm-relation" }
-bm-memory = { path = "../bm-memory" }

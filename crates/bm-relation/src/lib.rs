@@ -9,9 +9,11 @@
 pub mod engine;
 pub mod episode;
 pub mod features;
+pub mod latent;
 pub mod law;
 
-pub use engine::{Abstain, Answer, ObserveReport, RelationEngine};
+pub use engine::{noise_allowance, Abstain, Answer, CausalEdge, ObserveReport, RelationEngine, SleepStats, Uncertainty};
+pub use latent::LatentInducer;
 pub use episode::{context_of, Entity, Episode, EpisodeStore, Filler, Kind};
 pub use features::{Codebook, Feature, FeatureKind, H};
 pub use law::{LicensePolicy, Origin, RelationLaw, Status};

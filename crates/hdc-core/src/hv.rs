@@ -178,6 +178,16 @@ impl<const W: usize> Hv<W> {
         Hv { w }
     }
 
+    /// Fingerprint of `self ^ other` without materialising the bound vector.
+    pub fn fingerprint_xor(&self, other: &Self) -> u64 {
+        let mut h = 0xcbf2_9ce4_8422_2325u64;
+        for i in 0..W {
+            h ^= self.w[i] ^ other.w[i];
+            h = h.wrapping_mul(0x0000_0100_0000_01b3).rotate_left(5);
+        }
+        h
+    }
+
     /// Short stable fingerprint for hashing/keys (first two words mixed).
     pub fn fingerprint(&self) -> u64 {
         let mut h = 0xcbf2_9ce4_8422_2325u64;

@@ -294,3 +294,19 @@ fn fast_and_parallel_cleanup_agree_with_exact() {
     let q = items[4999].clone();
     assert_eq!(mem.cleanup_fast(&q).map(|h| h.id), Some(4999));
 }
+
+#[test]
+fn exp2_and_posterior_are_integer_and_accurate() {
+    assert_eq!(exp2_neg_q16(0), Q);
+    assert_eq!(exp2_neg_q16(Q), Q / 2);
+    assert_eq!(exp2_neg_q16(3 * Q), Q / 8);
+    // 2^-0.5 = 0.70710678 -> 46341 in Q16
+    assert!((exp2_neg_q16(Q / 2) - 46341).abs() <= 2);
+    // two equal hypotheses -> 0.5
+    let (_, p) = best_posterior_q16(&[-10 * Q, -10 * Q]).unwrap();
+    assert!((p - Q / 2).abs() <= 2);
+    // 10 bits better -> 1024/1025
+    let (i, p) = best_posterior_q16(&[-20 * Q, -10 * Q]).unwrap();
+    assert_eq!(i, 1);
+    assert!((p - Q * 1024 / 1025).abs() <= 4);
+}

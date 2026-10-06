@@ -44,6 +44,10 @@ pub struct Episode {
     pub source: u32,
     pub action: u16,
     pub roles: Vec<Entity>,
+    /// Number of leading roles that are action arguments; the rest are scene context
+    /// (0 = every role is an argument). Relational features are computed only for role pairs that
+    /// include an argument.
+    pub n_args: u8,
     /// (target id, observed value).
     pub outcomes: Vec<(u32, i64)>,
     pub kind: Kind,

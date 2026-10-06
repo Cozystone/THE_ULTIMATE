@@ -214,3 +214,128 @@ The four outcomes are separated:
    contexts (C6).
 
 Gate before Phase B: **PASS**.
+
+---
+
+## E-B Phase B: event memory and symbol grounding (pre-registered before any run)
+Input: anonymous slot tokens (slots reshuffled every event), 5% value noise, 10% missing tokens.
+Ground world: 16 objects (4 hidden types), channels colour, shape, size, texture, mark
+(properties) and lit, pos (states); actions IDLE, TOGGLE(a), MOVE(a), COMBINE(a,b) where
+COMBINE sets both lit to `colour(a) == colour(b)`.
+Reminder (ARCHITECTURE 2.3): concept formation here is class learning and does not count as
+progress by itself. B7 is the bridge to outcomes 3 and 4.
+
+| gate | criterion |
+|---|---|
+| B1 structure | channel classes 7/7 correct; action-effect map correct (TOGGLE->lit, MOVE->pos, COMBINE->lit, IDLE->none); instance purity >= 97% and completeness >= 97%; live concepts <= 18 |
+| B2 restoration | event recall >= 99% at 20% missing tokens (+5% flips); wrong recall <= 1% at 20/40/60/80% missing; property completion accuracy >= 98% |
+| B3 novelty | 4 novel objects: >= 95% of their sightings never assigned to an old concept; each gets a born concept within 30 sightings; old completeness stays >= 97% |
+| B4 noise discipline | junk slots in 5% of scenes: zero concepts whose majority sightings are junk |
+| B5a merge | object first seen partially (2 channels) then fully: duplicate merged; its later sightings map to one live concept >= 95% |
+| B5b split | two exclusive look-alikes differing only in a channel hidden until t=800: one concept before, split after; post-reveal purity >= 95% |
+| B6 OS | real filesystem sandbox: ext, name -> property; size, content -> state; file concept purity >= 97% |
+| B7 bridge | from raw percepts: a relational law on colour sameness is LICENSED for COMBINE; on 4 novel objects with unseen colours, predicted lit after COMBINE >= 90% correct vs world truth and <= 5% wrong |
+
+### E-B v1 result (2026-10-07, seeds 1-5, raw: `experiments/results/phase_b_report.txt` of that run)
+Development on seed 1 went through D021-D026 (each recorded with its evidence). Final v1 run on
+seeds 1-5: **FAIL**.
+
+| gate | pass | failure mechanism |
+|---|---|---|
+| B1 structure | 2/5 | 19-20 live concepts: 3-4 extra concepts with 3-5 sightings born from coincidental recurrences of noisy or junk percepts |
+| B2 restoration | 0/5 | recall at 20% missing 289-299/300 (< 297) from margin abstentions; completion 95-98% at 60-80% missing from identity on sparse percepts with an incomplete candidate list |
+| B3 novelty | 5/5 | |
+| B4 junk | 4/5 | seed 3: two junk-born concepts (same mechanism as B1) |
+| B5a merge | 4/5 | seed 4: the partial-view duplicate never formed, so nothing to merge (v1 criterion requires a merge) |
+| B5b split | 4/5 | seed 2: a third accidental look-alike of the same type made the pair ambiguous before the reveal (test design) |
+| B6 OS | 5/5 | |
+| B7 bridge | 5/5 | relational COMBINE law licensed from raw percepts on every seed; unseen-colour predictions 200/200 correct |
+
+### E-B v2 pre-registration (written before any v2 run)
+Learner changes: D027 (exhaustive identity verification), D028 (chance-recurrence test for concept
+birth), D029 (event memory at 32,768 bits, margin 640).
+Test-design change: B5b world guarantees the pair is the only look-alike group
+(`make_lookalike_pair`). Criterion change: B5a requires object 0's late sightings on one live
+concept >= 95% **and no surviving partial-view duplicate**; a merge is reported but not required,
+because a duplicate that never forms needs no merge (the v1 verdict is printed alongside).
+All other criteria unchanged. Seeds 1-10 (6-10 new).
+
+### E-B v2 result (2026-10-07, seeds 1-10, raw: `experiments/results/phase_b_v2_report.txt`)
+**FAIL.** B2 failed on 10/10 seeds (recall at 20% missing 290-297, completion < 98% at high missing),
+B6 OS failed on 10/10 (regression: D028 chance model counted one-of-two channel matches, so no file
+concept could be born), B4 failed on 3, B1 on 2, B5b on 1. B3, B5a (v2 criterion), B7 passed 10/10.
+
+Development after v2 (each change recorded with its evidence): D028a, D030, D030a, D031, D032,
+D026a (withdraws D026), D033, D034, D030b, D035. An oracle bound for recall (true identities,
+same corruption) is now printed with every B2 result: it recalls 300/300 at 0-60% missing and
+289-297/300 at 80%.
+
+### E-B v3 pre-registration (written before any v3 run)
+* B5b criterion: pre-reveal sharing >= 90% and post-reveal purity >= 95%; the mechanism (split or
+  birth) is reported but not required. Reason: v2 seed 5 individuated the pair by a birth with
+  100% post-reveal purity; the gate is about the outcome "one concept turns out to be two".
+* All other criteria unchanged from v2 (B2 recall >= 99% at 20% missing, wrong <= 1% at every
+  level, completion >= 98% at every level).
+* Seeds 1-15 (11-15 new).
+
+### E-B v3 result (2026-10-07, seeds 1-15, raw: `experiments/results/phase_b_v3_report.txt`)
+**FAIL**, only on B2 (9/15 seeds) and only on completion accuracy at 60-80% missing (97.2-98.0%).
+B1, B3, B4, B5a, B5b, B6, B7: 15/15. Recall criteria held on every seed. Error sources (seed 1):
+about half from object-level identity on two-token percepts with one noisy token, half from
+event-level fills of one-token slots. Root cause: fill decisions used evidence counts that do not
+bound the error rate (D036).
+
+### E-B v4 pre-registration (written before any v4 run)
+Learner change: D036 (completion gated by a calibrated posterior >= 98% from the measured noise
+model). Criteria identical to v3. Seeds 1-20 (16-20 new).
+
+### E-B v4 result (2026-10-07, seeds 1-20, raw: `experiments/results/phase_b_v4_report.txt`, `phase_b.json`)
+**PASS: every gate on every seed (160/160).**
+
+| gate | result (20 seeds) |
+|---|---|
+| B1 structure | channel classes 7/7 and action-effect map correct on all seeds; purity and completeness >= 99.8% |
+| B2 restoration | recall 300/300 at 0-20% missing on most seeds (>= 297 on all), wrong <= 1% at every level; at 80% missing the system recalls ~125/300 and abstains on the rest (oracle with true identities ~292/300); completion >= 98% at every level (99%+ at 80% missing, by abstaining below 98% posterior) |
+| B3 novelty | 0 novel sightings assigned to old concepts; novel objects born within 1-6 sightings |
+| B4 junk | 0 junk-majority concepts |
+| B5a merge | partial-view object ends on one live concept, no surviving duplicate |
+| B5b split | look-alike pair shares one concept before reveal, purity >= 95% after |
+| B6 real OS | ext/name property, size/content state; file purity 100% |
+| B7 bridge | from raw noisy percepts, `same(colour)` and `diff(colour)` COMBINE laws LICENSED; unseen-colour predictions 196-200/200 correct |
+
+Honest notes: B2 recall at 60-80% missing remains well below the oracle bound (the gap is
+identity of sparse percepts); the system abstains there instead of guessing. B5a/B5b pass under the
+mechanism-agnostic v2/v3 criteria; under the original v1/v2 mechanism criteria several seeds would
+fail because no duplicate formed or the pair was individuated by a birth rather than a split.
+
+Gate to Phase C: **PASS**.
+
+### E-B v5 pre-registration (re-verification after D028b)
+A bm-memory unit test written after v4 exposed a circular null in the chance-recurrence test
+(D028b). The learner changed, so Phase B is re-run. Criteria identical to v4. Seeds 1-25 (21-25 new).
+
+---
+
+## Regression after Phase C development (pre-registered before running)
+Learner changes since the last formal runs: D028b (Phase B), D037, D038/D038a, D039/D039a, D040,
+D041, D042, D015a (relation engine). R0 and Phase B are re-run with criteria unchanged:
+* E-R0 v5: seeds 1-20, criteria of v3/v4.
+* E-B v5: seeds 1-25, criteria of v4.
+
+## E-C Phase C: causal world model (pre-registered before any formal run)
+Worlds: device worlds (confound: switch/indicator/lamp with a hidden timer; door: key/door/power
+with a hidden condition), links microworld (16 tokens, 7 hidden classes), real filesystem with
+hard links (12 files, 7 inode groups). Perception through the grounder (no labels), scene episodes
+(all objects as roles), change-flag targets. Seeds 1-10.
+
+| gate | criterion |
+|---|---|
+| C1 untrained combinations | (state, action) combinations never seen in training, every device's change predicted: >= 95% correct, <= 2% wrong |
+| C2 intervention vs observation | do(TOGGLE indicator) lamp change: causal model >= 95% correct, <= 2% wrong; association model (lamp = indicator, from passive data) <= 60%; zero laws licensed from passive WAIT |
+| C3 hidden condition | the phase-1 unconditional door law is licensed, loses its licence within 300 events after power starts varying, a power-conditioned door law is licensed, USE with random power >= 95% correct, <= 2% wrong |
+| C4a latent cause (micro) | never-probed pairs: >= 90% correct on oracle-feasible pairs, <= 5% wrong overall, a licensed law over a latent channel; ablation without latent induction reported |
+| C4b latent cause (real OS) | same criteria with real hard links (2,000 training probes) |
+| C5 counterfactual | "had I toggled the switch instead": >= 95% correct, <= 2% wrong |
+
+Oracle-feasible: a held-out same-group pair is inferable only if its members are connected through
+same-group pairs probed in training; different-group pairs are always counted.

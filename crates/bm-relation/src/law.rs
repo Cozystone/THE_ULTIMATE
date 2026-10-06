@@ -54,6 +54,8 @@ pub struct LicensePolicy {
     pub refine_min_total: u32,
     pub refine_top: usize,
     pub max_children: usize,
+    /// Hidden-condition search during wake (false = only during sleep consolidation).
+    pub online_refine: bool,
     /// Sensor-error tolerance: counterexample rate at or below num/den may be attributed to
     /// observation error instead of falsifying the law (0 = deterministic worlds).
     pub noise_tol_num: u32,
@@ -74,6 +76,7 @@ impl Default for LicensePolicy {
             refine_min_total: 4,
             refine_top: 8,
             max_children: 24,
+            online_refine: true,
             noise_tol_num: 0,
             noise_tol_den: 1,
         }
@@ -292,6 +295,8 @@ pub struct RelationLaw {
     /// D019: contexts where a refined (conjunction) hypothesis was selected by that context's
     /// own hidden-condition search. Empty for directly generated laws (active everywhere).
     pub active_ctx: Vec<u64>,
+    /// Removed from the hypothesis space by sleep compression (kept for lineage).
+    pub pruned: bool,
 }
 
 impl RelationLaw {

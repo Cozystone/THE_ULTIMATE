@@ -127,7 +127,8 @@ impl Codebook {
                 out.push(Feature { kind, hv, transform: None });
             }
         }
-        for r1 in 0..ep.roles.len() {
+        let n_args = if ep.n_args == 0 { ep.roles.len() } else { ep.n_args as usize };
+        for r1 in 0..ep.roles.len().min(n_args) {
             for r2 in (r1 + 1)..ep.roles.len() {
                 for fa in &ep.roles[r1].fillers {
                     let Some(vb) = ep.roles[r2].get(fa.ch) else { continue };

@@ -10,7 +10,7 @@ fn ent(colour: i64, id: i64) -> Entity {
 }
 
 fn ep(ctx: &str, a: Entity, b: Entity, out: i64, kind: Kind) -> Episode {
-    Episode { id: 0, t: 0, context: context_of(ctx), source: 0, action: 1, roles: vec![a, b], outcomes: vec![(T, out)], kind }
+    Episode { id: 0, t: 0, context: context_of(ctx), source: 0, action: 1, roles: vec![a, b], n_args: 0, outcomes: vec![(T, out)], kind }
 }
 
 /// Random equality-world episode over colours 0..6 and 40 ids.

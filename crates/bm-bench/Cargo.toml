@@ -9,3 +9,5 @@ description = "BITMIND evaluation harness (floats allowed only here)"
 hdc-core = { path = "../hdc-core" }
 bm-relation = { path = "../bm-relation" }
 bm-worlds = { path = "../bm-worlds" }
+bm-memory = { path = "../bm-memory" }
+bm-agent = { path = "../bm-agent" }

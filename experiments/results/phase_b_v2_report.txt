@@ -1,0 +1,202 @@
+
+===== seed 1
+
+[B1-B4 main world] seed 1: 2500 events, noise 5%, missing 10%, junk 5%
+    channel classes (ch, class, %changed on args, %changed elsewhere): [(0, Property, 9, 10), (1, Property, 7, 8), (2, Property, 7, 8), (3, Property, 8, 9), (4, Property, 10, 10), (5, State, 42, 5), (6, State, 31, 10)]
+    noise floor 5%, action-effect map {1: [5], 2: [6], 3: [5]}
+    concepts: live 16, born 16, decayed protos 232, merges 0, splits 0
+  B1 structure           PASS  classes ok true, effects ok true, purity 99.97%, completeness 99.97%, live concepts 16/16
+  B2 restoration         FAIL  miss 0%: recall 300/300 wrong 0 abstain 0 completion 42/42; miss 20%: recall 300/300 wrong 0 abstain 0 completion 386/387; miss 40%: recall 284/300 wrong 0 abstain 16 completion 898/912; miss 60%: recall 218/300 wrong 2 abstain 80 completion 1464/1491; miss 80%: recall 47/300 wrong 2 abstain 251 completion 1413/1461; 
+  B4 noise discipline    PASS  junk-majority concepts 0, decayed protos 232
+  B3 novelty             PASS  seed 1: novel sightings assigned to old concepts 0/696; first born-concept sighting per novel object [Some(3), Some(4), Some(3), Some(3)]; novel purity 100.0%; old completeness 99.93%
+  B5a merge              PASS  seed 1: merges 2 (proto absorptions 38), object-0 late sightings on one concept 100.0% (191 sightings), surviving partial duplicates 0; v1 criterion would give PASS
+  B5b split              PASS  seed 1: splits 4, pre-reveal sightings on one concept 99.5%, post-reveal purity 100.0%
+    OS sandbox C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phaseb_1: channel classes [(0, Property, 0, 0), (1, Property, 0, 0), (2, State, 51, 5), (3, State, 74, 7)]; refused actions 0
+  B6 OS                  FAIL  seed 1: real files, classes ok true, file purity 0.00%, completeness 0.00%, live concepts 0 for 12 files
+    licensed: #16 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=573 counter=21 indep=548 int=552 transfer 39/43 utility 19b (int 19b) origin Generated
+    licensed: #2845 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=46 counter=1 indep=45 int=45 transfer 20/21 utility 137b (int 137b) origin Generated
+    colour law: #16 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=573 counter=21 indep=548 int=552 transfer 39/43 utility 19b (int 19b) origin Generated
+    colour law: #2845 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=46 counter=1 indep=45 int=45 transfer 20/21 utility 137b (int 137b) origin Generated
+  B7 bridge              PASS  seed 1: 2900 grounded episodes, noise tolerance 6/100, licensed colour-relational COMBINE laws 2, unseen-colour COMBINE predictions correct 200 wrong 0 abstain 0
+
+===== seed 2
+
+[B1-B4 main world] seed 2: 2500 events, noise 5%, missing 10%, junk 5%
+    channel classes (ch, class, %changed on args, %changed elsewhere): [(0, Property, 8, 9), (1, Property, 7, 9), (2, Property, 8, 8), (3, Property, 9, 9), (4, Property, 10, 10), (5, State, 42, 5), (6, State, 31, 9)]
+    noise floor 5%, action-effect map {1: [5], 2: [6], 3: [5]}
+    concepts: live 16, born 16, decayed protos 224, merges 0, splits 0
+  B1 structure           PASS  classes ok true, effects ok true, purity 99.93%, completeness 99.93%, live concepts 16/16
+  B2 restoration         FAIL  miss 0%: recall 300/300 wrong 0 abstain 0 completion 57/57; miss 20%: recall 292/300 wrong 0 abstain 8 completion 394/395; miss 40%: recall 286/300 wrong 1 abstain 13 completion 973/983; miss 60%: recall 200/300 wrong 1 abstain 99 completion 1442/1464; miss 80%: recall 54/300 wrong 1 abstain 245 completion 1282/1308; 
+  B4 noise discipline    PASS  junk-majority concepts 0, decayed protos 224
+  B3 novelty             PASS  seed 2: novel sightings assigned to old concepts 0/689; first born-concept sighting per novel object [Some(2), Some(4), Some(3), Some(5)]; novel purity 100.0%; old completeness 99.96%
+  B5a merge              PASS  seed 2: merges 0 (proto absorptions 5), object-0 late sightings on one concept 100.0% (195 sightings), surviving partial duplicates 0; v1 criterion would give FAIL
+  B5b split              PASS  seed 2: splits 5, pre-reveal sightings on one concept 100.0%, post-reveal purity 100.0%
+    OS sandbox C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phaseb_2: channel classes [(0, Property, 0, 0), (1, Property, 0, 0), (2, State, 50, 5), (3, State, 71, 8)]; refused actions 0
+  B6 OS                  FAIL  seed 2: real files, classes ok true, file purity 0.00%, completeness 0.00%, live concepts 0 for 12 files
+    licensed: #106 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=608 counter=16 indep=588 int=592 transfer 46/48 utility 37b (int 37b) origin Generated
+    licensed: #5838 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=47 counter=3 indep=44 int=44 transfer 20/21 utility 119b (int 119b) origin Generated
+    colour law: #106 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=608 counter=16 indep=588 int=592 transfer 46/48 utility 37b (int 37b) origin Generated
+    colour law: #5838 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=47 counter=3 indep=44 int=44 transfer 20/21 utility 119b (int 119b) origin Generated
+  B7 bridge              PASS  seed 2: 2900 grounded episodes, noise tolerance 4/100, licensed colour-relational COMBINE laws 2, unseen-colour COMBINE predictions correct 196 wrong 2 abstain 2
+
+===== seed 3
+
+[B1-B4 main world] seed 3: 2500 events, noise 5%, missing 10%, junk 5%
+    channel classes (ch, class, %changed on args, %changed elsewhere): [(0, Property, 9, 9), (1, Property, 8, 8), (2, Property, 6, 8), (3, Property, 9, 9), (4, Property, 9, 10), (5, State, 42, 5), (6, State, 29, 10)]
+    noise floor 5%, action-effect map {1: [5], 2: [6], 3: [5]}
+    concepts: live 18, born 18, decayed protos 204, merges 0, splits 0
+  B1 structure           PASS  classes ok true, effects ok true, purity 99.91%, completeness 99.90%, live concepts 18/16
+  B2 restoration         FAIL  miss 0%: recall 293/300 wrong 3 abstain 4 completion 54/54; miss 20%: recall 290/300 wrong 3 abstain 7 completion 421/425; miss 40%: recall 284/300 wrong 3 abstain 13 completion 946/946; miss 60%: recall 214/300 wrong 4 abstain 82 completion 1511/1545; miss 80%: recall 48/300 wrong 4 abstain 248 completion 1407/1459; 
+  B4 noise discipline    FAIL  junk-majority concepts 1, decayed protos 204
+  B3 novelty             PASS  seed 3: novel sightings assigned to old concepts 0/692; first born-concept sighting per novel object [Some(2), Some(3), Some(3), Some(4)]; novel purity 99.9%; old completeness 99.89%
+  B5a merge              PASS  seed 3: merges 0 (proto absorptions 4), object-0 late sightings on one concept 100.0% (213 sightings), surviving partial duplicates 0; v1 criterion would give FAIL
+  B5b split              PASS  seed 3: splits 2, pre-reveal sightings on one concept 100.0%, post-reveal purity 99.8%
+    OS sandbox C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phaseb_3: channel classes [(0, Property, 0, 0), (1, Property, 0, 0), (2, State, 51, 6), (3, State, 73, 9)]; refused actions 0
+  B6 OS                  FAIL  seed 3: real files, classes ok true, file purity 0.00%, completeness 0.00%, live concepts 0 for 12 files
+    licensed: #249 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=627 counter=15 indep=608 int=612 transfer 36/39 utility 24b (int 24b) origin Generated
+    licensed: #2908 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=67 counter=8 indep=59 int=59 transfer 20/22 utility 169b (int 169b) origin Generated
+    colour law: #249 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=627 counter=15 indep=608 int=612 transfer 36/39 utility 24b (int 24b) origin Generated
+    colour law: #2908 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=67 counter=8 indep=59 int=59 transfer 20/22 utility 169b (int 169b) origin Generated
+  B7 bridge              PASS  seed 3: 2900 grounded episodes, noise tolerance 4/100, licensed colour-relational COMBINE laws 2, unseen-colour COMBINE predictions correct 198 wrong 1 abstain 1
+
+===== seed 4
+
+[B1-B4 main world] seed 4: 2500 events, noise 5%, missing 10%, junk 5%
+    channel classes (ch, class, %changed on args, %changed elsewhere): [(0, Property, 9, 10), (1, Property, 9, 9), (2, Property, 7, 7), (3, Property, 8, 8), (4, Property, 9, 11), (5, State, 43, 5), (6, State, 31, 9)]
+    noise floor 5%, action-effect map {1: [5], 2: [6], 3: [5]}
+    concepts: live 16, born 16, decayed protos 229, merges 0, splits 0
+  B1 structure           PASS  classes ok true, effects ok true, purity 99.97%, completeness 99.97%, live concepts 16/16
+  B2 restoration         FAIL  miss 0%: recall 300/300 wrong 0 abstain 0 completion 50/50; miss 20%: recall 295/300 wrong 0 abstain 5 completion 363/368; miss 40%: recall 279/300 wrong 1 abstain 20 completion 963/970; miss 60%: recall 216/300 wrong 2 abstain 82 completion 1497/1519; miss 80%: recall 58/300 wrong 1 abstain 241 completion 1412/1462; 
+  B4 noise discipline    PASS  junk-majority concepts 0, decayed protos 229
+  B3 novelty             PASS  seed 4: novel sightings assigned to old concepts 0/679; first born-concept sighting per novel object [Some(3), Some(3), Some(2), Some(4)]; novel purity 99.9%; old completeness 99.96%
+  B5a merge              PASS  seed 4: merges 0 (proto absorptions 1), object-0 late sightings on one concept 100.0% (191 sightings), surviving partial duplicates 0; v1 criterion would give FAIL
+  B5b split              PASS  seed 4: splits 2, pre-reveal sightings on one concept 100.0%, post-reveal purity 100.0%
+    OS sandbox C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phaseb_4: channel classes [(0, Property, 0, 0), (1, Property, 0, 0), (2, State, 49, 4), (3, State, 70, 7)]; refused actions 0
+  B6 OS                  FAIL  seed 4: real files, classes ok true, file purity 0.00%, completeness 0.00%, live concepts 0 for 12 files
+    licensed: #35 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=607 counter=21 indep=584 int=586 transfer 35/37 utility 63b (int 63b) origin Generated
+    licensed: #3275 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=90 counter=3 indep=86 int=87 transfer 22/22 utility 209b (int 209b) origin Generated
+    colour law: #35 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=607 counter=21 indep=584 int=586 transfer 35/37 utility 63b (int 63b) origin Generated
+    colour law: #3275 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=90 counter=3 indep=86 int=87 transfer 22/22 utility 209b (int 209b) origin Generated
+  B7 bridge              PASS  seed 4: 2900 grounded episodes, noise tolerance 3/100, licensed colour-relational COMBINE laws 2, unseen-colour COMBINE predictions correct 199 wrong 1 abstain 0
+
+===== seed 5
+
+[B1-B4 main world] seed 5: 2500 events, noise 5%, missing 10%, junk 5%
+    channel classes (ch, class, %changed on args, %changed elsewhere): [(0, Property, 9, 10), (1, Property, 8, 8), (2, Property, 7, 8), (3, Property, 7, 9), (4, Property, 9, 10), (5, State, 43, 5), (6, State, 30, 9)]
+    noise floor 5%, action-effect map {1: [5], 2: [6], 3: [5]}
+    concepts: live 20, born 15, decayed protos 200, merges 0, splits 5
+  B1 structure           FAIL  classes ok true, effects ok true, purity 99.97%, completeness 99.88%, live concepts 20/16
+  B2 restoration         FAIL  miss 0%: recall 293/300 wrong 2 abstain 5 completion 40/40; miss 20%: recall 292/300 wrong 1 abstain 7 completion 326/326; miss 40%: recall 277/300 wrong 2 abstain 21 completion 756/766; miss 60%: recall 213/300 wrong 0 abstain 87 completion 1255/1297; miss 80%: recall 41/300 wrong 2 abstain 257 completion 1031/1071; 
+  B4 noise discipline    PASS  junk-majority concepts 0, decayed protos 200
+  B3 novelty             PASS  seed 5: novel sightings assigned to old concepts 0/699; first born-concept sighting per novel object [Some(3), Some(3), Some(3), Some(3)]; novel purity 99.9%; old completeness 99.82%
+  B5a merge              PASS  seed 5: merges 0 (proto absorptions 3), object-0 late sightings on one concept 100.0% (187 sightings), surviving partial duplicates 0; v1 criterion would give FAIL
+  B5b split              PASS  seed 5: splits 3, pre-reveal sightings on one concept 100.0%, post-reveal purity 99.5%
+    OS sandbox C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phaseb_5: channel classes [(0, Property, 0, 0), (1, Property, 0, 0), (2, State, 49, 5), (3, State, 73, 7)]; refused actions 0
+  B6 OS                  FAIL  seed 5: real files, classes ok true, file purity 0.00%, completeness 0.00%, live concepts 0 for 12 files
+    licensed: #89 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=575 counter=13 indep=561 int=562 transfer 46/47 utility 58b (int 58b) origin Generated
+    licensed: #4080 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=78 counter=1 indep=77 int=77 transfer 19/20 utility 210b (int 210b) origin Generated
+    colour law: #89 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=575 counter=13 indep=561 int=562 transfer 46/47 utility 58b (int 58b) origin Generated
+    colour law: #4080 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=78 counter=1 indep=77 int=77 transfer 19/20 utility 210b (int 210b) origin Generated
+  B7 bridge              PASS  seed 5: 2900 grounded episodes, noise tolerance 4/100, licensed colour-relational COMBINE laws 2, unseen-colour COMBINE predictions correct 198 wrong 1 abstain 1
+
+===== seed 6
+
+[B1-B4 main world] seed 6: 2500 events, noise 5%, missing 10%, junk 5%
+    channel classes (ch, class, %changed on args, %changed elsewhere): [(0, Property, 8, 9), (1, Property, 7, 8), (2, Property, 5, 7), (3, Property, 8, 8), (4, Property, 10, 10), (5, State, 44, 5), (6, State, 29, 9)]
+    noise floor 5%, action-effect map {1: [5], 2: [6], 3: [5]}
+    concepts: live 19, born 16, decayed protos 183, merges 2, splits 5
+  B1 structure           FAIL  classes ok true, effects ok true, purity 99.95%, completeness 99.83%, live concepts 19/16
+  B2 restoration         FAIL  miss 0%: recall 292/300 wrong 1 abstain 7 completion 55/56; miss 20%: recall 291/300 wrong 1 abstain 8 completion 397/398; miss 40%: recall 269/300 wrong 3 abstain 28 completion 886/895; miss 60%: recall 199/300 wrong 3 abstain 98 completion 1315/1352; miss 80%: recall 44/300 wrong 0 abstain 256 completion 1177/1209; 
+  B4 noise discipline    FAIL  junk-majority concepts 1, decayed protos 183
+  B3 novelty             PASS  seed 6: novel sightings assigned to old concepts 0/672; first born-concept sighting per novel object [Some(3), Some(3), Some(3), Some(3)]; novel purity 100.0%; old completeness 99.82%
+  B5a merge              PASS  seed 6: merges 0 (proto absorptions 3), object-0 late sightings on one concept 100.0% (171 sightings), surviving partial duplicates 0; v1 criterion would give FAIL
+  B5b split              PASS  seed 6: splits 2, pre-reveal sightings on one concept 100.0%, post-reveal purity 100.0%
+    OS sandbox C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phaseb_6: channel classes [(0, Property, 0, 0), (1, Property, 0, 0), (2, State, 50, 5), (3, State, 72, 6)]; refused actions 0
+  B6 OS                  FAIL  seed 6: real files, classes ok true, file purity 0.00%, completeness 0.00%, live concepts 0 for 12 files
+    licensed: #16 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=590 counter=12 indep=576 int=578 transfer 47/47 utility 51b (int 51b) origin Generated
+    licensed: #101 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=67 counter=6 indep=61 int=61 transfer 18/22 utility 155b (int 155b) origin Generated
+    colour law: #16 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=590 counter=12 indep=576 int=578 transfer 47/47 utility 51b (int 51b) origin Generated
+    colour law: #101 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=67 counter=6 indep=61 int=61 transfer 18/22 utility 155b (int 155b) origin Generated
+  B7 bridge              PASS  seed 6: 2900 grounded episodes, noise tolerance 3/100, licensed colour-relational COMBINE laws 2, unseen-colour COMBINE predictions correct 198 wrong 2 abstain 0
+
+===== seed 7
+
+[B1-B4 main world] seed 7: 2500 events, noise 5%, missing 10%, junk 5%
+    channel classes (ch, class, %changed on args, %changed elsewhere): [(0, Property, 9, 9), (1, Property, 8, 8), (2, Property, 7, 7), (3, Property, 8, 9), (4, Property, 9, 10), (5, State, 47, 5), (6, State, 30, 9)]
+    noise floor 5%, action-effect map {1: [5], 2: [6], 3: [5]}
+    concepts: live 17, born 17, decayed protos 204, merges 0, splits 0
+  B1 structure           PASS  classes ok true, effects ok true, purity 99.93%, completeness 99.93%, live concepts 17/16
+  B2 restoration         FAIL  miss 0%: recall 300/300 wrong 0 abstain 0 completion 41/41; miss 20%: recall 296/300 wrong 0 abstain 4 completion 365/366; miss 40%: recall 280/300 wrong 1 abstain 19 completion 927/932; miss 60%: recall 215/300 wrong 2 abstain 83 completion 1400/1417; miss 80%: recall 43/300 wrong 2 abstain 255 completion 1241/1275; 
+  B4 noise discipline    FAIL  junk-majority concepts 1, decayed protos 204
+  B3 novelty             PASS  seed 7: novel sightings assigned to old concepts 0/675; first born-concept sighting per novel object [Some(3), Some(3), Some(3), Some(3)]; novel purity 100.0%; old completeness 99.89%
+  B5a merge              PASS  seed 7: merges 0 (proto absorptions 2), object-0 late sightings on one concept 100.0% (183 sightings), surviving partial duplicates 0; v1 criterion would give FAIL
+  B5b split              PASS  seed 7: splits 2, pre-reveal sightings on one concept 100.0%, post-reveal purity 100.0%
+    OS sandbox C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phaseb_7: channel classes [(0, Property, 0, 0), (1, Property, 0, 0), (2, State, 53, 6), (3, State, 71, 8)]; refused actions 0
+  B6 OS                  FAIL  seed 7: real files, classes ok true, file purity 0.00%, completeness 0.00%, live concepts 0 for 12 files
+    licensed: #35 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=590 counter=14 indep=575 int=576 transfer 36/39 utility 50b (int 50b) origin Generated
+    licensed: #2330 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=82 counter=6 indep=76 int=76 transfer 20/21 utility 195b (int 195b) origin Generated
+    colour law: #35 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=590 counter=14 indep=575 int=576 transfer 36/39 utility 50b (int 50b) origin Generated
+    colour law: #2330 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=82 counter=6 indep=76 int=76 transfer 20/21 utility 195b (int 195b) origin Generated
+  B7 bridge              PASS  seed 7: 2900 grounded episodes, noise tolerance 5/100, licensed colour-relational COMBINE laws 2, unseen-colour COMBINE predictions correct 198 wrong 1 abstain 1
+
+===== seed 8
+
+[B1-B4 main world] seed 8: 2500 events, noise 5%, missing 10%, junk 5%
+    channel classes (ch, class, %changed on args, %changed elsewhere): [(0, Property, 9, 9), (1, Property, 8, 8), (2, Property, 7, 7), (3, Property, 8, 9), (4, Property, 10, 10), (5, State, 43, 5), (6, State, 29, 9)]
+    noise floor 5%, action-effect map {1: [5], 2: [6], 3: [5]}
+    concepts: live 16, born 16, decayed protos 210, merges 0, splits 0
+  B1 structure           PASS  classes ok true, effects ok true, purity 99.93%, completeness 99.93%, live concepts 16/16
+  B2 restoration         PASS  miss 0%: recall 300/300 wrong 0 abstain 0 completion 65/65; miss 20%: recall 300/300 wrong 0 abstain 0 completion 419/419; miss 40%: recall 289/300 wrong 0 abstain 11 completion 998/1004; miss 60%: recall 223/300 wrong 3 abstain 74 completion 1444/1466; miss 80%: recall 46/300 wrong 2 abstain 252 completion 1284/1306; 
+  B4 noise discipline    PASS  junk-majority concepts 0, decayed protos 210
+  B3 novelty             PASS  seed 8: novel sightings assigned to old concepts 0/739; first born-concept sighting per novel object [Some(3), Some(4), Some(3), Some(3)]; novel purity 100.0%; old completeness 99.96%
+  B5a merge              PASS  seed 8: merges 1 (proto absorptions 75), object-0 late sightings on one concept 100.0% (184 sightings), surviving partial duplicates 0; v1 criterion would give PASS
+  B5b split              PASS  seed 8: splits 4, pre-reveal sightings on one concept 99.5%, post-reveal purity 100.0%
+    OS sandbox C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phaseb_8: channel classes [(0, Property, 0, 0), (1, Property, 0, 0), (2, State, 52, 6), (3, State, 75, 9)]; refused actions 0
+  B6 OS                  FAIL  seed 8: real files, classes ok true, file purity 0.00%, completeness 0.00%, live concepts 0 for 12 files
+    licensed: #91 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=554 counter=19 indep=532 int=535 transfer 34/37 utility 53b (int 53b) origin Generated
+    licensed: #4515 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=90 counter=2 indep=88 int=88 transfer 23/24 utility 217b (int 217b) origin Generated
+    colour law: #91 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=554 counter=19 indep=532 int=535 transfer 34/37 utility 53b (int 53b) origin Generated
+    colour law: #4515 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=90 counter=2 indep=88 int=88 transfer 23/24 utility 217b (int 217b) origin Generated
+  B7 bridge              PASS  seed 8: 2900 grounded episodes, noise tolerance 4/100, licensed colour-relational COMBINE laws 2, unseen-colour COMBINE predictions correct 199 wrong 1 abstain 0
+
+===== seed 9
+
+[B1-B4 main world] seed 9: 2500 events, noise 5%, missing 10%, junk 5%
+    channel classes (ch, class, %changed on args, %changed elsewhere): [(0, Property, 9, 10), (1, Property, 8, 8), (2, Property, 7, 8), (3, Property, 8, 9), (4, Property, 9, 10), (5, State, 42, 5), (6, State, 32, 9)]
+    noise floor 5%, action-effect map {1: [5], 2: [6], 3: [5]}
+    concepts: live 16, born 16, decayed protos 214, merges 0, splits 0
+  B1 structure           PASS  classes ok true, effects ok true, purity 99.91%, completeness 99.91%, live concepts 16/16
+  B2 restoration         FAIL  miss 0%: recall 293/300 wrong 4 abstain 3 completion 56/56; miss 20%: recall 291/300 wrong 2 abstain 7 completion 388/390; miss 40%: recall 279/300 wrong 4 abstain 17 completion 928/934; miss 60%: recall 207/300 wrong 2 abstain 91 completion 1402/1425; miss 80%: recall 66/300 wrong 8 abstain 226 completion 1303/1342; 
+  B4 noise discipline    PASS  junk-majority concepts 0, decayed protos 214
+  B3 novelty             PASS  seed 9: novel sightings assigned to old concepts 0/693; first born-concept sighting per novel object [Some(3), Some(2), Some(1), Some(3)]; novel purity 97.4%; old completeness 99.82%
+  B5a merge              PASS  seed 9: merges 8 (proto absorptions 4), object-0 late sightings on one concept 100.0% (188 sightings), surviving partial duplicates 0; v1 criterion would give PASS
+  B5b split              FAIL  seed 9: splits 1, pre-reveal sightings on one concept 97.8%, post-reveal purity 76.9%
+    OS sandbox C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phaseb_9: channel classes [(0, Property, 0, 0), (1, Property, 0, 0), (2, State, 50, 4), (3, State, 71, 7)]; refused actions 0
+  B6 OS                  FAIL  seed 9: real files, classes ok true, file purity 0.00%, completeness 0.00%, live concepts 0 for 12 files
+    licensed: #35 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=71 counter=2 indep=69 int=69 transfer 20/21 utility 176b (int 176b) origin Generated
+    licensed: #177 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=552 counter=15 indep=536 int=537 transfer 42/45 utility 56b (int 56b) origin Generated
+    colour law: #35 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=71 counter=2 indep=69 int=69 transfer 20/21 utility 176b (int 176b) origin Generated
+    colour law: #177 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=552 counter=15 indep=536 int=537 transfer 42/45 utility 56b (int 56b) origin Generated
+  B7 bridge              PASS  seed 9: 2900 grounded episodes, noise tolerance 6/100, licensed colour-relational COMBINE laws 2, unseen-colour COMBINE predictions correct 198 wrong 1 abstain 1
+
+===== seed 10
+
+[B1-B4 main world] seed 10: 2500 events, noise 5%, missing 10%, junk 5%
+    channel classes (ch, class, %changed on args, %changed elsewhere): [(0, Property, 8, 9), (1, Property, 8, 9), (2, Property, 6, 7), (3, Property, 8, 9), (4, Property, 9, 10), (5, State, 41, 5), (6, State, 32, 8)]
+    noise floor 5%, action-effect map {1: [5], 2: [6], 3: [5]}
+    concepts: live 16, born 16, decayed protos 220, merges 0, splits 0
+  B1 structure           PASS  classes ok true, effects ok true, purity 99.98%, completeness 99.98%, live concepts 16/16
+  B2 restoration         FAIL  miss 0%: recall 300/300 wrong 0 abstain 0 completion 62/62; miss 20%: recall 297/300 wrong 0 abstain 3 completion 420/422; miss 40%: recall 285/300 wrong 1 abstain 14 completion 926/935; miss 60%: recall 228/300 wrong 0 abstain 72 completion 1470/1478; miss 80%: recall 49/300 wrong 5 abstain 246 completion 1309/1342; 
+  B4 noise discipline    PASS  junk-majority concepts 0, decayed protos 220
+  B3 novelty             PASS  seed 10: novel sightings assigned to old concepts 0/692; first born-concept sighting per novel object [Some(3), Some(3), Some(3), Some(3)]; novel purity 100.0%; old completeness 100.00%
+  B5a merge              PASS  seed 10: merges 0 (proto absorptions 3), object-0 late sightings on one concept 100.0% (208 sightings), surviving partial duplicates 0; v1 criterion would give FAIL
+  B5b split              PASS  seed 10: splits 5, pre-reveal sightings on one concept 100.0%, post-reveal purity 100.0%
+    OS sandbox C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phaseb_10: channel classes [(0, Property, 0, 0), (1, Property, 0, 0), (2, State, 50, 4), (3, State, 73, 6)]; refused actions 0
+  B6 OS                  FAIL  seed 10: real files, classes ok true, file purity 0.00%, completeness 0.00%, live concepts 0 for 12 files
+    licensed: #91 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=619 counter=24 indep=591 int=595 transfer 34/36 utility 40b (int 40b) origin Generated
+    licensed: #2319 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=53 counter=2 indep=51 int=51 transfer 17/18 utility 130b (int 130b) origin Generated
+    colour law: #91 act3 : diff(r0,r1;c0) => t5 => Some(0) | LICENSED | n=619 counter=24 indep=591 int=595 transfer 34/36 utility 40b (int 40b) origin Generated
+    colour law: #2319 act3 : same(r0,r1;c0) => t5 => Some(1) | LICENSED | n=53 counter=2 indep=51 int=51 transfer 17/18 utility 130b (int 130b) origin Generated
+  B7 bridge              PASS  seed 10: 2900 grounded episodes, noise tolerance 6/100, licensed colour-relational COMBINE laws 2, unseen-colour COMBINE predictions correct 198 wrong 2 abstain 0
+
+E-B OVERALL: FAIL
