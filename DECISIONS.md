@@ -511,3 +511,16 @@ final counts (which include the scored episode: biased towards the parent, conse
 table fitted on the selection half could not answer held-out situations, so this is held-out
 transfer in the ATANOR sense. Online refinement (wake) is unchanged. Tests: a hidden conjunction is
 licensed after sleep; a coin-flip outcome in the same cells never is.
+
+## D026b Duplicate protos are one hypothesis (2026-10-07)
+Evidence: E-C v3 C4a FAIL on seeds 3 and 12 (20 and 18 abstentions, 0 wrong) and the same seeds in
+E-E v1 E1. The links world had 1,314 concepts for 16 objects: whenever an object had two identical
+unborn protos, every later sighting tied them, D026a declared the percept unexplained and seeded a
+third identical proto, so four objects were never born, had no identity, and got no latent class.
+Choice: a tie between two unborn protos that agree on every non-state channel both define (at
+least two shared, no contradiction) is resolved in favour of the older proto; the duplicates decay
+unused. A tie between protos that contradict each other on some channel stays unexplained (D026a,
+chimera guard). Result on the development seeds: 16-20 concepts, C4a seeds 3 and 12 answer every
+never-probed pair, E-B seeds 1-5 and 22 PASS. Test: 16 look-alike objects are all born without churn.
+Rejected on the way: D039c (replaying the store into an inducer enabled while awake) did not change
+the abstentions and introduced 2 wrong answers on seed 2; withdrawn before any formal run.

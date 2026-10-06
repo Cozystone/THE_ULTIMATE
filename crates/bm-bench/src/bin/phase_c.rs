@@ -87,8 +87,16 @@ fn predict_change(a: &mut Agent, ev: &Event, truth: &[(u16, usize)], dev: usize,
     if std::env::var("DIAG_C").is_ok() && ans.value().is_none() {
         let arg = ev.act.as_ref().map(|x| x.args.clone());
         eprintln!("DIAG abstain dev {dev} role {r} act {:?} args {:?} reason {:?} matching {}", ev.act.as_ref().map(|x| x.id), arg.map(|a| a.iter().map(|s| truth.iter().find(|t| t.0 == *s).map(|t| t.1)).collect::<Vec<_>>()), ans, a.rel.matching_ids(&ep, target_id(r, ch) + CHANGE).len());
+        if std::env::var("DIAG_C3").is_ok() {
+            for ind in &a.rel.latent {
+                let mut e = ep.clone();
+                ind.augment(&mut e);
+                let lat: Vec<Vec<(u16, i64)>> = e.roles.iter().take(2).map(|r| r.fillers.iter().filter(|f| f.ch >= 3000).map(|f| (f.ch, f.val)).collect()).collect();
+                eprintln!("    inducer act {} target {} channels {:?} classes {:?} arg latent fillers {:?}", ind.action, ind.target, ind.channels(), ind.classes(), lat);
+            }
+        }
         if std::env::var("DIAG_C2").is_ok() {
-            for l in a.rel.matching_ids(&ep, target_id(r, ch) + CHANGE).into_iter().take(12) {
+            for l in a.rel.matching_ids(&ep, target_id(r, ch) + CHANGE).into_iter().take(5000) {
                 eprintln!("    {}", a.rel.summary(l, ep.context));
             }
         }
@@ -180,7 +188,9 @@ fn confound(seed: u64, out: &mut Out) {
     let passive_lic = a.rel.licensed_in(ctx).iter().filter(|&&l| a.rel.laws[l].action == dv::WAIT).count();
     out.gate(
         "C2 intervention vs observation",
-        causal.ok * 100 >= causal.n() * 95 && causal.wrong * 100 <= causal.n() * 2 && assoc.ok * 100 <= assoc.n() * 60 && passive_lic == 0,
+        // v4: the baseline-validity condition is "the association model makes >= 20% wrong"
+        // (as for R0 C1/C2), not "<= 60% correct"
+        causal.ok * 100 >= causal.n() * 95 && causal.wrong * 100 <= causal.n() * 2 && assoc.wrong * 100 >= assoc.n() * 20 && passive_lic == 0,
         format!(
             "seed {seed}: passive P(L=I) = {same_il}/{n_il}; do(TOGGLE indicator) lamp-change: causal model {}; association model lamp=indicator {}; laws licensed from passive WAIT {passive_lic}",
             causal.s(),
@@ -295,6 +305,28 @@ fn door(seed: u64, out: &mut Out) {
 
 /// Oracle feasibility: a held-out same-group pair is inferable only if its two members are
 /// connected by positive (same-group) pairs that were probed during training (in either direction).
+fn components(n: usize, trained_pos: &[(usize, usize)]) -> Vec<usize> {
+    let mut parent: Vec<usize> = (0..n).collect();
+    fn find(p: &mut Vec<usize>, x: usize) -> usize {
+        if p[x] != x {
+            let r = find(p, p[x]);
+            p[x] = r;
+        }
+        p[x]
+    }
+    for &(a, b) in trained_pos {
+        let (ra, rb) = (find(&mut parent, a), find(&mut parent, b));
+        parent[ra] = rb;
+    }
+    (0..n).map(|x| find(&mut parent, x)).collect()
+}
+
+/// A difference is established only if some trained probe connected the two components.
+fn neg_feasible(n: usize, trained_pos: &[(usize, usize)], trained_neg: &[(usize, usize)], i: usize, j: usize) -> bool {
+    let c = components(n, trained_pos);
+    trained_neg.iter().any(|&(a, b)| (c[a] == c[i] && c[b] == c[j]) || (c[a] == c[j] && c[b] == c[i]))
+}
+
 fn feasible(n: usize, trained_pos: &[(usize, usize)], i: usize, j: usize) -> bool {
     let mut parent: Vec<usize> = (0..n).collect();
     fn find(p: &mut Vec<usize>, x: usize) -> usize {
@@ -327,6 +359,7 @@ fn links(seed: u64, out: &mut Out, latent: bool) -> Score {
     }
     let mut fed = 0;
     let mut trained_pos = Vec::new();
+    let mut trained_neg = Vec::new();
     while fed < 1500 {
         let (act, args) = w.random_action();
         if held.contains(&(args[0], args[1])) {
@@ -334,12 +367,28 @@ fn links(seed: u64, out: &mut Out, latent: bool) -> Score {
         }
         if w.devs[args[0]].class == w.devs[args[1]].class {
             trained_pos.push((args[0], args[1]));
+        } else {
+            trained_neg.push((args[0], args[1]));
         }
         let (ev, _) = w.step(act, args);
         a.feed(ev);
         fed += 1;
     }
     let ctx = w.context;
+    if std::env::var("DIAG_C3").is_ok() && latent {
+        for c in &a.g.concepts {
+            if !matches!(c.status, ConceptStatus::Concept) {
+                eprintln!("CONCEPT {} {:?} {:?}", c.id, c.status, c.lineage);
+            }
+        }
+        eprintln!("CONCEPTS total {}", a.g.concepts.len());
+        eprintln!("CHANNELS {:?}", a.g.channel_report());
+        for c in &a.g.concepts {
+            if matches!(c.status, ConceptStatus::Concept) {
+                eprintln!("LIVE {} lineage {:?}", c.id, c.lineage.iter().take(3).collect::<Vec<_>>());
+            }
+        }
+    }
     let mut sc = Score::default();
     let mut sc_feas = Score::default();
     let held_v: Vec<(usize, usize)> = {
@@ -356,6 +405,11 @@ fn links(seed: u64, out: &mut Out, latent: bool) -> Score {
         let p = predict_change(&mut a, &ev, &truth, j, dv::ON);
         let t = (w.devs[j].on != before) as i64;
         sc.add(p, t);
+        if std::env::var("DIAG_C4").is_ok() && latent {
+            let pos_t = w.devs[i].class == w.devs[j].class;
+            let f = if pos_t { feasible(n, &trained_pos, i, j) } else { neg_feasible(n, &trained_pos, &trained_neg, i, j) };
+            eprintln!("DIAG_C4 seed {seed} positive {pos_t} established {f} answer {p:?} truth {t}");
+        }
         if w.devs[i].class != w.devs[j].class || feasible(n, &trained_pos, i, j) {
             sc_feas.add(p, t);
         }
@@ -481,6 +535,10 @@ fn main() {
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
     for &seed in &seeds {
         let _ = writeln!(out.report, "\n===== seed {seed}");
+        if std::env::var("ONLY_LINKS").is_ok() {
+            links(seed, &mut out, true);
+            continue;
+        }
         confound(seed, &mut out);
         door(seed, &mut out);
         let with = links(seed, &mut out, true);

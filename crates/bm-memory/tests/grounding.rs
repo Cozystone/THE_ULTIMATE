@@ -150,3 +150,52 @@ fn debug_concepts() {
     for c in &g.concepts { if c.sightings > 5 { println!("{} {:?} sightings {} hist {:?}", c.id, c.status, c.sightings, c.hist); } }
     println!("{:?}", g.stats);
 }
+
+/// D026b: 16 look-alike objects (same kind, 4 colours, unique mark), 4 visible per event. Before
+/// D026b, ties between duplicate protos seeded a new proto on every sighting and some objects were
+/// never born (1,314 concepts for 16 objects in the Phase C links world).
+fn links_concepts(seed: u64) -> (usize, usize, bool) {
+    let classes = [0i64, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6];
+    let mut rng = Rng::new(seed);
+    let objs: Vec<[i64; 3]> = (0..16).map(|i| [50, rng.below(4) as i64, 200 + i as i64]).collect();
+    let mut state = vec![0i64; 16];
+    let mut g = Grounder::new(seed);
+    let mut last_ok = false;
+    for t in 0..1500u64 {
+        let pick = rng.sample_distinct(16, 4);
+        let mut slots: Vec<u16> = vec![0, 1, 2, 3];
+        rng.shuffle(&mut slots);
+        let vis: Vec<(u16, usize)> = slots.iter().zip(pick.iter()).map(|(&s, &o)| (s, o)).collect();
+        let scene = |st: &Vec<i64>| Scene {
+            tokens: vis
+                .iter()
+                .flat_map(|&(s, o)| {
+                    let mut v: Vec<Token> = (0..3u16).map(|ch| Token { slot: s, ch, val: objs[o][ch as usize] }).collect();
+                    v.push(Token { slot: s, ch: 3, val: st[o] });
+                    v
+                })
+                .collect(),
+        };
+        let pre = scene(&state);
+        if classes[vis[0].1] == classes[vis[1].1] {
+            state[vis[1].1] ^= 1;
+        }
+        let post = scene(&state);
+        let ev = Event { id: 0, t, source: 0, context: 1, pre, act: Some(Act { id: 3, args: vec![vis[0].0, vis[1].0] }), post, kind: Kind::Intervention };
+        if let Some(gr) = g.observe(ev) {
+            last_ok = vis.iter().all(|&(s, _)| gr.slot(s).and_then(|x| x.concept).is_some());
+        }
+    }
+    let born = g.concepts.iter().filter(|c| c.status == ConceptStatus::Concept).count();
+    (g.concepts.len(), born, last_ok)
+}
+
+#[test]
+fn duplicate_protos_do_not_churn_and_every_object_is_born() {
+    for seed in 1..=8 {
+        let (total, born, last_ok) = links_concepts(seed);
+        assert!(total <= 48, "seed {seed}: concept churn: {total} concepts for 16 objects");
+        assert!(born >= 16, "seed {seed}: only {born} objects were born");
+        assert!(last_ok, "seed {seed}: last scene not fully identified");
+    }
+}

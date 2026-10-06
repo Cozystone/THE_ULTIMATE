@@ -455,12 +455,18 @@ impl Grounder {
                 }
                 // tie on evidence: a born concept beats an unborn proto; between two born
                 // concepts only a 3x larger history breaks the tie, otherwise refuse to guess
+                let (a, b) = (*a, *b);
+                let dup = self.duplicate_protos(a.0, b.0);
                 let (ca, cb) = (&self.concepts[a.0 as usize], &self.concepts[b.0 as usize]);
                 let born = |c: &ObjectConcept| c.status == ConceptStatus::Concept;
                 if born(ca) && !born(cb) {
-                    Ident::Hit(*a)
+                    Ident::Hit(a)
                 } else if born(cb) && !born(ca) {
-                    Ident::Hit(*b)
+                    Ident::Hit(b)
+                } else if !born(ca) && !born(cb) && dup {
+                    // D026b: duplicates (consistent on every channel either defines) are one
+                    // hypothesis; the older one takes the sighting, the rest decay unused
+                    Ident::Hit(if a.0 < b.0 { a } else { b })
                 } else if !born(ca) && !born(cb) {
                     // D026a: a tie between two tentative protos says the percept cannot tell them
                     // apart, not that they are the same thing (D026 merged different objects into
@@ -473,6 +479,22 @@ impl Grounder {
                 }
             }
         }
+    }
+
+    /// D026b: two protos that agree on every channel both define (and neither contradicts the
+    /// other) describe the same thing.
+    fn duplicate_protos(&mut self, x: u32, y: u32) -> bool {
+        let (px, py) = (self.concepts[x as usize].proto.clone(), self.concepts[y as usize].proto.clone());
+        let chans: Vec<u16> = self.chans.keys().copied().filter(|c| self.class.get(c) != Some(&ChannelClass::State)).collect();
+        let mut shared = 0;
+        for c in chans {
+            match (self.decode(&px, c), self.decode(&py, c)) {
+                (Some(u), Some(v)) if u != v => return false,
+                (Some(_), Some(_)) => shared += 1,
+                _ => {}
+            }
+        }
+        shared >= 2
     }
 
     // ------------------------------------------------------------ MDL

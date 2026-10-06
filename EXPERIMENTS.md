@@ -434,3 +434,34 @@ Development seeds 1, 2; formal seeds 1-15. Thresholds (fixed now):
   draft contained the true switch->lamp link (oracle knowledge) and scored 100%. It is replaced by
   a baseline learned from passive co-change only (x influences y iff y changed in >= half of the
   passive steps in which x changed). The baseline is reported, it is not a gate.
+
+### Results: E-B v8, E-C v3, E-D v1, E-E v1 (2026-10-07)
+* E-B v8 (seeds 1-25): **PASS 200/200** (`phase_b_v8_report.txt`).
+* E-D v1 (seeds 1-15): **PASS**. D1 mean steps active 352 vs random 582 (ratio 0.60), active <=
+  random on 15/15 seeds; D2 and D3 pass on every seed (`phase_d_v1_report.txt`).
+* E-C v3 (seeds 1-15): **FAIL** on 3 gate instances (`phase_c_v3{a,b,c}_report.txt`):
+  - C4a seed 3 (21 correct, 0 wrong, 20 abstain of 41) and seed 12 (32/0/18 of 50). Cause: the
+    grounder created 1,314 concepts for 16 objects (duplicate-proto churn, D026a); four objects
+    never received an identity, hence no latent class. Fixed by D026b.
+  - C2 seed 14: causal model 200/200 correct, 0 wrong; FAIL only because the association
+    baseline scored 121/200 = 60.5% > 60%, the baseline-validity condition. The condition is
+    an artefact of the baseline bound (same issue as R0 v3, where the bound was replaced by
+    "every baseline makes >= 20% wrong"; the association model here made 79/200 = 39.5% wrong).
+  - All other C gates pass on all 15 seeds, including C4b real OS 15/15.
+* E-E v1 (seeds 1-15): **FAIL** E1 on seeds 3, 12, 14 (`phase_e_v1_report.txt`). Seeds 3 and 12:
+  link part abstained (same D026a churn as C4a). Seed 14: door after sleep 400/400 vs twin 364/400;
+  the margin "twin + 10% of all cases" (404) is unreachable when the twin already exceeds 90%:
+  only USE on the key depends on the hidden conjunction. E2 and E3 pass on all 15 seeds.
+
+### Final pre-registration v2: E-B v9, E-C v4, E-D v2, E-E v2, E-F v1 (before these runs)
+Learner = v8 learner + D026b. Because two criteria are changed after a failure, the changed
+experiments run on fresh seeds 16-30; nothing about these seeds has been looked at.
+* E-B v9: seeds 1-25, criteria unchanged (grounding changed).
+* E-C v4: seeds 16-30. C2 baseline-validity condition: the association model makes >= 20% wrong
+  (was: <= 60% correct). All other criteria unchanged.
+* E-D v2: seeds 1-15, criteria unchanged (grounding changed).
+* E-E v2: seeds 16-30. E1 door margin measured on USE-on-the-key cases (where the hidden conjunction
+  decides): sleep correct >= twin correct + 50% of those cases; overall door >= 90% and the link
+  criterion unchanged. The v1 margin is printed alongside for comparison. E2, E3 unchanged.
+* E-F v1: seeds 1-15 as pre-registered above, run after the others so latency is not measured
+  under contention.
