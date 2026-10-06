@@ -1,0 +1,11 @@
+[package]
+name = "hdc-core"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+description = "BITMIND substrate: packed binary hypervectors, XOR/popcount kernels, integer bundling and cleanup memory"
+
+[dependencies]
+
+[dev-dependencies]
+proptest = "1"

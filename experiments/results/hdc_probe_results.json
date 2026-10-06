@@ -1,0 +1,163 @@
+{
+  "1_capacity": [
+    {
+      "items_bundled": 10,
+      "recall": 1.0
+    },
+    {
+      "items_bundled": 50,
+      "recall": 1.0
+    },
+    {
+      "items_bundled": 100,
+      "recall": 1.0
+    },
+    {
+      "items_bundled": 200,
+      "recall": 0.988
+    },
+    {
+      "items_bundled": 400,
+      "recall": 0.906
+    },
+    {
+      "items_bundled": 800,
+      "recall": 0.774
+    },
+    {
+      "items_bundled": 1600,
+      "recall": 0.678
+    },
+    {
+      "items_bundled": 3200,
+      "recall": 0.6644
+    }
+  ],
+  "2_hierarchy": [
+    {
+      "slots_per_level": 3,
+      "depth": 1,
+      "top1_acc": 1.0
+    },
+    {
+      "slots_per_level": 3,
+      "depth": 2,
+      "top1_acc": 1.0
+    },
+    {
+      "slots_per_level": 3,
+      "depth": 3,
+      "top1_acc": 1.0
+    },
+    {
+      "slots_per_level": 3,
+      "depth": 4,
+      "top1_acc": 1.0
+    },
+    {
+      "slots_per_level": 3,
+      "depth": 5,
+      "top1_acc": 0.25
+    },
+    {
+      "slots_per_level": 3,
+      "depth": 6,
+      "top1_acc": 0.05
+    },
+    {
+      "slots_per_level": 5,
+      "depth": 1,
+      "top1_acc": 1.0
+    },
+    {
+      "slots_per_level": 5,
+      "depth": 2,
+      "top1_acc": 1.0
+    },
+    {
+      "slots_per_level": 5,
+      "depth": 3,
+      "top1_acc": 0.89
+    },
+    {
+      "slots_per_level": 5,
+      "depth": 4,
+      "top1_acc": 0.04
+    },
+    {
+      "slots_per_level": 5,
+      "depth": 5,
+      "top1_acc": 0.0
+    },
+    {
+      "slots_per_level": 5,
+      "depth": 6,
+      "top1_acc": 0.0
+    },
+    {
+      "slots_per_level": 9,
+      "depth": 1,
+      "top1_acc": 1.0
+    },
+    {
+      "slots_per_level": 9,
+      "depth": 2,
+      "top1_acc": 1.0
+    },
+    {
+      "slots_per_level": 9,
+      "depth": 3,
+      "top1_acc": 0.09
+    },
+    {
+      "slots_per_level": 9,
+      "depth": 4,
+      "top1_acc": 0.0
+    },
+    {
+      "slots_per_level": 9,
+      "depth": 5,
+      "top1_acc": 0.0
+    },
+    {
+      "slots_per_level": 9,
+      "depth": 6,
+      "top1_acc": 0.0
+    }
+  ],
+  "3a_time_generalization": {
+    "atomic_random_codes": 0.204,
+    "hand_designed_circular_codes": 0.622,
+    "majority_class_baseline": 0.333
+  },
+  "3b_vision": {
+    "chance": 0.25,
+    "hdc_prototype": 0.323,
+    "hdc_retrained_30_epochs": 0.655,
+    "tiny_cnn_learned_encoder": 1.0,
+    "tiny_cnn_params": 4932
+  },
+  "4_cost_1M_items": [
+    {
+      "method": "HDC 10,240-bit Hamming, CPU 16 threads",
+      "memory_MB": 1280.0,
+      "search_ms": 239.6
+    },
+    {
+      "method": "binary-quantized 384-d embedding, CPU 16 threads",
+      "memory_MB": 48.0,
+      "search_ms": 10.8
+    },
+    {
+      "method": "float32 384-d embedding dot product, CPU",
+      "memory_MB": 1536.0,
+      "search_ms": 31.7
+    },
+    {
+      "method": "float16 384-d embedding dot product, GPU",
+      "memory_MB": 768.0,
+      "search_ms": 2.9
+    }
+  ],
+  "runtime_s": 58.3
+}

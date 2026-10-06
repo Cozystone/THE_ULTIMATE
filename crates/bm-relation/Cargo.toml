@@ -1,0 +1,9 @@
+[package]
+name = "bm-relation"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+description = "BITMIND relational substrate: group-transform relations, licensing lifecycle"
+
+[dependencies]
+hdc-core = { path = "../hdc-core" }
