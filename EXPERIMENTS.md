@@ -536,3 +536,27 @@ Design (development seeds 30, 31 only, disclosed):
 Learner = v3 learner + D041a + D041b; this commit becomes tag `bitmind-v0.1`. Seeds: R0 1-25,
 B 1-25, D 1-15, F 1-15 (registered criteria); C 46-60 and E 46-60 (fresh). C includes the
 two-stage C4b above in place of the old single C4b gate. E uses the E-E v4 criterion.
+
+### Result: v0.1 validation (frozen learner, commit tagged `bitmind-v0.1`)
+| phase | seeds | result |
+|---|---|---|
+| R0 | 1-25 | PASS 150/150 |
+| B | 1-25 | PASS 200/200 |
+| C | 46-60 (fresh) | C1, C2, C3, C5 pass on all 15 seeds; C4a 14/15 (seed 60: K3, 0 wrong); C4b-1 15/15; C4b-2 per-seed gate 14/15 (seed 58: one correct answer through an unclassified path); C4b-2 power FAIL |
+| D | 1-15 | PASS |
+| E | 46-60 (fresh) | PASS |
+| F | 1-15 | PASS (observe median 196 us, predict 100 us, 569 MB) |
+
+C4b two-stage outcome, stated plainly:
+* Stage 1 is demonstrated: on 15 fresh real-OS seeds no situation in which the agent's own
+  licensed laws conflicted was answered while the conflict was unsettled, and 0 never-probed
+  pairs were answered wrong.
+* Stage 2 is **not demonstrated**: 11 abstentions were saved (seeds 51, 54, 55, 58); in 6,000
+  further probes each, with evidence-seeking choices (up to 62 per seed), no conflict reached 3
+  independent shared situations, so none was settled. All but one stayed abstained; the one
+  answer (seed 58, correct) came through a path the harness could not classify. Cause: the
+  opposing laws are K1 laws (label arithmetic memorising one pair), whose domain almost never
+  overlaps the general law's, so the evidence that would settle them does not arise in this world.
+  The honest state is: the engine keeps not-knowing as not-knowing; it has not yet been shown to
+  convert new shared evidence into answers on real-OS conflicts. The mechanism itself is shown in
+  the unit test (D041a).

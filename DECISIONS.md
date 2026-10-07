@@ -592,3 +592,10 @@ learned ordinal/nominal channel test) belongs to v0.2 with its own fresh held-ou
 Two-stage C4b runs (9,000 real-OS probes) reach ~10-11 GB working set per process, against 569 MB
 for the whole Phase F battery. Hypothesis count grows with refinement and latent versions; nothing
 bounds it except D018 pruning. Target for v0.2: a memory budget with MDL-ranked eviction.
+
+## Known issue K3 (not fixed in v0.1): latent induction can lock onto the wrong target
+Evidence: v0.1 validation, C4a seed 60 (10 correct, 0 wrong, 42 abstain; no licensed latent law).
+D038a attached the inducer to the after-state value of the probed object instead of its change;
+under that target the rarer outcome is unrelated to the hidden class, link closure merged all 16
+objects into one class, and nothing was licensed. The engine abstained throughout. v0.2: choose the
+induction target by explained entropy, or run inducers for every candidate target of the slot.
