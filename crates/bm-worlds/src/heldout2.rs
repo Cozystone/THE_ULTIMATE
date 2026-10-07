@@ -12,7 +12,9 @@
 //! * `Fit` (H1, H5): PLACE(a, b) flips b iff size(a) < size(b). An ordinal relation.
 //! * `Rank` (H2): PROBE(a, b) flips b iff rank(a) = rank(b) + 1 (mod 3). Hidden ranks, cyclic,
 //!   asymmetric: not an equivalence and not an anti-equivalence.
-//! * `Spike` (H4): TOUCH(a, b) flips b iff colour(a) = colour(b) and shape(a) is not SPIKE.
+//! * `Spike` (H4): TOUCH(a, b) never flips b when shape(a) is SPIKE; otherwise it flips b iff
+//!   colour(a) = colour(b) or size(a) > size(b). (Amendment 6: the size clause makes "a spike
+//!   never flips" informative outside the conflict region, so the conflict can actually form.)
 //!
 //! Anti-leakage (asserted at construction): no non-unique visible channel determines a hidden
 //! attribute.
@@ -170,7 +172,7 @@ impl ObjWorld {
         match self.mech {
             Mechanism::Fit => x.size < y.size,
             Mechanism::Rank => x.hidden == (y.hidden + 1) % 3,
-            Mechanism::Spike => x.colour == y.colour && x.shape != SPIKE,
+            Mechanism::Spike => x.shape != SPIKE && (x.colour == y.colour || x.size > y.size),
         }
     }
 

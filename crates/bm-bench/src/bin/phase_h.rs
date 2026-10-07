@@ -213,6 +213,8 @@ struct H4 {
     other_answers: u32,
     sought: u32,
     probes: u32,
+    /// distinct region pairs probed when each "other path" answer arrived (reporting only)
+    other_evidence: Vec<usize>,
 }
 
 fn h4(seed: u64) -> H4 {
@@ -245,7 +247,8 @@ fn h4(seed: u64) -> H4 {
         fed += 1;
     }
     // stage 1: the agent's licensed laws conflict on the region; it must not answer unsettled
-    let mut st = H4 { stage1: Classes::default(), unsettled_answers: 0, saved: 0, settled_ok: 0, settled_wrong: 0, other_answers: 0, sought: 0, probes: 0 };
+    let mut st = H4 { stage1: Classes::default(), unsettled_answers: 0, saved: 0, settled_ok: 0, settled_wrong: 0, other_answers: 0, sought: 0, probes: 0, other_evidence: Vec::new() };
+    let mut probed_region: HashSet<(usize, usize)> = HashSet::new();
     let mut saved: Vec<(bm_relation::Episode, u32, i64)> = Vec::new();
     for &(i, j) in &queries {
         let (ev, truth) = w.preview(h2::TOUCH, vec![i, j]);
@@ -297,6 +300,9 @@ fn h4(seed: u64) -> H4 {
                 (p[0], p[1])
             }
         };
+        if evidence.contains(&(i, j)) {
+            probed_region.insert((i, j));
+        }
         let (ev, _) = w.step(h2::TOUCH, vec![i, j]);
         a.feed(ev);
         st.probes += 1;
@@ -313,6 +319,7 @@ fn h4(seed: u64) -> H4 {
                         st.unsettled_answers += 1;
                     } else if ce.is_empty() {
                         st.other_answers += 1;
+                        st.other_evidence.push(probed_region.len());
                         if v != *tv {
                             st.settled_wrong += 1;
                         }
@@ -447,8 +454,8 @@ fn main() {
                 "H4 reachable conflict",
                 r.unsettled_answers == 0 && r.settled_wrong == 0 && r.stage1.wrong == 0 && r.saved > 0 && r.settled_ok * 100 >= r.saved * 90,
                 format!(
-                    "seed {seed}: stage 1 {}; answers while unsettled {}; saved {}; after {} probes ({} chosen to test the conflict): settled by >= 3 independent bindings and correct {}, wrong {}, answered by another path {} (of {answered} answered)",
-                    r.stage1.s(), r.unsettled_answers, r.saved, r.probes, r.sought, r.settled_ok, r.settled_wrong, r.other_answers
+                    "seed {seed}: stage 1 {}; answers while unsettled {}; saved {}; after {} probes ({} chosen to test the conflict): settled by >= 3 independent bindings and correct {}, wrong {}, answered after the conflict dissolved (a competing licence lost to counterevidence) {} with distinct region pairs probed by then {:?} (of {answered} answered; only settled answers count for the gate)",
+                    r.stage1.s(), r.unsettled_answers, r.saved, r.probes, r.sought, r.settled_ok, r.settled_wrong, r.other_answers, r.other_evidence
                 ),
             );
         }

@@ -243,3 +243,14 @@ Outcome classes per answer:
 * insufficient evidence (any other abstention);
 * identity leakage (a law naming a mark or a concept identity answered on a new object, H1; or
   answers changed under relabelling, H3).
+
+## Amendment 6 (2026-10-08, after the seed-999 smoke test, before any formal H run)
+The smoke test exposed a world design bug in H4. With "flip iff same colour and not a spike",
+phase 1 shows spikes only with different-colour partners, where nothing flips anyway, so
+"a spike never flips" carries no information beyond "different colour never flips". MDL correctly
+declines to license it, no conflict forms, and the agent answered the unseen region with the only
+law it had (6 wrong on seed 999).
+Fix (world only): a non-spike flips its partner iff same colour or larger size; a spike never
+flips. "A spike never flips" is now informative outside the region, so two licensed laws can
+conflict inside it. H1, H2, H3 and H5 ran on the smoke seed; their numbers are not used for
+anything. Criteria unchanged.
