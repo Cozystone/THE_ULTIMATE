@@ -98,6 +98,14 @@ fn e1_door(seed: u64) -> (u32, u32, u32, u32, String, (u32, u32, u32, u32, u32))
                 }
                 if std::env::var("DIAG_E").is_ok() {
                     eprintln!("DIAG_E key={} power={} truth={truth_change} sleep={ps:?} twin={pt:?}", args[0] == dv::KEY, w.devs[dv::POWER].on);
+                    if args[0] != dv::KEY && ps.is_none() && std::env::var("DIAG_E2").is_ok() {
+                        eprintln!("DIAG_N used device {} power {}", args[0], w.devs[dv::POWER].on);
+                        let mut v = rel.debug_matching(&q, t);
+                        v.sort_by_key(|x| std::cmp::Reverse(x.contains("Provisional") as u8 * 2 + x.contains("Candidate") as u8));
+                        for l in v.iter().filter(|x| !x.contains("Revoked")).take(6) {
+                            eprintln!("DIAG_N   {l}");
+                        }
+                    }
                     if args[0] == dv::KEY && w.devs[dv::POWER].on == 1 && ps.is_none() {
                         for l in rel.debug_matching(&q, t).iter().filter(|x| x.contains(" & ")).take(12) {
                             eprintln!("DIAG_L {l}");

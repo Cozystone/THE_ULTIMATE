@@ -91,8 +91,6 @@ impl Default for LicensePolicy {
 const EP_CAP: usize = 4096;
 /// D054 (K2 stage 2): key sets per bin stop growing here. 64 exceeds every gate threshold.
 pub const SET_CAP: usize = 64;
-/// D054: counterexample episode ids kept when a terminal law is compacted.
-pub const TOMB_IDS: usize = 64;
 const TRIAL_CAP: usize = 256;
 
 /// D054c: a bounded set of 64-bit keys as a sorted vector with exact capacity (binary search).
@@ -272,22 +270,16 @@ impl CtxEvidence {
         }
     }
 
-    /// D054: compaction of a terminal (revoked / split) record. Counts, status history, transfer
-    /// tallies and up to TOMB_IDS counterexample episode ids are kept; the key sets and the
-    /// supporting episode lists are freed. The law keeps its index entry, so a recurring
-    /// hypothesis is revived with its record and its counterexamples.
+    /// D054/D054e: compaction of a terminal (revoked / split) record. Counts, status history,
+    /// transfer tallies and the episode lists are kept: hidden-condition search replays exactly
+    /// these episodes (a revoked law is what refinement splits), and its counterexamples are
+    /// evidence. Only the key sets are freed; membership then counts as unknown (conservative).
+    /// The law keeps its index entry, so a recurring hypothesis is revived with its record.
     pub fn compact(&mut self) {
-        let maj = self.majority().map(|m| m.0);
         for b in self.bins.iter_mut() {
             b.signatures.compact();
             b.bindings.compact();
             b.rsits.compact();
-            if Some(b.val) == maj {
-                b.episodes = Vec::new();
-            } else {
-                b.episodes.truncate(TOMB_IDS);
-                b.episodes.shrink_to_fit();
-            }
         }
         self.transfer.trials = Vec::new();
         self.scope_trials.trials = Vec::new();

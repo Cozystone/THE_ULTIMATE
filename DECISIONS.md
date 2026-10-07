@@ -776,3 +776,22 @@ predicting high-cardinality nominal outcomes (a 256-valued content hash after a 
 per value, for every feature. Bounding this needs a principled rule for which outcomes deserve
 hypotheses (e.g. a target whose base-rate entropy is near log2 |alphabet| and that no feature has
 reduced). That is a behaviour change to be designed and tested on its own, not slipped into v0.2.
+
+## D054e Compaction keeps episode lists (v0.2, 2026-10-07; corrects D054)
+Evidence: regression round 2 (`v02reg2`, D054 build). E1 failed on seeds 48, 49 and 58: 10 of 86
+key cases abstained, against 0 in round 1. Toggling each D054 component on seed 48 pinned it to
+terminal compaction. A revoked law, e.g. "USE on the key changes the door", revoked by the power-off
+exceptions, is exactly what sleep refinement splits, and refinement replays that law's episode list.
+Compaction had cut the list to 64 counterexample ids, so the children lost their evidence.
+Choice: compaction frees only the key sets; episode lists (bounded id lists) stay intact.
+Result: seeds 48, 49, 58 pass again (door 418/418, 409/409, 424/424).
+Also D054d: during a replay (D048) novelty is checked against exact temporary key sets of the
+situations replayed so far, not the child's bounded sets. It did not change seed 48 and is kept
+because it is the correct rule for replay.
+
+## E1 seed 54 abstentions are the MDL selection cost (not changed)
+Round 1 and later builds: door 350/392 (89.3% < 90%). All 42 misses are abstentions on USE of the
+power device. `USE: r0=power => door unchanged` has 118 cases, 0 counterexamples and transfer
+28/0, but saves only 6 bits over the base rate, below its selection cost (D012: log2 #hypotheses +
+margin); D051a's extra inducers raised that count. The multiple-comparison penalty works as
+designed on a true but low-information law. Reported as a failure, not tuned.

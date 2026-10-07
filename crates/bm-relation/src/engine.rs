@@ -1046,6 +1046,10 @@ impl RelationEngine {
                     c
                 }
             };
+            // D054d: novelty during a replay is decided against exact, temporary key sets of the
+            // situations replayed so far (the child's bounded sets may saturate during replay)
+            let mut seen_r: std::collections::HashSet<u64> = std::collections::HashSet::new();
+            let mut seen_s: std::collections::HashSet<u64> = std::collections::HashSet::new();
             // replay: counts and independence only; no utility, no transfer credit (D014)
             for &id in &ids {
                 if !self.feat_kinds[id as usize].contains(&g) {
@@ -1059,6 +1063,8 @@ impl RelationEngine {
                     *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
                 }
                 self.laws[child].ctx_mut(ctx, t).add(out, id, bk, rk, sig, iv, t);
+                seen_r.insert(rk);
+                seen_s.insert(sig);
             }
             // D048: held-out half, pre-registered predictions on never-counted situations
             for &id in &held {
@@ -1083,7 +1089,7 @@ impl RelationEngine {
                     }
                 }
                 if let Some(e) = self.laws[child].ctx(ctx) {
-                    let new_sit = e.new_case(rk, sig);
+                    let new_sit = if e.particular().is_some() { !seen_s.contains(&sig) } else { !seen_r.contains(&rk) };
                     if new_sit && !e.status.terminal() && within_noise(e.counters(), e.total(), &pol) && e.independent() >= 3 {
                         if let Some((pred, _)) = e.majority() {
                             self.laws[child].ctx_mut(ctx, t).transfer.record(id, pred, out);
@@ -1094,6 +1100,8 @@ impl RelationEngine {
                     *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
                 }
                 self.laws[child].ctx_mut(ctx, t).add(out, id, bk, rk, sig, iv, t);
+                seen_r.insert(rk);
+                seen_s.insert(sig);
             }
             self.evaluate(child, ctx);
         }
