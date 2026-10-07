@@ -655,3 +655,6 @@ Outcome classes over all H answers:
 * wrong confident answers: 4 (all in H5);
 * identity leakage: 0;
 * memory-budget failure: 15/15 H5 runs.
+
+## v0.3
+Pre-registration: `experiments/PREREG-v0.3.md` (committed before any v0.3 learner change).
