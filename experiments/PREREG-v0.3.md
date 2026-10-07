@@ -188,3 +188,17 @@ minimum are unchanged.
 
 Rationale: "the output repeats an input" is a generic chance-level model (persistence), no more
 world-specific than a base rate; a hypothesis must beat it to claim information.
+
+## Amendment 3: the gate baseline takes the better chance model per case (2026-10-08, before the regression of record)
+Development measurement (`experiments/results/v03dev/*_a.txt`, D055a):
+* H5 seed 201 at 20,000 steps rose from 202 MB / 5,616 laws (D055) to 1,036 MB / 66,931 laws.
+* Real-OS seed 58 at 10,000 probes fell from 4.1 GB (v0.2) to 2.6 GB.
+
+Cause: the copy source is chosen by aggregate hit rate. When it is a poor conditional predictor
+(e.g. a filler that is usually 0 "matches" a mostly-0 change flag), the mixture assigns tiny
+probabilities to the cases it gets wrong, the baseline becomes worse than the plain distribution,
+and every hypothesis looks informative.
+
+Change: per case the baseline uses the larger of p_dist(o) and p_mix(o) for the actual outcome. The
+resulting LLR is a lower bound on the information against either chance model; it can only make
+materialization stricter than D055 or D055a. Threshold, margin and minimum cases unchanged.
