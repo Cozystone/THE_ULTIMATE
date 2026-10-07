@@ -183,3 +183,34 @@ The regression of record is run on the build containing all three; earlier regre
 C4b note: after K1/K4 no licensed-law conflicts arise in the real-OS link world (0 saved
 abstentions on development seeds), so C4b-2 cannot be exercised there. Its power gate will be
 reported as FAIL (not demonstrated); reachable conflicts are the purpose of held-out H4.
+
+## Amendment 4: K2 stage 2 design (2026-10-07, before implementation)
+**Measurement** (`v02_k2_c4b_seed58_d053.err`, after D053). After 3,000 real-OS probes:
+* 231,253 laws from 2,900 episodes (~80 per episode);
+* three per-bin key sets (situations, relevant situations, bindings) of ~12.6M entries each, the
+  largest retained structures;
+* peak working set 2.27 GB.
+
+Growth is linear in experience, so H5 (>= 20,000 steps, <= 2 GB) cannot pass without bounding.
+
+**Design** (nothing deletes counterevidence; every retirement leaves a revivable summary):
+1. **Tombstones.** A law that is revoked or split, or a candidate with <= 1 case older than 2,000
+   ticks (D018 extended to wake time), is retired. Its record is replaced by a tombstone:
+   condition fingerprint, target, per-context outcome counts, counterexample count, the first
+   64 counterexample episode ids, status history. The episodes themselves stay in the store.
+2. **Revival.** If a retired hypothesis is generated again, it is revived from its tombstone with
+   its counts, counterexamples and status. Independence and transfer sets restart empty, so a
+   revived law must re-earn breadth from new bindings while its old counterexamples still count.
+3. **Saturation.** Per bin, the key sets stop growing at 64 entries. Beyond that, independence is
+   reported as ">= 64", which exceeds every gate, and a case counts as novel only if provably new.
+   With a saturated set nothing is provably new, so transfer trials are under-counted, never
+   over-counted.
+4. **Episodic retention.** The raw episode store is small (2 MB per 2,900 episodes) and is not
+   bounded in v0.2; event vectors are rebuilt by D052 consolidation when needed.
+
+**Evaluation.**
+* Round 1 (running, build `8934421`) is the K1/K4 regression of record.
+* Round 2 repeats the full regression with stage 2 and becomes the freeze candidate. Every
+  difference between the rounds is reported.
+* H5 then tests the budget on a held-out long-horizon world.
+* If stage 2 changes a regression result, the result is reported, not tuned away.
