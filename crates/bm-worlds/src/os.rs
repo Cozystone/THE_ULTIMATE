@@ -20,6 +20,8 @@ pub const EXT: u16 = 0;
 pub const NAME: u16 = 1;
 pub const SIZE: u16 = 2;
 pub const CONTENT: u16 = 3;
+/// D049: the size bucket is a magnitude; extension, name and content hash are nominal.
+pub const ORDINAL: &[u16] = &[SIZE];
 
 pub const WRITE: u16 = 1;
 pub const APPEND: u16 = 2;

@@ -169,3 +169,26 @@ fn conflicts_need_three_distinct_relevant_bindings() {
     e.observe(ep("C", vec![shape_ent(3, 9, next()), shape_ent(3, 4, next()), by(&mut rng)], 2, 0));
     assert_eq!(e.predict(&q, T).value(), Some(0), "three distinct relevant bindings settle it");
 }
+
+/// K1-4 (D049 identifier veto): an adapter that declares an identity channel ordinal does not hand
+/// the learner identity arithmetic: a channel whose values are injective over >= 8 bound objects is
+/// treated as nominal. A genuine magnitude shared by many objects stays ordinal.
+#[test]
+fn an_identity_channel_declared_ordinal_is_vetoed() {
+    let mut rng = Rng::new(17);
+    let mut e = RelationEngine::new(5);
+    e.declare_ordinal(ID);
+    e.declare_ordinal(1); // a real magnitude: weight 1..=6 shared by many objects
+    for _ in 0..800 {
+        let a = rng.below(60) as i64;
+        let b = if rng.below(2) == 0 { a + 3 } else { rng.below(63) as i64 };
+        let wa = 1 + rng.below(6) as i64;
+        let wb = 1 + rng.below(6) as i64;
+        let ea = Entity::bound(a, &[(COLOUR, rng.below(6) as i64), (1, wa), (ID, a)]);
+        let eb = Entity::bound(b, &[(COLOUR, rng.below(6) as i64), (1, wb), (ID, b)]);
+        e.observe(ep("V", vec![ea, eb], 2, (b - a == 3) as i64));
+    }
+    assert!(e.vetoed.contains(&ID), "identity channel not vetoed");
+    assert!(!e.vetoed.contains(&1), "a shared magnitude was vetoed");
+    assert!(label_arithmetic(&e).is_empty(), "licensed label arithmetic: {:?}", label_arithmetic(&e));
+}

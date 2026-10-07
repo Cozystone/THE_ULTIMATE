@@ -97,8 +97,11 @@ pub struct OutcomeBin {
     pub val: i64,
     pub count: u32,
     pub interventions: u32,
-    /// Independence keys (episode signatures).
+    /// Situation keys (episode signatures, bystanders included): robustness of a particular law
+    /// across background conditions.
     pub signatures: HashSet<u64>,
+    /// D050: relevant-binding keys (the objects the law connects): independence of a general law.
+    pub bindings: HashSet<u64>,
     /// Episode ids (lineage). Capped; `count` stays exact.
     pub episodes: Vec<u64>,
 }
@@ -194,8 +197,27 @@ impl CtxEvidence {
         self.total() - self.majority().map(|m| m.1).unwrap_or(0)
     }
 
+    /// D050: gate-1 independence. A general law (support spans >= 2 relevant bindings) counts
+    /// distinct bindings; a particular law (one binding) counts distinct situations, and is scoped
+    /// to its binding (`particular`).
     pub fn independent(&self) -> u32 {
-        self.majority_bin().map(|b| b.signatures.len() as u32).unwrap_or(0)
+        self.majority_bin()
+            .map(|b| if b.bindings.len() >= 2 { b.bindings.len() as u32 } else { b.signatures.len() as u32 })
+            .unwrap_or(0)
+    }
+
+    /// D050: the single relevant binding of a particular law.
+    pub fn particular(&self) -> Option<u64> {
+        self.majority_bin().and_then(|b| if b.bindings.len() == 1 { b.bindings.iter().next().copied() } else { None })
+    }
+
+    /// D050: a held-out case for this law: a new relevant binding (general law) or, for a
+    /// particular law, a new situation of its own binding.
+    pub fn new_case(&self, binding: u64, sig: u64) -> bool {
+        match self.particular() {
+            Some(_) => !self.bins.iter().any(|b| b.signatures.contains(&sig)),
+            None => !self.bins.iter().any(|b| b.bindings.contains(&binding)),
+        }
     }
 
     pub fn interventions(&self) -> u32 {
@@ -211,7 +233,7 @@ impl CtxEvidence {
         log2_q16(self.total() as u64 + alphabet) - log2_q16(self.count_of(actual) as u64 + 1)
     }
 
-    pub fn add(&mut self, val: i64, episode: u64, sig: u64, intervention: bool, fps: &[u64], t: u64) {
+    pub fn add(&mut self, val: i64, episode: u64, binding: u64, sig: u64, intervention: bool, fps: &[u64], t: u64) {
         let pos = match self.bins.iter().position(|b| b.val == val) {
             Some(p) => p,
             None => {
@@ -220,6 +242,7 @@ impl CtxEvidence {
                     count: 0,
                     interventions: 0,
                     signatures: HashSet::new(),
+                    bindings: HashSet::new(),
                     episodes: Vec::new(),
                 });
                 self.bins.len() - 1
@@ -231,6 +254,7 @@ impl CtxEvidence {
             b.interventions += 1;
         }
         b.signatures.insert(sig);
+        b.bindings.insert(binding);
         if b.episodes.len() < EP_CAP {
             b.episodes.push(episode);
         }
@@ -319,6 +343,23 @@ impl RelationLaw {
 
     pub fn is_relational(&self) -> bool {
         self.condition.iter().any(|f| f.is_relational())
+    }
+
+    /// Roles mentioned by the condition (D050).
+    pub fn cond_roles(&self) -> Vec<u8> {
+        let mut v: Vec<u8> = Vec::new();
+        for f in &self.condition {
+            match *f {
+                FeatureKind::Abs { role, .. } => v.push(role),
+                FeatureKind::Same { r1, r2, .. } | FeatureKind::Diff { r1, r2, .. } | FeatureKind::Order { r1, r2, .. } | FeatureKind::Delta { r1, r2, .. } => {
+                    v.push(r1);
+                    v.push(r2);
+                }
+            }
+        }
+        v.sort_unstable();
+        v.dedup();
+        v
     }
 
     pub fn ctx(&self, c: u64) -> Option<&CtxEvidence> {

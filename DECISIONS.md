@@ -611,3 +611,48 @@ lookup knowledge pass as relational knowledge: the ATANOR lookup/relational sepa
 v0.2: count independence and transfer over the entities bound by the law's condition (distinct
 argument fillers), not over whole scenes; treat channels whose values are unique per object as
 nominal (no order/delta).
+
+## D049 Measurement levels: order and offset only on ordinal channels (v0.2, 2026-10-07)
+Addresses K1 (PREREG-v0.2). Evidence: v0.1 computed permutation offsets on every channel, and
+licensed laws such as `delta(r0,r1; identity)=-6` and `order(r0,r1; mark)<` that memorised pairs
+and answered new pairs wrongly (C4b, G4).
+Choice:
+* A channel is nominal unless the producing sensor declares it ordinal, a measurement level
+  like a unit; every world adapter exports `ORDINAL`. The feature layer computes order and offset
+  only for allowed ordinal channels; nominal channels keep absolute value, same and different.
+* Channels the learner labels itself are never ordinal: the identity channel and latent-class
+  channels.
+* Identifier veto: a declared-ordinal channel whose values are injective over >= 8 bound objects
+  is treated as nominal, so a re-encoded identity gains no arithmetic.
+
+Why architecture level: whether "a minus b" means anything is a property of the measurement, not
+of any world's law; equality is the only operation defined on every scale.
+Tests: identity renaming invariance; no licensable identity offset; continuity by equality
+survives; identity declared ordinal is vetoed while a shared magnitude is not. The first two fail
+on v0.1.
+Known limit: a declared ordinal channel that is a coarse monotone function of identity (not
+injective) is not detected.
+
+## D050 Evidence per relevant binding; particular laws are scoped (v0.2, 2026-10-07)
+Addresses K4. Evidence: v0.1 counted gate-1 independence, transfer novelty and D041 shared cases by
+whole-scene signatures, so bystanders turned a few actor/partner pairs into 50-74 "independent"
+supports.
+Choice:
+* An entity carries a producer-supplied `binding` (grounded concept, world object; otherwise a
+  filler hash).
+* The relevant roles of a law in an episode are the argument roles plus the roles its condition
+  mentions. A law records relevant-binding keys besides situation keys (bystanders included).
+* General law (support spans >= 2 bindings): independence = distinct bindings (>= 5); a
+  held-out transfer case = a binding the law has never seen.
+* Particular law (one binding): independence = distinct situations, which is robustness across
+  background conditions. It applies only to queries with the same relevant binding, it is never
+  a relational or transfer result, and it reports as particular.
+* D041 shared cases are counted by distinct bindings over the union of both groups' relevant
+  roles. Only the query's own binding contributes distinct situations as direct evidence.
+* Counterexamples are counted per episode as before.
+
+Why architecture level: support for a claim about kinds of objects must come from distinct
+objects; repetitions and background changes test robustness, not breadth.
+Tests: bystander variation cannot license a general law and a new pair is not answered; a
+conflict is not settled by one pair probed repeatedly under changing bystanders, and is settled by
+three distinct relevant bindings. Both fail on v0.1.

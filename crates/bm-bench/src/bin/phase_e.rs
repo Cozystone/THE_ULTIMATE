@@ -115,6 +115,7 @@ fn e1_door(seed: u64) -> (u32, u32, u32, u32, String, (u32, u32, u32, u32, u32))
 fn clone_engine(r: &RelationEngine) -> RelationEngine {
     // engines are rebuilt by replaying the store (a twin with identical evidence)
     let mut t = RelationEngine::with_policy(0, r.policy.clone());
+    t.ordinal = r.ordinal.clone();
     t.identity_channel = r.identity_channel;
     for id in 0..r.store.len() as u64 {
         t.observe(r.store.get(id).clone());
@@ -189,6 +190,7 @@ fn e2(seed: u64) -> (i64, i64, u32, u32, Vec<String>) {
     let mut w = GroundWorld::new(seed, 4, 4, setup, "calib");
     let mut g = Grounder::new(seed);
     let mut rel = RelationEngine::new(seed ^ 0xE3);
+    bm_bench::declare(&mut rel, gw::ORDINAL);
     let mut sm = SelfModel::default();
     let mut test: Vec<(i64, bool)> = Vec::new();
     let mut test_cal: Vec<(i64, bool)> = Vec::new();
@@ -335,6 +337,7 @@ fn e3(seed: u64) -> (u32, u32, u32) {
 }
 
 fn main() {
+    let started = std::time::Instant::now();
     let seeds: Vec<u64> = std::env::args().nth(1).map(|s| s.split(',').filter_map(|x| x.parse().ok()).collect()).unwrap_or(vec![1, 2, 3]);
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
     for &seed in &seeds {
@@ -379,6 +382,7 @@ fn main() {
     println!("E-E OVERALL: {}", if out.all { "PASS" } else { "FAIL" });
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../experiments/results/phase_e.json");
     std::fs::write(&path, format!("{{\"overall_pass\":{},\"gates\":[\n{}\n]}}", out.all, out.json.join(",\n"))).expect("write");
+    println!("{}", bm_bench::resources_line(started));
 }
 
 /// P(X >= b) for X ~ Binomial(n, 1/2): exact one-sided McNemar test (reporting only, floats).

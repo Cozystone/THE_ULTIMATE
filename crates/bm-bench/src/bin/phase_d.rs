@@ -346,6 +346,7 @@ fn d3(seed: u64, out: &mut Out) {
 }
 
 fn main() {
+    let started = std::time::Instant::now();
     let seeds: Vec<u64> = std::env::args().nth(1).map(|s| s.split(',').filter_map(|x| x.parse().ok()).collect()).unwrap_or(vec![1, 2, 3]);
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
     let mut act_steps = Vec::new();
@@ -385,4 +386,5 @@ fn main() {
     println!("E-D OVERALL: {}", if out.all { "PASS" } else { "FAIL" });
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../experiments/results/phase_d.json");
     std::fs::write(&path, format!("{{\"overall_pass\":{},\"gates\":[\n{}\n]}}", out.all, out.json.join(",\n"))).expect("write");
+    println!("{}", bm_bench::resources_line(started));
 }

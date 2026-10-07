@@ -12,6 +12,9 @@ pub const MARK: u16 = 4;
 pub const LIT: u16 = 5;
 pub const POS: u16 = 6;
 pub const N_CH: u16 = 7;
+/// D049: ordinal sensor channels (size and position are magnitudes; mark, colour, shape, texture
+/// and the lit state are nominal).
+pub const ORDINAL: &[u16] = &[SIZE, POS];
 
 pub const IDLE: u16 = 0;
 pub const TOGGLE: u16 = 1;

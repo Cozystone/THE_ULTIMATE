@@ -67,6 +67,13 @@ pub struct RelationEngine {
     unexplained: HashMap<(u16, u32, u64), u32>,
     /// D045: how often each action was taken in each context (evidence even when nothing changed).
     trials: HashMap<(u16, u64), u32>,
+    /// D049: channels a sensor declared ordinal (order / offset allowed unless vetoed).
+    pub ordinal: std::collections::BTreeSet<u16>,
+    /// D049: declared-ordinal channels found to behave as identifiers (injective over >= 8 bound
+    /// objects); treated as nominal.
+    pub vetoed: std::collections::BTreeSet<u16>,
+    /// value -> the single binding it was seen with (None once seen with two bindings).
+    ord_seen: HashMap<u16, HashMap<i64, Option<u64>>>,
 }
 
 /// What one sleep consolidation did.
@@ -147,6 +154,9 @@ impl RelationEngine {
 
     pub fn with_policy(seed: u64, policy: LicensePolicy) -> Self {
         RelationEngine {
+            ordinal: std::collections::BTreeSet::new(),
+            vetoed: std::collections::BTreeSet::new(),
+            ord_seen: HashMap::new(),
             cb: Codebook::new(seed),
             policy,
             laws: Vec::new(),
@@ -502,16 +512,91 @@ impl RelationEngine {
             .and_then(|e| e.majority().map(|m| m.0))
     }
 
-    fn transfer_eligible(&self, law: usize, ctx: u64, fps: &[u64], sig: u64) -> bool {
+    /// D049: declare that a sensor reports `ch` on an ordinal scale.
+    pub fn declare_ordinal(&mut self, ch: u16) {
+        self.ordinal.insert(ch);
+    }
+
+    /// D049: channels on which order / offset transforms are defined now: declared ordinal, not
+    /// vetoed as identifiers, and never a channel the learner labels itself (identity, latent).
+    pub fn allowed_ordinal(&self) -> std::collections::BTreeSet<u16> {
+        let latent_hi = 3000 + 1000 * self.latent.len() as u16;
+        self.ordinal
+            .iter()
+            .copied()
+            .filter(|c| !self.vetoed.contains(c) && Some(*c) != self.identity_channel && !(*c >= 3000 && *c < latent_hi.max(3000)))
+            .collect()
+    }
+
+    /// D049 identifier veto: track which bound objects carry each value of a declared-ordinal
+    /// channel; a channel whose values are injective over >= 8 objects names objects.
+    fn track_ordinal(&mut self, ep: &Episode) {
+        if self.ordinal.is_empty() {
+            return;
+        }
+        for (r, e) in ep.roles.iter().enumerate() {
+            let b = ep.role_binding(r);
+            for f in &e.fillers {
+                if !self.ordinal.contains(&f.ch) || self.vetoed.contains(&f.ch) {
+                    continue;
+                }
+                let m = self.ord_seen.entry(f.ch).or_default();
+                if m.len() >= 4096 && !m.contains_key(&f.val) {
+                    continue;
+                }
+                let slot = m.entry(f.val).or_insert(Some(b));
+                if *slot != Some(b) {
+                    *slot = None;
+                }
+            }
+        }
+        let chans: Vec<u16> = self.ord_seen.keys().copied().collect();
+        for c in chans {
+            let m = &self.ord_seen[&c];
+            if m.len() >= 8 && m.values().all(|v| v.is_some()) {
+                let objs: std::collections::HashSet<u64> = m.values().flatten().copied().collect();
+                if objs.len() >= 8 {
+                    self.vetoed.insert(c);
+                }
+            }
+        }
+    }
+
+    /// D050: the roles whose bound objects a law connects in an episode: the action's arguments
+    /// and every role its condition mentions.
+    pub fn relevant_roles(&self, l: usize, ep: &Episode) -> Vec<u8> {
+        let mut r = ep.arg_roles();
+        r.extend(self.laws[l].cond_roles());
+        r.sort_unstable();
+        r.dedup();
+        r
+    }
+
+    /// D050: relevant-binding key of law `l` in an episode.
+    pub fn bkey(&self, l: usize, ep: &Episode) -> u64 {
+        ep.binding_key(&self.relevant_roles(l, ep))
+    }
+
+    /// D050: a particular law (one relevant binding) speaks only about its own objects.
+    pub fn binds(&self, l: usize, c: u64, ep: &Episode) -> bool {
+        match self.laws[l].ctx(c).and_then(|e| e.particular()) {
+            Some(b) => self.bkey(l, ep) == b,
+            None => true,
+        }
+    }
+
+    fn transfer_eligible(&self, law: usize, ctx: u64, ep: &Episode, sig: u64) -> bool {
         let l = &self.laws[law];
         let own = match l.ctx(ctx) {
             Some(e) if e.total() > 0 => {
-                // D015a: a held-out compositional case is a new filler OR a combination of
-                // known fillers this law has never been supported by
+                // D015a / D050: a held-out case is a relevant binding this law has never been
+                // supported by (a new situation of its own binding for a particular law);
+                // bystander novelty does not count
                 !e.status.terminal()
                     && within_noise(e.counters(), e.total(), &self.policy_for(l.target))
                     && e.independent() >= 3
-                    && (fps.iter().any(|f| !e.fillers_seen.contains(f)) || !e.bins.iter().any(|b| b.signatures.contains(&sig)))
+                    && self.binds(law, ctx, ep)
+                    && e.new_case(self.bkey(law, ep), sig)
             }
             _ => false,
         };
@@ -530,7 +615,9 @@ impl RelationEngine {
         *self.trials.entry((ep.action, ep.context)).or_insert(0) += 1;
         let mut ep = ep;
         self.augment(&mut ep);
-        let feats = self.cb.features(&ep);
+        self.track_ordinal(&ep);
+        let ord = self.allowed_ordinal();
+        let feats = self.cb.features(&ep, &ord);
         let sig = ep.signature();
         let fps = ep.filler_fps();
         let ctx = ep.context;
@@ -538,6 +625,7 @@ impl RelationEngine {
         let outcomes = ep.outcomes.clone();
         let action = ep.action;
         let eid = self.store.append(ep);
+        let epc = self.store.get(eid).clone();
         self.feat_kinds.push(feats.iter().map(|f| f.kind.clone()).collect());
 
         let cc = self.cond_cache(action, &feats);
@@ -561,7 +649,7 @@ impl RelationEngine {
             // 1. pre-registration (outcome not yet read)
             let mut prereg: Vec<(usize, i64, bool)> = Vec::new();
             for &l in std::iter::once(&base).chain(singles.iter()).chain(pairs.iter().map(|p| &p.0)) {
-                if self.transfer_eligible(l, ctx, &fps, sig) {
+                if self.transfer_eligible(l, ctx, &epc, sig) {
                     if let Some((v, borrowed)) = self.prediction(l, ctx) {
                         prereg.push((l, v, borrowed));
                     }
@@ -673,7 +761,8 @@ impl RelationEngine {
                 if self.laws[l].ctx(ctx).map(|e| e.total() == 0).unwrap_or(true) {
                     *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
                 }
-                self.laws[l].ctx_mut(ctx, t).add(actual, eid, sig, intervention, &fps, t);
+                let bk = self.bkey(l, &epc);
+                self.laws[l].ctx_mut(ctx, t).add(actual, eid, bk, sig, intervention, &fps, t);
             }
 
             // 5. hidden-condition search on impure singles (D014)
@@ -785,10 +874,11 @@ impl RelationEngine {
                 let ep = self.store.get(id);
                 let Some(out) = ep.outcome(target) else { continue };
                 let (sig, fps, iv) = (ep.signature(), ep.filler_fps(), ep.kind == Kind::Intervention);
+                let bk = self.bkey(child, ep);
                 if self.laws[child].ctx(ctx).map(|e| e.total() == 0).unwrap_or(true) {
                     *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
                 }
-                self.laws[child].ctx_mut(ctx, t).add(out, id, sig, iv, &fps, t);
+                self.laws[child].ctx_mut(ctx, t).add(out, id, bk, sig, iv, &fps, t);
             }
             // D048: held-out half, pre-registered predictions on never-counted situations
             for &id in &held {
@@ -798,6 +888,7 @@ impl RelationEngine {
                 let ep = self.store.get(id);
                 let Some(out) = ep.outcome(target) else { continue };
                 let (sig, fps, iv) = (ep.signature(), ep.filler_fps(), ep.kind == Kind::Intervention);
+                let bk = self.bkey(child, ep);
                 let pol = self.policy_for(target);
                 // prequential utility against the parent's final counts (which include this very
                 // episode, so the comparison is biased towards the parent: conservative)
@@ -812,7 +903,7 @@ impl RelationEngine {
                     }
                 }
                 if let Some(e) = self.laws[child].ctx(ctx) {
-                    let new_sit = !e.bins.iter().any(|b| b.signatures.contains(&sig));
+                    let new_sit = e.new_case(bk, sig);
                     if new_sit && !e.status.terminal() && within_noise(e.counters(), e.total(), &pol) && e.independent() >= 3 {
                         if let Some((pred, _)) = e.majority() {
                             self.laws[child].ctx_mut(ctx, t).transfer.record(id, pred, out);
@@ -822,7 +913,7 @@ impl RelationEngine {
                 if self.laws[child].ctx(ctx).map(|e| e.total() == 0).unwrap_or(true) {
                     *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
                 }
-                self.laws[child].ctx_mut(ctx, t).add(out, id, sig, iv, &fps, t);
+                self.laws[child].ctx_mut(ctx, t).add(out, id, bk, sig, iv, &fps, t);
             }
             self.evaluate(child, ctx);
         }
@@ -932,7 +1023,8 @@ impl RelationEngine {
     }
 
     fn matching(&mut self, ep: &Episode, target: u32) -> Vec<usize> {
-        let feats = self.cb.features(ep);
+        let ord = self.allowed_ordinal();
+        let feats = self.cb.features(ep, &ord);
         let cc = self.cond_cache(ep.action, &feats);
         let mut v = Vec::new();
         if let Some(&l) = self.index.get(&key_fp(cc.base_fp, target)) {
@@ -965,7 +1057,7 @@ impl RelationEngine {
         self.augment(&mut aug);
         let m = self.matching(&aug, target);
         let alpha: Vec<i64> = self.alphabet.get(&target).cloned().unwrap_or_default();
-        let licensed = m.iter().any(|&l| self.laws[l].applicable(ctx));
+        let licensed = m.iter().any(|&l| self.laws[l].applicable(ctx) && self.binds(l, ctx, &aug));
         let mut best: Option<(i64, Vec<u64>)> = None;
         let mut near = 0u32;
         let sig = aug.signature();
@@ -1050,7 +1142,7 @@ impl RelationEngine {
         let ep = &aug;
         let m = self.matching(ep, target);
         m.into_iter()
-            .filter(|&l| self.laws[l].applicable(ctx))
+            .filter(|&l| self.laws[l].applicable(ctx) && self.binds(l, ctx, ep))
             .filter_map(|l| self.laws[l].ctx(ctx).and_then(|e| e.majority()).map(|v| (l, v.0)))
             .collect()
     }
@@ -1072,9 +1164,9 @@ impl RelationEngine {
             .copied()
             .filter(|&l| {
                 if ignore_scope {
-                    self.laws[l].ctx.iter().any(|e| e.status == Status::Licensed)
+                    self.laws[l].ctx.iter().any(|e| e.status == Status::Licensed && e.particular().map(|b| b == self.bkey(l, ep)).unwrap_or(true))
                 } else {
-                    self.laws[l].applicable(ctx)
+                    self.laws[l].applicable(ctx) && self.binds(l, ctx, ep)
                 }
             })
             .collect();
@@ -1107,7 +1199,7 @@ impl RelationEngine {
                 let (v, laws, c) = by_val.pop().expect("one");
                 Answer::Value { val: v, laws, confidence_q16: c }
             }
-            _ => match self.resolve_conflict(&by_val, ctx, target) {
+            _ => match self.resolve_conflict(&by_val, ctx, target, ep) {
                 Some(i) => {
                     let (v, laws, c) = by_val.swap_remove(i);
                     Answer::Value { val: v, laws, confidence_q16: c }
@@ -1121,11 +1213,11 @@ impl RelationEngine {
     /// applied. For every pair of value groups, the overlap of their laws' episodes is scored; the
     /// group whose laws were right strictly more often (with >= 3 shared cases) wins every pairwise
     /// comparison, otherwise the conflict stands and the engine abstains.
-    fn resolve_conflict(&self, groups: &[(i64, Vec<usize>, i64)], ctx: u64, target: u32) -> Option<usize> {
+    fn resolve_conflict(&self, groups: &[(i64, Vec<usize>, i64)], ctx: u64, target: u32, query: &Episode) -> Option<usize> {
         let mut wins = vec![0usize; groups.len()];
         for a in 0..groups.len() {
             for b in (a + 1)..groups.len() {
-                let (indep, ra, rb) = self.shared_record(groups, a, b, ctx, target);
+                let (indep, ra, rb) = self.shared_record(groups, a, b, ctx, target, query);
                 // D041a: the shared cases must be independent (distinct situations); repeated
                 // probes of one situation are one case
                 if indep < MIN_SHARED_INDEPENDENT {
@@ -1144,7 +1236,7 @@ impl RelationEngine {
 
     /// Record of two value groups on the cases where both applied: (independent shared
     /// situations, situations where group a's value happened, situations where group b's did).
-    fn shared_record(&self, groups: &[(i64, Vec<usize>, i64)], a: usize, b: usize, ctx: u64, target: u32) -> (u32, u32, u32) {
+    fn shared_record(&self, groups: &[(i64, Vec<usize>, i64)], a: usize, b: usize, ctx: u64, target: u32, query: &Episode) -> (u32, u32, u32) {
         // D041b: per-law episode lists are capped (EP_CAP); when a list is truncated, shared cases
         // are found by testing each law's condition against the stored features of every episode
         // in the context, so late evidence is never invisible
@@ -1168,24 +1260,33 @@ impl RelationEngine {
             let ib: std::collections::HashSet<u64> = groups[b].1.iter().flat_map(|&l| ids(l)).collect();
             ia.intersection(&ib).copied().collect()
         };
-        let mut sigs: std::collections::HashSet<u64> = std::collections::HashSet::new();
+        // D050: independence of shared cases is counted over the objects the two groups' laws
+        // connect (union of their relevant roles). Repeats of one binding count once; only for the
+        // query's own binding are distinct situations direct, separate evidence.
+        let mut roles: Vec<u8> = groups[a].1.iter().chain(groups[b].1.iter()).flat_map(|&l| self.laws[l].cond_roles()).collect();
+        roles.extend(query.arg_roles());
+        roles.sort_unstable();
+        roles.dedup();
+        let qk = query.binding_key(&roles);
+        let mut units: std::collections::HashSet<u64> = std::collections::HashSet::new();
         let mut sa: std::collections::HashSet<u64> = std::collections::HashSet::new();
         let mut sb: std::collections::HashSet<u64> = std::collections::HashSet::new();
         for e in shared {
             let ep = self.store.get(e);
-            let sig = ep.signature();
-            sigs.insert(sig);
+            let bk = ep.binding_key(&roles);
+            let unit = if bk == qk { hdc_core::rng::mix64(ep.signature(), 0xD050) } else { bk };
+            units.insert(unit);
             match ep.outcome(target) {
                 Some(o) if o == groups[a].0 => {
-                    sa.insert(sig);
+                    sa.insert(unit);
                 }
                 Some(o) if o == groups[b].0 => {
-                    sb.insert(sig);
+                    sb.insert(unit);
                 }
                 _ => {}
             }
         }
-        (sigs.len() as u32, sa.len() as u32, sb.len() as u32)
+        (units.len() as u32, sa.len() as u32, sb.len() as u32)
     }
 
     /// Diagnostic and evaluation view of a conflict for a query: for every pair of disagreeing
@@ -1197,7 +1298,7 @@ impl RelationEngine {
         self.augment(&mut aug);
         let m = self.matching(&aug, target);
         let mut by_val: Vec<(i64, Vec<usize>, i64)> = Vec::new();
-        for l in m.into_iter().filter(|&l| self.laws[l].applicable(ctx)) {
+        for l in m.into_iter().filter(|&l| self.laws[l].applicable(ctx) && self.binds(l, ctx, &aug)) {
             let Some(v) = self.laws[l].ctx(ctx).and_then(|e| e.majority()).map(|m| m.0) else { continue };
             match by_val.iter_mut().find(|x| x.0 == v) {
                 Some(x) => x.1.push(l),
@@ -1207,7 +1308,7 @@ impl RelationEngine {
         let mut out = Vec::new();
         for a in 0..by_val.len() {
             for b in (a + 1)..by_val.len() {
-                let (i, ra, rb) = self.shared_record(&by_val, a, b, ctx, target);
+                let (i, ra, rb) = self.shared_record(&by_val, a, b, ctx, target, &aug);
                 out.push((by_val[a].0, by_val[b].0, i, ra, rb));
             }
         }

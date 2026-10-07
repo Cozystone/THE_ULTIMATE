@@ -102,6 +102,7 @@ fn f2(seed: u64) -> (Score, Score) {
     for kind in [R0Kind::Equality, R0Kind::Order] {
         let mut w = R0World::new(kind, seed, "f2");
         let mut rel = RelationEngine::new(seed ^ 0xF2);
+        bm_bench::declare(&mut rel, bm_worlds::r0::ORDINAL);
         for _ in 0..600 {
             let (a, b, o) = w.intervene(Pool::Train);
             let ep = w.episode(&a, &b, o, EpKind::Intervention);
@@ -203,6 +204,7 @@ fn f5(seed: u64) -> (i64, i64, u32) {
     let mut w = GroundWorld::new(seed, 4, 4, setup, "f5");
     let mut g = Grounder::new(seed);
     let mut rel = RelationEngine::new(seed ^ 0xF5);
+    bm_bench::declare(&mut rel, bm_worlds::ground::ORDINAL);
     let mut cal = Calibration::default();
     let (mut raw, mut fixed) = (Vec::new(), Vec::new());
     let n = 4000;
@@ -240,6 +242,7 @@ fn f5(seed: u64) -> (i64, i64, u32) {
 fn f6(seed: u64) -> (f64, f64, f64, usize) {
     let mut w = R0World::new(R0Kind::Equality, seed, "f6");
     let mut rel = RelationEngine::new(seed ^ 0xF6);
+    bm_bench::declare(&mut rel, bm_worlds::r0::ORDINAL);
     for _ in 0..1000 {
         let (a, b, o) = w.intervene(Pool::Train);
         let ep = w.episode(&a, &b, o, EpKind::Intervention);
@@ -301,6 +304,7 @@ fn steps_to_competence(rel: &mut RelationEngine, seed: u64, label: &str) -> u32 
 
 fn f7(seed: u64) -> (u32, u32) {
     let mut experienced = RelationEngine::new(seed ^ 0xF7);
+    bm_bench::declare(&mut experienced, bm_worlds::r0::ORDINAL);
     let mut wa = R0World::new(R0Kind::Equality, seed ^ 0xA, "f7-room-A");
     for _ in 0..600 {
         let (a, b, o) = wa.intervene(Pool::Train);
@@ -309,6 +313,7 @@ fn f7(seed: u64) -> (u32, u32) {
     }
     let t = steps_to_competence(&mut experienced, seed ^ 0xB, "f7-room-B");
     let mut fresh = RelationEngine::new(seed ^ 0xF7);
+    bm_bench::declare(&mut fresh, bm_worlds::r0::ORDINAL);
     let s = steps_to_competence(&mut fresh, seed ^ 0xB, "f7-room-B");
     (t, s)
 }
@@ -317,6 +322,7 @@ fn f7(seed: u64) -> (u32, u32) {
 fn f8(seed: u64) -> (f64, f64, f64, f64) {
     let mut w = R0World::new(R0Kind::Equality, seed, "f8");
     let mut rel = RelationEngine::new(seed ^ 0xF8);
+    bm_bench::declare(&mut rel, bm_worlds::r0::ORDINAL);
     let mut obs = Vec::new();
     let mut pred = Vec::new();
     for _ in 0..2000 {
@@ -347,6 +353,7 @@ fn peak_working_set_mb() -> Option<f64> {
 }
 
 fn main() {
+    let started = std::time::Instant::now();
     let seeds: Vec<u64> = std::env::args().nth(1).map(|s| s.split(',').filter_map(|x| x.parse().ok()).collect()).unwrap_or(vec![1, 2, 3]);
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
     let t_all = Instant::now();
@@ -416,4 +423,5 @@ fn main() {
     println!("E-F OVERALL: {}  (wall {:.0} s)", if out.all { "PASS" } else { "FAIL" }, t_all.elapsed().as_secs_f64());
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../experiments/results/phase_f.json");
     std::fs::write(&path, format!("{{\"overall_pass\":{},\"gates\":[\n{}\n]}}", out.all, out.json.join(",\n"))).expect("write");
+    println!("{}", bm_bench::resources_line(started));
 }

@@ -34,7 +34,7 @@ pub fn to_episode(g: &Grounded) -> Option<Episode> {
         for &(ch, val) in &s.pre_states {
             fillers.push(Filler { ch, val });
         }
-        roles.push(Entity { fillers });
+        roles.push(Entity { fillers, binding: s.concept.map(|k| k as i64) });
         for &(ch, val) in &s.post_states {
             outcomes.push((target_id(r, ch), val));
         }
@@ -77,7 +77,7 @@ pub fn to_episode_scene(g: &Grounded) -> Option<Episode> {
         for &(ch, val) in &s.pre_states {
             fillers.push(Filler { ch, val });
         }
-        roles.push(Entity { fillers });
+        roles.push(Entity { fillers, binding: s.concept.map(|k| k as i64) });
         for &(ch, val) in &s.post_states {
             outcomes.push((target_id(r, ch), val));
             if let Some(&(_, pre)) = s.pre_states.iter().find(|x| x.0 == ch) {

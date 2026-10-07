@@ -5,10 +5,13 @@
 //! * XOR transform `T = val(a) ^ val(b)`: `T == 0` iff the fillers are equal (any value).
 //! * permutation offset `k` with `rho^k(val(a)) == val(b)` for the ordinal value code.
 //! No relation type is hand-coded per world; every channel and role pair is treated alike.
+//! D049: the permutation-offset transforms (order, offset) exist only for channels whose
+//! measurement level is ordinal; on nominal channels (names, identities, labels, hashes) only the
+//! identity transform (same / different) is defined.
 
 use crate::episode::Episode;
 use hdc_core::{find_offset, ordinal, Hv16k, ItemMemory};
-use std::collections::HashMap;
+use std::collections::{BTreeSet, HashMap};
 
 pub type H = Hv16k;
 pub const W: usize = 256;
@@ -118,7 +121,8 @@ impl Codebook {
     }
 
     /// Every role-structured feature of an episode.
-    pub fn features(&mut self, ep: &Episode) -> Vec<Feature> {
+    /// `ordinal`: channels on which order and offset are defined (D049).
+    pub fn features(&mut self, ep: &Episode, ordinal: &BTreeSet<u16>) -> Vec<Feature> {
         let mut out = Vec::new();
         for (r, ent) in ep.roles.iter().enumerate() {
             for f in &ent.fillers {
@@ -146,7 +150,7 @@ impl Codebook {
                     let hv = self.feature_hv(&kind);
                     out.push(Feature { kind, hv, transform: Some(t.clone()) });
                     // permutation group: offset mapping a's code onto b's code
-                    if !t.is_zero() {
+                    if !t.is_zero() && ordinal.contains(&ch) {
                         if let Some(k) = find_offset(&ha, &hb, self.max_offset, 0) {
                             let sign = if k > 0 { 1 } else { -1 };
                             let ok = FeatureKind::Order { r1: r1u, r2: r2u, ch, sign };

@@ -21,11 +21,20 @@ pub struct Filler {
 #[derive(Clone, Debug, Default, PartialEq, Eq, Hash)]
 pub struct Entity {
     pub fillers: Vec<Filler>,
+    /// D050: identity of the bound object, supplied by the producer (a grounded concept, a world
+    /// object). Used only to count evidence per relevant binding and to scope particular laws; it
+    /// never becomes a feature. `None` falls back to a hash of the fillers.
+    pub binding: Option<i64>,
 }
 
 impl Entity {
     pub fn new(pairs: &[(u16, i64)]) -> Self {
-        Entity { fillers: pairs.iter().map(|&(ch, val)| Filler { ch, val }).collect() }
+        Entity { fillers: pairs.iter().map(|&(ch, val)| Filler { ch, val }).collect(), binding: None }
+    }
+
+    /// An entity whose object identity is known to the producer.
+    pub fn bound(id: i64, pairs: &[(u16, i64)]) -> Self {
+        Entity { fillers: pairs.iter().map(|&(ch, val)| Filler { ch, val }).collect(), binding: Some(id) }
     }
 
     pub fn get(&self, ch: u16) -> Option<i64> {
@@ -64,6 +73,36 @@ impl Episode {
             for f in fs {
                 h = mix64(h, filler_fp(r as u8, f.ch, f.val));
             }
+        }
+        h
+    }
+
+    /// D050: the action's argument roles.
+    pub fn arg_roles(&self) -> Vec<u8> {
+        let n = if self.n_args == 0 { self.roles.len() } else { (self.n_args as usize).min(self.roles.len()) };
+        (0..n as u8).collect()
+    }
+
+    /// D050: identity of the object bound to role `r` (producer binding, else a filler hash).
+    pub fn role_binding(&self, r: usize) -> u64 {
+        match self.roles.get(r) {
+            Some(e) => match e.binding {
+                Some(b) => mix64(b as u64, 0xB1D0),
+                None => {
+                    let mut fs: Vec<&Filler> = e.fillers.iter().collect();
+                    fs.sort_by_key(|f| (f.ch, f.val));
+                    fs.iter().fold(0xB1D2u64, |h, f| mix64(h, filler_fp(0, f.ch, f.val)))
+                }
+            },
+            None => 0,
+        }
+    }
+
+    /// D050: key of the objects bound to `roles` (sorted, deduplicated by the caller).
+    pub fn binding_key(&self, roles: &[u8]) -> u64 {
+        let mut h = mix64(self.action as u64, 0xB1D1);
+        for &r in roles {
+            h = mix64(h, mix64(r as u64 + 1, self.role_binding(r as usize)));
         }
         h
     }

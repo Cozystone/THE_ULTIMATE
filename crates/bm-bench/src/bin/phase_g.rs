@@ -132,6 +132,7 @@ fn g1(seed: u64, out: &mut Out) {
         }
     };
     let mut a = Agent::new(seed);
+    bm_bench::declare(&mut a.rel, hw::OS_ORDINAL);
     let n = w.files.len();
     let held = held_pairs(w.rng(), n);
     let (mut pos, mut neg) = (Vec::new(), Vec::new());
@@ -189,6 +190,7 @@ fn g2(seed: u64, out: &mut Out) {
         }
     };
     let mut a = Agent::new(seed);
+    bm_bench::declare(&mut a.rel, hw::OS_ORDINAL);
     let n = w.names.len();
     let act = |w: &mut RoWorld| -> (u16, usize) {
         let f = w.rng().below(n as u64) as usize;
@@ -237,6 +239,7 @@ fn g2(seed: u64, out: &mut Out) {
 fn g3(seed: u64, out: &mut Out) {
     let mut w = LockWorld::new(seed, "g3");
     let mut rel = RelationEngine::new(seed ^ 0x63);
+    bm_bench::declare(&mut rel, hw::LOCK_ORDINAL);
     for _ in 0..1500 {
         let (k, l) = w.pair(false);
         let ep = w.episode(&k, &l);
@@ -324,6 +327,7 @@ fn g4(seed: u64, out: &mut Out) {
 }
 
 fn main() {
+    let started = std::time::Instant::now();
     let seeds: Vec<u64> = std::env::args().nth(1).map(|s| s.split(',').filter_map(|x| x.parse().ok()).collect()).unwrap_or(vec![101, 102]);
     let only = std::env::var("ONLY_G").ok();
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
@@ -350,4 +354,5 @@ fn main() {
     println!("E-G OVERALL: {}", if out.all { "PASS" } else { "FAIL" });
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../experiments/results/phase_g.json");
     std::fs::write(&path, format!("{{\"overall_pass\":{},\"gates\":[\n{}\n]}}", out.all, out.json.join(",\n"))).expect("write");
+    println!("{}", bm_bench::resources_line(started));
 }

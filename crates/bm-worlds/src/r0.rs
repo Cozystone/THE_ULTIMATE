@@ -12,6 +12,9 @@ pub const WEIGHT: u16 = 1;
 pub const SHAPE: u16 = 2;
 pub const ID: u16 = 3;
 pub const TARGET: u32 = 0;
+/// D049: channels this world's sensors report on an ordinal scale (weight is a magnitude;
+/// colour, shape and id are nominal).
+pub const ORDINAL: &[u16] = &[WEIGHT];
 pub const ACTION: u16 = 1;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -40,7 +43,7 @@ pub struct Ent {
 
 impl Ent {
     pub fn entity(&self) -> Entity {
-        Entity::new(&[(COLOUR, self.colour), (WEIGHT, self.weight), (SHAPE, self.shape), (ID, self.id)])
+        Entity::bound(self.id, &[(COLOUR, self.colour), (WEIGHT, self.weight), (SHAPE, self.shape), (ID, self.id)])
     }
 }
 

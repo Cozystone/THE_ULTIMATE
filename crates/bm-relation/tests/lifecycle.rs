@@ -142,20 +142,24 @@ fn property_world_splits_the_unconditional_relation() {
 #[test]
 fn relational_features_come_from_substrate_transforms() {
     let mut cb = Codebook::new(9);
+    let ord: std::collections::BTreeSet<u16> = [1u16].into_iter().collect();
     let e = ep("A", Entity::new(&[(1, 7)]), Entity::new(&[(1, 12)]), 0, Kind::Intervention);
-    let f = cb.features(&e);
+    let f = cb.features(&e, &ord);
+    // D049 failure case: on a nominal channel only same/different exists
+    let nominal = cb.features(&e, &std::collections::BTreeSet::new());
+    assert!(!nominal.iter().any(|x| matches!(x.kind, FeatureKind::Order { .. } | FeatureKind::Delta { .. })));
     assert!(f.iter().any(|x| x.kind == FeatureKind::Diff { r1: 0, r2: 1, ch: 1 }));
     assert!(f.iter().any(|x| x.kind == FeatureKind::Order { r1: 0, r2: 1, ch: 1, sign: 1 }));
     assert!(f.iter().any(|x| x.kind == FeatureKind::Delta { r1: 0, r2: 1, ch: 1, k: 5 }));
     // the same offset between other values yields the same feature vector (value independence)
     let e2 = ep("A", Entity::new(&[(1, 1000)]), Entity::new(&[(1, 1005)]), 0, Kind::Intervention);
-    let f2 = cb.features(&e2);
+    let f2 = cb.features(&e2, &ord);
     let d1 = f.iter().find(|x| matches!(x.kind, FeatureKind::Delta { .. })).unwrap();
     let d2 = f2.iter().find(|x| matches!(x.kind, FeatureKind::Delta { .. })).unwrap();
     assert_eq!(d1.hv, d2.hv);
     // equal fillers: XOR transform is exactly zero
     let e3 = ep("A", Entity::new(&[(1, 4)]), Entity::new(&[(1, 4)]), 0, Kind::Intervention);
-    let s = cb.features(&e3).into_iter().find(|x| matches!(x.kind, FeatureKind::Same { .. })).unwrap();
+    let s = cb.features(&e3, &ord).into_iter().find(|x| matches!(x.kind, FeatureKind::Same { .. })).unwrap();
     assert!(s.transform.unwrap().is_zero());
 }
 

@@ -466,6 +466,7 @@ fn links_os(seed: u64, out: &mut Out) {
         }
     };
     let mut a = Agent::new(seed, true);
+    bm_bench::declare(&mut a.rel, osw::ORDINAL);
     let n = w.files.len();
     let mut rng = hdc_core::Rng::new(seed ^ 0x05);
     let mut held: HashSet<(usize, usize)> = HashSet::new();
@@ -767,6 +768,7 @@ thread_local! {
 }
 
 fn main() {
+    let started = std::time::Instant::now();
     let seeds: Vec<u64> = std::env::args().nth(1).map(|s| s.split(',').filter_map(|x| x.parse().ok()).collect()).unwrap_or(vec![1, 2, 3]);
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
     for &seed in &seeds {
@@ -799,4 +801,5 @@ fn main() {
     println!("E-C OVERALL: {}", if out.all { "PASS" } else { "FAIL" });
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../experiments/results/phase_c.json");
     std::fs::write(&path, format!("{{\"overall_pass\":{},\"gates\":[\n{}\n]}}", out.all, out.json.join(",\n"))).expect("write");
+    println!("{}", bm_bench::resources_line(started));
 }

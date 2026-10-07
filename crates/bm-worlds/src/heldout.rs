@@ -32,6 +32,13 @@ pub const SIZE: u16 = 2;
 pub const LOC: u16 = 3;
 pub const CONTENT: u16 = 3;
 
+/// D049: ordinal sensor channels of the real-OS held-out worlds (size bucket).
+pub const OS_ORDINAL: &[u16] = &[SIZE];
+/// D049: LockWorld size is a magnitude; colour, shape and id are nominal.
+pub const LOCK_ORDINAL: &[u16] = &[SIZE_CH];
+/// D049: no MagnetWorld channel is a magnitude.
+pub const MAGNET_ORDINAL: &[u16] = &[];
+
 pub const RELOCATE: u16 = 4;
 pub const WRITE: u16 = 1;
 pub const LOCK: u16 = 5;
@@ -357,7 +364,7 @@ impl LockWorld {
 
     pub fn episode(&mut self, k: &Thing, l: &Thing) -> Episode {
         self.t += 1;
-        let ent = |x: &Thing| Entity::new(&[(COLOUR, x.colour), (SIZE_CH, x.size), (SHAPE, x.shape), (ID, x.id)]);
+        let ent = |x: &Thing| Entity::bound(x.id, &[(COLOUR, x.colour), (SIZE_CH, x.size), (SHAPE, x.shape), (ID, x.id)]);
         Episode {
             id: 0,
             t: self.t,

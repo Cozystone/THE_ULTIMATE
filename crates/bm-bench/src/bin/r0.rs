@@ -17,7 +17,7 @@ struct Learners {
 impl Learners {
     fn new(seed: u64) -> Self {
         Learners {
-            rel: RelationEngine::new(seed),
+            rel: { let mut r = RelationEngine::new(seed); bm_bench::declare(&mut r, bm_worlds::r0::ORDINAL); r },
             class: ClassLearner::new(seed ^ 1, false),
             class_lvl: ClassLearner::new(seed ^ 1, true),
             lookup: LookupLearner::new(seed ^ 2),
@@ -270,6 +270,7 @@ fn standard(kind: R0Kind, seed: u64, held_pool: Pool, classes: &[i64], report: &
 fn confound(seed: u64, report: &mut String, json: &mut Vec<String>) -> bool {
     let mut world = R0World::new(R0Kind::Confound, seed, "room-A");
     let mut rel = RelationEngine::new(seed ^ 0xC5);
+    bm_bench::declare(&mut rel, bm_worlds::r0::ORDINAL);
     for _ in 0..N_TRAIN {
         let (a, b, o) = world.passive();
         let ep = world.episode(&a, &b, o, Kind::Observation);
@@ -318,6 +319,7 @@ fn confound(seed: u64, report: &mut String, json: &mut Vec<String>) -> bool {
 fn negative_transfer(seed: u64, report: &mut String, json: &mut Vec<String>) -> bool {
     let mut wa = R0World::new(R0Kind::Equality, seed, "room-A");
     let mut lived = RelationEngine::new(seed ^ 0xC6);
+    bm_bench::declare(&mut lived, bm_worlds::r0::ORDINAL);
     for _ in 0..N_TRAIN {
         let (a, b, o) = wa.intervene(Pool::Train);
         let ep = wa.episode(&a, &b, o, Kind::Intervention);
@@ -327,6 +329,7 @@ fn negative_transfer(seed: u64, report: &mut String, json: &mut Vec<String>) -> 
     // room-B: same entities and channels, inverted law, different observable context
     let mut wb = R0World::new(R0Kind::Inverted, seed, "room-B");
     let mut naive = RelationEngine::new(seed ^ 0xC6);
+    bm_bench::declare(&mut naive, bm_worlds::r0::ORDINAL);
     let (mut lived_s, mut ablate_s, mut naive_s) = (Score::default(), Score::default(), Score::default());
     let (mut lived_first, mut naive_first) = (None, None);
     let n_b = 400;
@@ -380,6 +383,7 @@ fn negative_transfer(seed: u64, report: &mut String, json: &mut Vec<String>) -> 
 }
 
 fn main() {
+    let started = std::time::Instant::now();
     let seeds: Vec<u64> = std::env::args().nth(1).map(|s| s.split(',').filter_map(|x| x.parse().ok()).collect()).unwrap_or(vec![1, 2, 3]);
     let mut report = String::new();
     let mut json = Vec::new();
@@ -418,4 +422,5 @@ fn main() {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../experiments/results/r0.json");
     std::fs::write(&path, format!("{{\"overall_pass\":{all},\"runs\":[\n{}\n]}}", json.join(",\n"))).expect("write");
     println!("saved {}", path.display());
+    println!("{}", bm_bench::resources_line(started));
 }

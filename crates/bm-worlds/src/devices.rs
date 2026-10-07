@@ -18,6 +18,8 @@ pub const KIND: u16 = 0;
 pub const COLOUR: u16 = 1;
 pub const MARK: u16 = 2;
 pub const ON: u16 = 3;
+/// D049: no device channel is a magnitude.
+pub const ORDINAL: &[u16] = &[];
 
 pub const WAIT: u16 = 0;
 pub const TOGGLE: u16 = 1;
