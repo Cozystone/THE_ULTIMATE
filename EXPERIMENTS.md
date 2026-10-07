@@ -604,3 +604,37 @@ diagnosed. Per the pre-registered reporting rule nothing in the learner was chan
 
 ## v0.2
 Pre-registration: `experiments/PREREG-v0.2.md` (committed before any v0.2 learner change).
+
+### v0.2 regression of record (round 3, learner `cb397cb`; raw output `experiments/results/v02reg3/`)
+Earlier rounds kept as evidence:
+* `v02reg_pre_d050a/`: D049-D051 build; abstention collapse, which led to D050a and D051a.
+* `v02reg/`: round 1, D050a/D051a/D053, the K1/K4 record.
+* `v02reg2/`: D054 with the compaction fault, stopped and superseded by D054e.
+
+| phase | seeds | round 3 result |
+|---|---|---|
+| R0 | 1-25 | PASS |
+| B | 1-25 | PASS 200/200 |
+| C | 46-60 | every gate PASS on every seed except C4b-2 power: FAIL (2 saved abstentions in total; after K1/K4 conflicts barely arise here) |
+| D | 1-15 | PASS |
+| E | 46-60 | 14/15: seed 54 E1 door 350/392 (89.3%), all misses abstentions from MDL selection cost (DECISIONS) |
+| F | 1-15 and 101-115 | PASS on both (the v0.1 F1 replication failure is fixed by D052) |
+| G1-G4 | 101-115 | 15/15 each |
+
+Totals over 15 seeds:
+
+| test | correct | wrong | abstain | note |
+|---|---|---|---|---|
+| G1 (397) | 394 | 1 | 2 | |
+| G2 (4,500) | 0 | 0 | 4,500 | unchanged: no history-dependent latent state |
+| G3 (4,500) | 4,500 | 0 | 0 | |
+| G4 (400) | 400 | 0 | 0 | development data; v0.1: 25 wrong |
+| C4a (690) | 681 | 0 | 9 | |
+| C4b-1, never-probed real-OS pairs (385) | 379 | 1 | 5 | |
+| F1 seeds 101-115, 30% missing, after sleep (3,000) | 2,998 | 0 | 2 | |
+| F1 seeds 101-115, 30% missing, without sleep (3,000) | 2,920 | 14 | 66 | |
+
+Peak working set:
+* real-OS C chunks 2.1-4.6 GB (v0.1: ~10 GB);
+* G chunks ~3.8 GB (real-OS G1/G2);
+* everything else < 0.5 GB.
