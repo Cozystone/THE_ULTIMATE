@@ -560,3 +560,27 @@ C4b two-stage outcome, stated plainly:
   The honest state is: the engine keeps not-knowing as not-knowing; it has not yet been shown to
   convert new shared evidence into answers on real-OS conflicts. The mechanism itself is shown in
   the unit test (D041a).
+
+## Phase G: independent replication on held-out worlds (pre-registration, before any Phase G run)
+
+Baseline: git tag `bitmind-v0.1`. From this tag on, the learner crates (`hdc-core`, `bm-relation`,
+`bm-memory`, `bm-agent`) are frozen: no change is allowed during Phase G, whatever the results.
+Only world adapters (`bm-worlds/src/heldout.rs`) and the harness (`bm-bench/src/bin/phase_g.rs`)
+are new; both were written after the freeze, and none of the four worlds was used while the learner
+was developed. A harness smoke test on seed 999 (not a formal seed) checks only that the binary
+runs; its numbers are not used to change any criterion. Formal seeds 101-115.
+
+| gate | world | criterion |
+|---|---|---|
+| G1 | real OS: files share hidden folders; RELOCATE(a,b) renames a's folder, b's sensed location changes iff same folder | never-probed pairs whose answer is established by the training evidence (and not an unresolved conflict): >= 90% correct; all never-probed pairs <= 5% wrong |
+| G2 | real OS, exploratory: hidden read-only attribute set and cleared by the agent's own actions, never sensed; WRITE changes content iff writable | never confidently wrong: <= 5% wrong; accuracy reported only (the v0.1 learner has no history-dependent latent state, so abstention is the expected honest outcome) |
+| G3 | microworld: key opens lock iff same colour AND key smaller; test colours and sizes disjoint from training | >= 95% correct, <= 1% wrong |
+| G4 | grounded microworld: hidden polarity, PROBE(a,b) flips b iff polarities differ (anti-equivalence) | at least one licensed latent law; established never-probed pairs >= 90% correct; <= 5% wrong |
+| G5 | Phase F battery replicated on new seeds 101-115 | Phase F criteria unchanged |
+
+"Established" oracle (fixed now): a same-class answer is established if the two objects are
+connected by trained positive pairs; a different-class answer is established if some trained probe
+connected their two components.
+
+Reporting rule: every gate on every seed is reported. A failure leads to a recorded diagnosis, not
+to a learner change in Phase G; any fix belongs to a later version with its own fresh held-out test.
