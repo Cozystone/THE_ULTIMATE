@@ -391,7 +391,11 @@ pub struct MagnetWorld {
 impl MagnetWorld {
     pub fn new(seed: u64, n: usize, label: &str) -> Self {
         let mut rng = Rng::new(seed);
-        let toks = (0..n).map(|i| (rng.below(4) as i64, 300 + i as i64, 0, (i % 2) as i64)).collect();
+        // polarity: a random balanced assignment, unrelated to the mark (an index-parity
+        // assignment leaked the hidden cause into mark differences; found in the smoke test)
+        let mut pol: Vec<i64> = (0..n).map(|i| (i % 2) as i64).collect();
+        rng.shuffle(&mut pol);
+        let toks = (0..n).map(|i| (rng.below(4) as i64, 300 + i as i64, 0, pol[i])).collect();
         MagnetWorld { toks, context: context_of(label), rng, t: 0, visible: 4 }
     }
 

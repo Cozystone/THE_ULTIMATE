@@ -584,3 +584,8 @@ connected their two components.
 
 Reporting rule: every gate on every seed is reported. A failure leads to a recorded diagnosis, not
 to a learner change in Phase G; any fix belongs to a later version with its own fresh held-out test.
+
+Smoke test (seed 999, harness only): all four gates ran. It exposed a world bug: MagnetWorld set
+polarity from index parity while marks are 300 + index, so mark differences revealed the hidden
+cause (G4 answered 33/37 with no latent law). Polarity is now a random balanced assignment. No
+criterion was changed. Formal seeds 101-115 follow.
