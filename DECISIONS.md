@@ -689,3 +689,50 @@ idempotent. It is part of the system's sleep; F1 now runs after it (PREREG amend
 Tests: mechanism (changes stale groundings, idempotent, never degrades recall); outcome on the F1
 world seed 101: without sleep 178 ok / 4 wrong / 18 abstain, with consolidation 199 / 0 / 1.
 `EventMemory::recall_trace` (read-only) was added for the diagnosis.
+
+## D050a Transfer novelty of a general law is a new situation of its relevant objects (v0.2, 2026-10-07)
+Evidence: v0.2 regression on the D049-D051 build (`experiments/results/v02reg/`). Everything that
+failed was an abstention, never a wrong answer:
+* E1 overall door accuracy fell to 43-90%;
+* C1 answered 150 of 750 untrained combinations;
+* C2 abstained on seeds 50, 51, 55 and 60;
+* D3: the epistemic agent licensed nothing.
+In the 5-device worlds, D050's transfer novelty (a relevant binding the law has never seen) runs out
+after two new devices, so the transfer gate (3 successes) could never be met.
+Choice: a general law's held-out case is a situation of its relevant objects (all fillers of its
+relevant roles, bystanders excluded) that it has never been supported by. Independence stays
+counted by distinct bindings (the K4 fix). A particular law keeps whole-situation novelty.
+Result on development checks:
+* E seeds 46, 47, 52 pass (door 100%);
+* C seeds 46 and 50: C1, C2, C3, C4a, C4b-1 and C5 pass;
+* G4: 400/400, 0 wrong.
+
+## D051a Every target of a slot gets a latent hypothesis; the gates decide (v0.2, 2026-10-07; replaces D051's selection)
+Evidence: with D051 the D1 active agent on seed 4 never learned (0% after 1,500 steps).
+D051 waits for >= 10 repeated pairs, and an epistemic agent avoids repeats, so no inducer was ever
+enabled.
+Choice: when a slot triggers latent induction, an inducer is enabled for every target of the slot
+(value and change flag). No selection is made; a partition that explains nothing licenses nothing.
+A latent law for the value target that is genuinely true (e.g. prior state 0 and different latent
+class gives value 1) is allowed. `pair_repeatability` stays as a diagnostic.
+Test: on never-probed pairs no answer for either target is wrong and the change flag is answered
+for >= 75% of pairs; with random outcomes no latent law is licensed.
+Development: G4 400/400, 0 wrong; D seeds 1-5 and 13 pass (active 250-350 steps vs random
+450-700).
+
+## D053 Behaviour-neutral compaction (K2 stage 1, v0.2, 2026-10-07)
+Evidence (`v02_k2_c4b_seed58.err`): after 3,000 real-OS probes, 231,253 laws held three inline
+2 KB hypervectors each (~1.4 GB). The per-law filler-novelty sets held 69 million entries (~1 GB)
+that nothing reads since D050.
+Choice: a law keeps a 64-bit condition fingerprint. The condition vector, transform code and
+predicted-effect vector are recomputed on demand; item vectors depend only on (seed, name), so
+skipping their creation changes nothing. The unread sets are removed.
+Verification: outputs of R0 1-3, B 1-2, E 46, G3/G4 101-102 and F 1 are identical apart from
+resource lines.
+
+| run | peak before | peak after |
+|---|---|---|
+| G | 739 MB | 316 MB |
+| B | 198 MB | 92 MB |
+| F | 200 MB | 106 MB |
+| real-OS C4b training | 4.8 GB | 2.27 GB |

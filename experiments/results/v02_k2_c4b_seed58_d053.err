@@ -1,0 +1,11 @@
+K2 seed 58 after training (3000 probes): est 743 MB ws 2273 MB laws 231253
+K2   situation-key sets                   12629130 items      192 MB
+K2   relevant-situation sets              12627968 items      192 MB
+K2   binding-key sets                      8642059 items      131 MB
+K2   bin episode lists                    12629130 items       96 MB
+K2   laws (headers incl. inline fields, condition lists)     231253 items       49 MB
+K2   per-context evidence records           231253 items       35 MB
+K2   transfer trial records                1485329 items       33 MB
+K2   law index                              231253 items        5 MB
+K2   per-episode feature lists              245384 items        3 MB
+K2   stored episodes (fillers)                2900 items        2 MB

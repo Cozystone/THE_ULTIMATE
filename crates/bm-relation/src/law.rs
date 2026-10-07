@@ -1,6 +1,6 @@
 //! RelationLaw and its licensing lifecycle (ARCHITECTURE 2.4).
 
-use crate::features::{FeatureKind, H};
+use crate::features::FeatureKind;
 use hdc_core::fixed::{log2_q16, Q};
 use hdc_core::Evidence;
 use std::collections::HashSet;
@@ -102,6 +102,9 @@ pub struct OutcomeBin {
     pub signatures: HashSet<u64>,
     /// D050: relevant-binding keys (the objects the law connects): independence of a general law.
     pub bindings: HashSet<u64>,
+    /// D050a: relevant-situation keys (fillers of the relevant roles, bystanders excluded):
+    /// transfer novelty of a general law.
+    pub rsits: HashSet<u64>,
     /// Episode ids (lineage). Capped; `count` stays exact.
     pub episodes: Vec<u64>,
 }
@@ -138,7 +141,6 @@ impl TransferRecord {
 pub struct CtxEvidence {
     pub context: u64,
     pub bins: Vec<OutcomeBin>,
-    pub fillers_seen: HashSet<u64>,
     /// Prequential bits saved versus the best competitor, all live episodes.
     pub utility_q16: i64,
     /// Same, interventions only (gate 2).
@@ -160,7 +162,6 @@ impl CtxEvidence {
         CtxEvidence {
             context,
             bins: Vec::new(),
-            fillers_seen: HashSet::new(),
             utility_q16: 0,
             utility_int_q16: 0,
             transfer: TransferRecord::default(),
@@ -211,12 +212,13 @@ impl CtxEvidence {
         self.majority_bin().and_then(|b| if b.bindings.len() == 1 { b.bindings.iter().next().copied() } else { None })
     }
 
-    /// D050: a held-out case for this law: a new relevant binding (general law) or, for a
-    /// particular law, a new situation of its own binding.
-    pub fn new_case(&self, binding: u64, sig: u64) -> bool {
+    /// D050/D050a: a held-out case for this law. General law: a situation of its relevant
+    /// objects (their fillers, bystanders excluded) it has never been supported by. Particular law:
+    /// a new situation of its own binding, background included.
+    pub fn new_case(&self, rsit: u64, sig: u64) -> bool {
         match self.particular() {
             Some(_) => !self.bins.iter().any(|b| b.signatures.contains(&sig)),
-            None => !self.bins.iter().any(|b| b.bindings.contains(&binding)),
+            None => !self.bins.iter().any(|b| b.rsits.contains(&rsit)),
         }
     }
 
@@ -233,7 +235,7 @@ impl CtxEvidence {
         log2_q16(self.total() as u64 + alphabet) - log2_q16(self.count_of(actual) as u64 + 1)
     }
 
-    pub fn add(&mut self, val: i64, episode: u64, binding: u64, sig: u64, intervention: bool, fps: &[u64], t: u64) {
+    pub fn add(&mut self, val: i64, episode: u64, binding: u64, rsit: u64, sig: u64, intervention: bool, t: u64) {
         let pos = match self.bins.iter().position(|b| b.val == val) {
             Some(p) => p,
             None => {
@@ -243,6 +245,7 @@ impl CtxEvidence {
                     interventions: 0,
                     signatures: HashSet::new(),
                     bindings: HashSet::new(),
+                    rsits: HashSet::new(),
                     episodes: Vec::new(),
                 });
                 self.bins.len() - 1
@@ -255,11 +258,9 @@ impl CtxEvidence {
         }
         b.signatures.insert(sig);
         b.bindings.insert(binding);
+        b.rsits.insert(rsit);
         if b.episodes.len() < EP_CAP {
             b.episodes.push(episode);
-        }
-        for &f in fps {
-            self.fillers_seen.insert(f);
         }
         self.last_t = t;
     }
@@ -314,11 +315,10 @@ pub struct RelationLaw {
     pub action: u16,
     /// Symbolic mirror of the condition, for lineage and the realizer.
     pub condition: Vec<FeatureKind>,
-    pub condition_hv: H,
-    /// Canonical transform code of the relational part (zero = identity / absolute law).
-    pub transformation_hv: H,
-    /// target bound with the majority outcome code (refreshed on evaluation).
-    pub predicted_effect_hv: H,
+    /// D053: fingerprint of the condition hypervector (the index key). The vector itself, the
+    /// relational transform code and the predicted-effect vector are recomputed on demand from
+    /// the symbolic condition (`RelationEngine::condition_hv`, `predicted_effect_hv`).
+    pub condition_fp: u64,
     pub ctx: Vec<CtxEvidence>,
     pub lineage: Lineage,
     pub competing: Vec<usize>,

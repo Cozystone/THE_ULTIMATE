@@ -193,43 +193,71 @@ fn an_identity_channel_declared_ordinal_is_vetoed() {
     assert!(label_arithmetic(&e).is_empty(), "licensed label arithmetic: {:?}", label_arithmetic(&e));
 }
 
-/// D051 (K3): the latent inducer attaches to the target the pair determines. Two targets of the
-/// same slot: the change flag (balanced, a function of hidden classes of the pair) and the
-/// after-state value (balanced, it also depends on the prior state). Failure case: when no target
-/// is a function of the pair, no inducer is enabled.
+/// D051a (K3): every target of a slot gets a latent hypothesis, and the licensing gates decide.
+/// Two targets of one slot: the change flag (a function of hidden classes of the pair) and the
+/// after-state value (prior state XOR change). On never-probed pairs both targets must be answered
+/// without a single wrong answer, and the change flag must be answered for most pairs. Failure
+/// case: when no target is a function of the pair, no latent law is licensed for either.
 #[test]
-fn latent_induction_attaches_to_the_pair_determined_target() {
+fn latent_hypotheses_compete_and_held_out_pairs_are_never_answered_wrongly() {
     const IDC: u16 = 9;
-    let run = |pair_determined: bool| -> Vec<u32> {
+    let class: Vec<i64> = (0..12).map(|i| (i * 7 % 12 % 2) as i64).collect();
+    let held: Vec<(usize, usize)> = vec![(0, 5), (3, 8), (6, 1), (9, 2), (4, 11), (7, 10), (2, 3), (11, 0)];
+    let mk = |a: usize, b: usize, sa: i64, sb: i64, after: i64, change: i64| Episode {
+        id: 0,
+        t: 0,
+        context: context_of("L"),
+        source: 0,
+        action: 3,
+        roles: vec![Entity::bound(a as i64, &[(IDC, a as i64), (2, sa)]), Entity::bound(b as i64, &[(IDC, b as i64), (2, sb)])],
+        n_args: 2,
+        // role 1, channel 2: value target 10002 and change target 15002
+        outcomes: vec![(10002, after), (15002, change)],
+        kind: Kind::Intervention,
+    };
+    let run = |pair_determined: bool| -> (RelationEngine, Vec<i64>) {
         let mut rng = Rng::new(23);
         let mut e = RelationEngine::new(6);
         e.identity_channel = Some(IDC);
-        let class: Vec<i64> = (0..12).map(|i| (i * 7 % 12 % 2) as i64).collect();
         let mut state = vec![0i64; 12];
-        for _ in 0..1200 {
+        let mut fed = 0;
+        while fed < 1500 {
             let p = rng.sample_distinct(12, 2);
             let (a, b) = (p[0], p[1]);
+            if held.contains(&(a, b)) {
+                continue;
+            }
             let change = if pair_determined { (class[a] != class[b]) as i64 } else { rng.below(2) as i64 };
             let before = state[b];
             state[b] ^= change;
-            let ea = Entity::bound(a as i64, &[(IDC, a as i64), (2, state[a])]);
-            let eb = Entity::bound(b as i64, &[(IDC, b as i64), (2, before)]);
-            let episode = Episode {
-                id: 0,
-                t: 0,
-                context: context_of("L"),
-                source: 0,
-                action: 3,
-                roles: vec![ea, eb],
-                n_args: 2,
-                // role 1, channel 2: value target 10002 and change target 15002
-                outcomes: vec![(10002, state[b]), (15002, change)],
-                kind: Kind::Intervention,
-            };
-            e.observe(episode);
+            e.observe(mk(a, b, state[a], before, state[b], change));
+            fed += 1;
         }
-        e.latent.iter().map(|l| l.target).collect()
+        (e, state)
     };
-    assert_eq!(run(true), vec![15002], "inducer must attach to the change flag");
-    assert!(run(false).is_empty(), "no pair-determined target: no latent hypothesis");
+    let (mut e, state) = run(true);
+    assert!(e.latent.iter().any(|l| l.target == 15002) && e.latent.iter().any(|l| l.target == 10002), "both targets get a hypothesis");
+    let (mut ok_c, mut wrong) = (0, 0);
+    for &(a, b) in &held {
+        let change = (class[a] != class[b]) as i64;
+        let q = mk(a, b, state[a], state[b], 0, 0).without_outcomes();
+        match e.predict(&q, 15002).value() {
+            Some(v) if v == change => ok_c += 1,
+            Some(_) => wrong += 1,
+            None => {}
+        }
+        match e.predict(&q, 10002).value() {
+            Some(v) if v != state[b] ^ change => wrong += 1,
+            _ => {}
+        }
+    }
+    assert_eq!(wrong, 0, "a held-out pair was answered wrongly");
+    assert!(ok_c * 4 >= held.len() * 3, "change flag answered for {ok_c}/{} held-out pairs", held.len());
+    let (e, _) = run(false);
+    let latent_licensed = e
+        .laws
+        .iter()
+        .filter(|l| l.ctx.iter().any(|c| c.status == Status::Licensed))
+        .any(|l| l.condition.iter().any(|f| matches!(f, FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } if *ch >= 3000)));
+    assert!(!latent_licensed, "random outcomes: no latent law may be licensed");
 }

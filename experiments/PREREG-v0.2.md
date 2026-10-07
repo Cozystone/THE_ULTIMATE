@@ -168,3 +168,18 @@ abstentions.
 Change: the learner gets a sleep-time consolidation (D052) that re-grounds stored events from their
 raw records. The F1 protocol becomes "experience, the system's sleep consolidation, then recall";
 the v0.1 no-sleep numbers are reported alongside on every seed. Criteria unchanged.
+
+## Amendment 3 (2026-10-07, before the v0.2 regression of record and before any held-out world exists)
+Development showed three design corrections, recorded with evidence in DECISIONS:
+* **D050a.** Transfer novelty of a general law is a new situation of its relevant objects, not a
+  new binding: binding novelty runs out in small worlds. Independence is still counted by distinct
+  bindings.
+* **D051a.** Latent induction enables a hypothesis for every target of a slot, replacing
+  single-target selection.
+* **D053.** Behaviour-neutral memory compaction, verified by identical outputs.
+
+The regression of record is run on the build containing all three; earlier regression output in
+`experiments/results/v02reg/` documents the failures that led to D050a and D051a.
+C4b note: after K1/K4 no licensed-law conflicts arise in the real-OS link world (0 saved
+abstentions on development seeds), so C4b-2 cannot be exercised there. Its power gate will be
+reported as FAIL (not demonstrated); reachable conflicts are the purpose of held-out H4.

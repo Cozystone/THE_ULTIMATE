@@ -107,6 +107,21 @@ impl Episode {
         h
     }
 
+    /// D050a: the situation of the objects bound to `roles` (their fillers), bystanders excluded.
+    pub fn situation_key(&self, roles: &[u8]) -> u64 {
+        let mut h = mix64(self.action as u64, 0x5175);
+        for &r in roles {
+            if let Some(e) = self.roles.get(r as usize) {
+                let mut fs: Vec<&Filler> = e.fillers.iter().collect();
+                fs.sort_by_key(|f| (f.ch, f.val));
+                for f in fs {
+                    h = mix64(h, filler_fp(r, f.ch, f.val));
+                }
+            }
+        }
+        h
+    }
+
     /// Fingerprints of every (role, channel, value).
     pub fn filler_fps(&self) -> Vec<u64> {
         let mut v = Vec::new();

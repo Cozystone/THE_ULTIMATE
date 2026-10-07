@@ -1,0 +1,29 @@
+
+===== seed 50
+  C1 untrained combinations  PASS  seed 50: 150 unseen (state, action) combinations x 5 devices: correct 750 wrong 0 abstain 0 of 750
+  C2 intervention vs observation PASS  seed 50: passive P(L=I) = 420/556; do(TOGGLE indicator) lamp-change: causal model correct 200 wrong 0 abstain 0 of 200; association model lamp=indicator correct 101 wrong 99 abstain 0 of 200; laws licensed from passive WAIT 0
+  C5 counterfactual          PASS  seed 50: 'had I toggled the switch instead, would the lamp have changed?' correct 200 wrong 0 abstain 0 of 200
+      edge #46 act1 : true => t5003 => Some(1) | LICENSED | n=883 counter=0 indep=5 int=883 transfer 7/7 utility 1380b (int 1380b) origin Generated
+      edge #102 act1 : r1.c3=0 => t10003 => Some(0) | LICENSED | n=504 counter=0 indep=5 int=504 transfer 7/7 utility 342b (int 342b) origin Generated
+      edge #138 act1 : true => t15003 => Some(0) | LICENSED | n=883 counter=0 indep=5 int=883 transfer 7/7 utility 873b (int 873b) origin Generated
+      edge #231 act1 : r0.c0=13 => t25003 => Some(0) | LICENSED | n=210 counter=0 indep=28 int=210 transfer 25/25 utility 48b (int 48b) origin Generated
+      edge #296 act1 : r3.c3=1 => t30003 => Some(1) | LICENSED | n=420 counter=0 indep=5 int=420 transfer 6/6 utility 374b (int 374b) origin Generated
+      edge #322 act1 : true => t35003 => Some(0) | LICENSED | n=883 counter=0 indep=5 int=883 transfer 7/7 utility 1380b (int 1380b) origin Generated
+      phase-1 law now: #1208 act2 : true => t15003 => Some(1) | REVOKED | n=596 counter=190 indep=16 int=406 transfer 13/14 utility 393b (int 393b) origin Generated
+      conditional law: #1223 act2 : r2.c3=1 => t15003 => Some(1) | LICENSED | n=406 counter=0 indep=16 int=406 transfer 13/13 utility 75b (int 75b) origin Generated
+  C3 hidden condition        PASS  seed 50: phase-1 licensed unconditional laws 1 ["#1208 act2 : true => t15003 => Some(1) | LICENSED | n=205 counter=0 indep=16 int=205 transfer 13/13 utility 310b (int 310b) origin Generated"]; withdrawn after Some(3) phase-2 events; power-conditioned licensed laws 1 (refined lineage false); USE with random power: correct 200 wrong 0 abstain 0 of 200
+      latent law: #26727 act3 : same(r0,r1;c3015) => t15003 => Some(1) | LICENSED | n=80 counter=0 indep=15 int=80 transfer 57/57 utility 39b (int 39b) origin Generated
+      latent law: #32372 act3 : r1.c3=1 & diff(r0,r1;c3017) => t10003 => Some(1) | LICENSED | n=332 counter=0 indep=122 int=332 transfer 232/232 utility 78b (int 78b) origin Refined { parent: 29352 }
+      latent law: #33437 act3 : same(r0,r1;c3017) => t15003 => Some(1) | LICENSED | n=125 counter=0 indep=23 int=125 transfer 96/96 utility 81b (int 81b) origin Generated
+      latent partitions (block classes, link classes) = (6, 7) for 7 hidden classes
+  C4a latent cause (micro)   PASS  seed 50: never-probed pairs (2 positive, 46 negative): all correct 48 wrong 0 abstain 0 of 48; oracle-feasible correct 48 wrong 0 abstain 0 of 48; licensed laws over latent channels 11
+      ablation without latent induction: correct 0 wrong 0 abstain 48 of 48
+  C4b-1 abstain without evidence FAIL  seed 50: never-probed pairs (4 same-file, 24 different): all correct 23 wrong 0 abstain 5 of 28; feasible without unresolved conflict correct 23 wrong 0 abstain 5 of 28; content-collision situations (reported, not gated) correct 0 wrong 0 abstain 8 of 8; situations with conflicting licensed laws 0: answered 0 (correct 0, wrong 0, while unsettled 0), saved abstentions 0
+  C4b-2 learn from new evidence PASS  seed 50: saved abstentions 0; after 0 further probes (0 chosen to test an open conflict): answered 0 (correct 0, wrong 0; settled by >= 3 shared 0, dissolved by counterevidence 0, by latent partition revision 0, other 0), premature answers 0; []
+      OS inducer target 10003 partitions (12, 11) versions (3, 19) observations 2840
+      OS inducer target 3 partitions (12, 11) versions (2, 6) observations 840
+      OS true groups 7 for 12 files
+  C4b-2 power (all seeds)    FAIL  saved abstentions 0; answered after the conflict was settled by >= 3 independent shared situations 0, of them correct 0 (>= 30 such cases needed for the stage-2 claim)
+
+E-C OVERALL: FAIL
+resources: wall 116.2 s, peak working set 2145 MB

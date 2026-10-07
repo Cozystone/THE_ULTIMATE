@@ -491,6 +491,14 @@ fn links_os(seed: u64, out: &mut Out) {
         a.feed(ev);
         fed += 1;
     }
+    if std::env::var("K2_REPORT").is_ok() {
+        let rep = a.rel.memory_report();
+        let total: u64 = rep.iter().map(|x| x.2).sum();
+        eprintln!("K2 seed {seed} after training (3000 probes): est {} MB ws {} MB laws {}", total / 1048576, bm_bench::peak_working_set_mb().unwrap_or(-1.0) as u64, a.rel.laws.len());
+        for (name, n, b) in &rep {
+            eprintln!("K2   {name:<34} {n:>10} items {:>8} MB", b / 1048576);
+        }
+    }
     // ---- stage 1: never-probed pairs and ambiguous (content-collision) situations.
     // Every query is scored; every abstention caused by an unresolved conflict is saved.
     let mut saved: Vec<Case> = Vec::new();
@@ -601,6 +609,11 @@ fn links_os(seed: u64, out: &mut Out) {
         let Ok((ev, _)) = w.step(Some((osw::PROBE, vec![i, j]))) else { break };
         a.feed(ev);
         fed2 += 1;
+        if std::env::var("K2_REPORT").is_ok() && fed2 % 1000 == 0 {
+            let rep = a.rel.memory_report();
+            let total: u64 = rep.iter().map(|x| x.2).sum();
+            eprintln!("K2 seed {seed} probes {} est {} MB ws {} MB: {:?}", 3000 + fed2, total / 1048576, bm_bench::peak_working_set_mb().unwrap_or(-1.0) as u64, rep.iter().take(5).map(|x| (x.0, x.1, x.2 / 1048576)).collect::<Vec<_>>());
+        }
         if fed2 % 100 == 0 {
             for (k, c) in saved.iter().enumerate() {
                 if answered[k].is_some() {

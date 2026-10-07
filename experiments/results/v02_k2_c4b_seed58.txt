@@ -1,0 +1,11 @@
+
+===== seed 58
+  C4b-1 abstain without evidence FAIL  seed 58: never-probed pairs (3 same-file, 25 different): all correct 25 wrong 0 abstain 3 of 28; feasible without unresolved conflict correct 25 wrong 0 abstain 3 of 28; content-collision situations (reported, not gated) correct 0 wrong 0 abstain 8 of 8; situations with conflicting licensed laws 0: answered 0 (correct 0, wrong 0, while unsettled 0), saved abstentions 0
+  C4b-2 learn from new evidence PASS  seed 58: saved abstentions 0; after 0 further probes (0 chosen to test an open conflict): answered 0 (correct 0, wrong 0; settled by >= 3 shared 0, dissolved by counterevidence 0, by latent partition revision 0, other 0), premature answers 0; []
+      OS inducer target 10003 partitions (12, 11) versions (4, 15) observations 2820
+      OS inducer target 3 partitions (12, 10) versions (3, 11) observations 1260
+      OS true groups 7 for 12 files
+  C4b-2 power (all seeds)    FAIL  saved abstentions 0; answered after the conflict was settled by >= 3 independent shared situations 0, of them correct 0 (>= 30 such cases needed for the stage-2 claim)
+
+E-C OVERALL: FAIL
+resources: wall 136.0 s, peak working set 4798 MB

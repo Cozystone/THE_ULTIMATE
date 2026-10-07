@@ -247,37 +247,18 @@ impl RelationEngine {
             }
             let n = self.unexplained.entry((ep.action, t, ep.context)).or_insert(0);
             *n += 1;
-            // D051: decide once enough repeated pairs exist (re-checked every 20 episodes)
-            if *n >= 60 && (*n - 60) % 20 == 0 {
+            if *n == 60 {
                 let licensed = self.laws.iter().any(|l| l.target == t && l.action == ep.action && l.applicable(ep.context));
                 let same_slot = self.latent.iter().any(|l| l.action == ep.action && l.target / 10_000 == t / 10_000 && l.target % 1000 == t % 1000);
                 if !licensed && !same_slot {
-                    // D051 (replaces D038a): a latent pair cause predicts that the outcome is a
-                    // function of the pair. Among this slot's targets, choose the one whose outcome
-                    // repeats for a repeated pair most often beyond chance; wait until >= 10
-                    // repeated pairs exist.
-                    let ctx = ep.context;
-                    let mut best: Option<(i64, u32)> = None;
-                    let mut enough = false;
-                    for &(t2, _) in &ep.outcomes {
-                        if t2 / 10_000 != t / 10_000 || t2 % 1000 != t % 1000 {
-                            continue;
-                        }
-                        if let Some((score, repeats)) = self.pair_repeatability(ep.action, ctx, t2, idc) {
-                            if repeats >= 10 {
-                                enough = true;
-                                if best.map(|b| score > b.0 || (score == b.0 && t2 < b.1)).unwrap_or(true) {
-                                    best = Some((score, t2));
-                                }
-                            }
-                        }
+                    // D051a (replaces D038a and D051's selection): every target of the slot gets
+                    // its own latent hypothesis; the licensing gates decide which partition, if
+                    // any, explains anything. Selecting one target needs repeated pairs that an
+                    // epistemic agent avoids, and a wrong choice silences the slot (K3).
+                    let slot_targets: Vec<u32> = ep.outcomes.iter().map(|o| o.0).filter(|&t2| t2 / 10_000 == t / 10_000 && t2 % 1000 == t % 1000).collect();
+                    for t2 in slot_targets {
+                        self.enable_latent(ep.action, t2, idc);
                     }
-                    let Some((score, t_best)) = best else { continue };
-                    if !enough || score <= 0 {
-                        continue;
-                    }
-                    let best = (score, t_best);
-                    self.enable_latent(ep.action, best.1, idc);
                 }
             }
         }
@@ -346,7 +327,7 @@ impl RelationEngine {
             }
             let Some(e) = law.ctx(ctx) else { continue };
             if e.total() <= 1 && now.saturating_sub(law.lineage.created_t) > min_age {
-                let key = key(&law.condition_hv, law.target);
+                let key = key_fp(law.condition_fp, law.target);
                 self.index.remove(&key);
                 if let Some(c) = self.per_target_ctx.get_mut(&(law.target, ctx)) {
                     *c = c.saturating_sub(1);
@@ -474,15 +455,12 @@ impl RelationEngine {
     ) -> usize {
         cond.sort();
         let id = self.laws.len();
-        let transformation_hv = self.transform_code(&cond);
         self.laws.push(RelationLaw {
             id,
             target,
             action,
             condition: cond,
-            transformation_hv,
-            predicted_effect_hv: H::zero(),
-            condition_hv: cond_hv.clone(),
+            condition_fp: cond_hv.fingerprint(),
             ctx: Vec::new(),
             lineage: Lineage { origin, created_t: self.tick, created_episode: episode, children: Vec::new() },
             competing: Vec::new(),
@@ -554,6 +532,59 @@ impl RelationEngine {
             .and_then(|e| e.majority().map(|m| m.0))
     }
 
+    /// D053: the condition hypervector of law `l`, recomputed from its symbolic condition.
+    pub fn condition_hv(&mut self, l: usize) -> H {
+        let (a, cond) = (self.laws[l].action, self.laws[l].condition.clone());
+        self.cond_hv_kinds(a, &cond)
+    }
+
+    /// D053: the relational transform code of law `l` (zero for absolute laws), on demand.
+    pub fn transformation_hv(&mut self, l: usize) -> H {
+        let cond = self.laws[l].condition.clone();
+        self.transform_code(&cond)
+    }
+
+    /// D053: target bound with the majority outcome code of law `l` in context `c`, on demand.
+    pub fn predicted_effect_hv(&mut self, l: usize, c: u64) -> Option<H> {
+        let tgt = self.laws[l].target;
+        let v = self.laws[l].ctx(c)?.majority()?.0;
+        Some(self.cb.target(tgt).bind(&self.cb.outcome(tgt, v)))
+    }
+
+    /// K2 measurement (read-only): estimated retained bytes per structure, largest first.
+    pub fn memory_report(&self) -> Vec<(&'static str, u64, u64)> {
+        let laws = self.laws.len() as u64;
+        let (mut ctxs, mut bin_eps, mut sigs, mut binds, mut rsits, mut trials) = (0u64, 0u64, 0u64, 0u64, 0u64, 0u64);
+        for l in &self.laws {
+            ctxs += l.ctx.len() as u64;
+            for e in &l.ctx {
+                trials += (e.transfer.trials.len() + e.scope_trials.trials.len()) as u64;
+                for b in &e.bins {
+                    bin_eps += b.episodes.len() as u64;
+                    sigs += b.signatures.len() as u64;
+                    binds += b.bindings.len() as u64;
+                    rsits += b.rsits.len() as u64;
+                }
+            }
+        }
+        let feat_entries: u64 = self.feat_kinds.iter().map(|v| v.len() as u64).sum();
+        let store_fillers: u64 = self.store.iter().map(|e| e.roles.iter().map(|r| r.fillers.len() as u64).sum::<u64>()).sum();
+        let mut v = vec![
+            ("laws (headers incl. inline fields, condition lists)", laws, laws * (std::mem::size_of::<RelationLaw>() as u64 + 48)),
+            ("per-context evidence records", ctxs, ctxs * std::mem::size_of::<CtxEvidence>() as u64),
+            ("bin episode lists", bin_eps, bin_eps * 8),
+            ("situation-key sets", sigs, sigs * 16),
+            ("binding-key sets", binds, binds * 16),
+            ("relevant-situation sets", rsits, rsits * 16),
+            ("transfer trial records", trials, trials * 24),
+            ("per-episode feature lists", feat_entries, feat_entries * std::mem::size_of::<FeatureKind>() as u64),
+            ("stored episodes (fillers)", self.store.len() as u64, store_fillers * 16 + self.store.len() as u64 * 128),
+            ("law index", self.index.len() as u64, self.index.len() as u64 * 24),
+        ];
+        v.sort_by(|a, b| b.2.cmp(&a.2));
+        v
+    }
+
     /// D049: declare that a sensor reports `ch` on an ordinal scale.
     pub fn declare_ordinal(&mut self, ch: u16) {
         self.ordinal.insert(ch);
@@ -619,6 +650,11 @@ impl RelationEngine {
         ep.binding_key(&self.relevant_roles(l, ep))
     }
 
+    /// D050a: relevant-situation key of law `l` in an episode.
+    pub fn rkey(&self, l: usize, ep: &Episode) -> u64 {
+        ep.situation_key(&self.relevant_roles(l, ep))
+    }
+
     /// D050: a particular law (one relevant binding) speaks only about its own objects.
     pub fn binds(&self, l: usize, c: u64, ep: &Episode) -> bool {
         match self.laws[l].ctx(c).and_then(|e| e.particular()) {
@@ -638,7 +674,7 @@ impl RelationEngine {
                     && within_noise(e.counters(), e.total(), &self.policy_for(l.target))
                     && e.independent() >= 3
                     && self.binds(law, ctx, ep)
-                    && e.new_case(self.bkey(law, ep), sig)
+                    && e.new_case(self.rkey(law, ep), sig)
             }
             _ => false,
         };
@@ -661,7 +697,6 @@ impl RelationEngine {
         let ord = self.allowed_ordinal();
         let feats = self.cb.features(&ep, &ord);
         let sig = ep.signature();
-        let fps = ep.filler_fps();
         let ctx = ep.context;
         let intervention = ep.kind == Kind::Intervention;
         let outcomes = ep.outcomes.clone();
@@ -803,8 +838,8 @@ impl RelationEngine {
                 if self.laws[l].ctx(ctx).map(|e| e.total() == 0).unwrap_or(true) {
                     *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
                 }
-                let bk = self.bkey(l, &epc);
-                self.laws[l].ctx_mut(ctx, t).add(actual, eid, bk, sig, intervention, &fps, t);
+                let (bk, rk) = (self.bkey(l, &epc), self.rkey(l, &epc));
+                self.laws[l].ctx_mut(ctx, t).add(actual, eid, bk, rk, sig, intervention, t);
             }
 
             // 5. hidden-condition search on impure singles (D014)
@@ -915,12 +950,12 @@ impl RelationEngine {
                 }
                 let ep = self.store.get(id);
                 let Some(out) = ep.outcome(target) else { continue };
-                let (sig, fps, iv) = (ep.signature(), ep.filler_fps(), ep.kind == Kind::Intervention);
-                let bk = self.bkey(child, ep);
+                let (sig, iv) = (ep.signature(), ep.kind == Kind::Intervention);
+                let (bk, rk) = (self.bkey(child, ep), self.rkey(child, ep));
                 if self.laws[child].ctx(ctx).map(|e| e.total() == 0).unwrap_or(true) {
                     *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
                 }
-                self.laws[child].ctx_mut(ctx, t).add(out, id, bk, sig, iv, &fps, t);
+                self.laws[child].ctx_mut(ctx, t).add(out, id, bk, rk, sig, iv, t);
             }
             // D048: held-out half, pre-registered predictions on never-counted situations
             for &id in &held {
@@ -929,8 +964,8 @@ impl RelationEngine {
                 }
                 let ep = self.store.get(id);
                 let Some(out) = ep.outcome(target) else { continue };
-                let (sig, fps, iv) = (ep.signature(), ep.filler_fps(), ep.kind == Kind::Intervention);
-                let bk = self.bkey(child, ep);
+                let (sig, iv) = (ep.signature(), ep.kind == Kind::Intervention);
+                let (bk, rk) = (self.bkey(child, ep), self.rkey(child, ep));
                 let pol = self.policy_for(target);
                 // prequential utility against the parent's final counts (which include this very
                 // episode, so the comparison is biased towards the parent: conservative)
@@ -945,7 +980,7 @@ impl RelationEngine {
                     }
                 }
                 if let Some(e) = self.laws[child].ctx(ctx) {
-                    let new_sit = e.new_case(bk, sig);
+                    let new_sit = e.new_case(rk, sig);
                     if new_sit && !e.status.terminal() && within_noise(e.counters(), e.total(), &pol) && e.independent() >= 3 {
                         if let Some((pred, _)) = e.majority() {
                             self.laws[child].ctx_mut(ctx, t).transfer.record(id, pred, out);
@@ -955,7 +990,7 @@ impl RelationEngine {
                 if self.laws[child].ctx(ctx).map(|e| e.total() == 0).unwrap_or(true) {
                     *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
                 }
-                self.laws[child].ctx_mut(ctx, t).add(out, id, bk, sig, iv, &fps, t);
+                self.laws[child].ctx_mut(ctx, t).add(out, id, bk, rk, sig, iv, t);
             }
             self.evaluate(child, ctx);
         }
@@ -1055,12 +1090,6 @@ impl RelationEngine {
                 Status::Candidate
             }
         };
-        let maj = e.majority().map(|m| m.0);
-        if let Some(v) = maj {
-            let tgt = self.laws[l].target;
-            let eff = self.cb.target(tgt).bind(&self.cb.outcome(tgt, v));
-            self.laws[l].predicted_effect_hv = eff;
-        }
         self.laws[l].ctx_mut(ctx, t).set_status(new, t);
     }
 
