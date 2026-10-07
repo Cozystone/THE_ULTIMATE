@@ -261,3 +261,65 @@ fn latent_hypotheses_compete_and_held_out_pairs_are_never_answered_wrongly() {
         .any(|l| l.condition.iter().any(|f| matches!(f, FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } if *ch >= 3000)));
     assert!(!latent_licensed, "random outcomes: no latent law may be licensed");
 }
+
+/// D054 (K2 stage 2): key sets stop at SET_CAP while the law still licenses; novelty is
+/// conservative once saturated (no further transfer trials are credited).
+#[test]
+fn key_sets_are_bounded_and_saturation_is_conservative() {
+    let mut rng = Rng::new(31);
+    let mut e = RelationEngine::new(7);
+    for k in 0..2000i64 {
+        let (ca, cb) = (rng.below(6) as i64, rng.below(6) as i64);
+        e.observe(ep("K", vec![ent(ca, 2 * k), ent(cb, 2 * k + 1)], 2, (ca == cb) as i64));
+    }
+    let ctx = context_of("K");
+    let same = e
+        .laws
+        .iter()
+        .find(|l| l.condition == vec![FeatureKind::Same { r1: 0, r2: 1, ch: COLOUR }])
+        .expect("same(colour) hypothesis");
+    let ev = same.ctx(ctx).expect("evidence");
+    assert_eq!(ev.status, Status::Licensed);
+    for b in &ev.bins {
+        assert!(b.signatures.len() <= law::SET_CAP && b.bindings.len() <= law::SET_CAP && b.rsits.len() <= law::SET_CAP);
+    }
+    let trials = ev.transfer.ok + ev.transfer.fail;
+    let id = same.id;
+    for k in 2000..2200i64 {
+        let (ca, cb) = (rng.below(6) as i64, rng.below(6) as i64);
+        e.observe(ep("K", vec![ent(ca, 2 * k), ent(cb, 2 * k + 1)], 2, (ca == cb) as i64));
+    }
+    let ev = e.laws[id].ctx(ctx).unwrap();
+    assert_eq!(ev.transfer.ok + ev.transfer.fail, trials, "a saturated law gets no unprovable novelty credit");
+    assert_eq!(ev.status, Status::Licensed);
+}
+
+/// D054: a terminal record is compacted, keeping counts and counterexamples; when the hypothesis
+/// recurs with clean cases it does not come back licensed (counterevidence survives).
+#[test]
+fn compaction_keeps_counterevidence_and_revival_does_not_relicense() {
+    let mut rng = Rng::new(37);
+    let mut e = RelationEngine::new(8);
+    // same colour => 1 at first, then half of the same-colour cases give 0: the law is revoked
+    for k in 0..900i64 {
+        let ca = rng.below(6) as i64;
+        let cb = if rng.below(2) == 0 { ca } else { rng.below(6) as i64 };
+        let out = if ca == cb { if k < 300 { 1 } else { rng.below(2) as i64 } } else { 0 };
+        e.observe(ep("R", vec![ent(ca, 2 * k), ent(cb, 2 * k + 1)], 2, out));
+    }
+    let ctx = context_of("R");
+    let id = e.laws.iter().find(|l| l.condition == vec![FeatureKind::Same { r1: 0, r2: 1, ch: COLOUR }]).expect("hypothesis").id;
+    let ev = e.laws[id].ctx(ctx).unwrap().clone();
+    assert!(ev.status.terminal(), "expected a terminal law, got {:?}", ev.status);
+    assert!(ev.compacted);
+    let counters = ev.counters();
+    assert!(counters > 0 && !ev.counterexample_ids().is_empty(), "counterexamples kept");
+    // the hypothesis recurs with clean evidence only
+    for k in 900..1300i64 {
+        let ca = rng.below(6) as i64;
+        e.observe(ep("R", vec![ent(ca, 2 * k), ent(ca, 2 * k + 1)], 2, 1));
+    }
+    let ev = e.laws[id].ctx(ctx).unwrap();
+    assert!(ev.counters() >= counters, "counterevidence lost");
+    assert_ne!(ev.status, Status::Licensed, "a revoked hypothesis came back licensed");
+}

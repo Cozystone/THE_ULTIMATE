@@ -490,14 +490,42 @@ fn links_os(seed: u64, out: &mut Out) {
         let Ok((ev, _)) = w.step(Some((osw::PROBE, vec![p[0], p[1]]))) else { break };
         a.feed(ev);
         fed += 1;
+        if std::env::var("K2_REPORT").is_ok() && fed % 500 == 0 {
+            let total: u64 = a.rel.memory_report().iter().map(|x| x.2).sum();
+            eprintln!("K2 trace probes {fed}: laws {} (pruned {}), est {} MB, current ws {} MB, peak {} MB", a.rel.laws.len(), a.rel.laws.iter().filter(|l| l.pruned).count(), total / 1048576, bm_bench::working_set_mb().unwrap_or(-1.0) as u64, bm_bench::peak_working_set_mb().unwrap_or(-1.0) as u64);
+        }
     }
     if std::env::var("K2_REPORT").is_ok() {
         let rep = a.rel.memory_report();
         let total: u64 = rep.iter().map(|x| x.2).sum();
-        eprintln!("K2 seed {seed} after training (3000 probes): est {} MB ws {} MB laws {}", total / 1048576, bm_bench::peak_working_set_mb().unwrap_or(-1.0) as u64, a.rel.laws.len());
+        eprintln!("K2 seed {seed} after training (3000 probes): est {} MB, current working set {} MB, peak so far {} MB, laws {}", total / 1048576, bm_bench::working_set_mb().unwrap_or(-1.0) as u64, bm_bench::peak_working_set_mb().unwrap_or(-1.0) as u64, a.rel.laws.len());
         for (name, n, b) in &rep {
             eprintln!("K2   {name:<34} {n:>10} items {:>8} MB", b / 1048576);
         }
+        // distribution of laws by cases and by set entries; latent vs observable conditions
+        let mut buckets = [0u64; 5];
+        let mut set_by_bucket = [0u64; 5];
+        let (mut pruned, mut latent_laws, mut latent_entries, mut status) = (0u64, 0u64, 0u64, std::collections::BTreeMap::new());
+        for l in &a.rel.laws {
+            if l.pruned {
+                pruned += 1;
+                continue;
+            }
+            let tot: u32 = l.ctx.iter().map(|e| e.total()).sum();
+            let entries: u64 = l.ctx.iter().flat_map(|e| e.bins.iter()).map(|b| (b.signatures.len() + b.bindings.len() + b.rsits.len()) as u64).sum();
+            let k = match tot { 0..=1 => 0, 2..=10 => 1, 11..=100 => 2, 101..=1000 => 3, _ => 4 };
+            buckets[k] += 1;
+            set_by_bucket[k] += entries;
+            if l.condition.iter().any(|f| feat_ch(f) >= 3000) {
+                latent_laws += 1;
+                latent_entries += entries;
+            }
+            for e in &l.ctx {
+                *status.entry(format!("{:?}", e.status)).or_insert(0u64) += 1;
+            }
+        }
+        eprintln!("K2   pruned husks {pruned}; laws by cases [<=1, 2-10, 11-100, 101-1000, >1000] = {buckets:?}; set entries by bucket = {set_by_bucket:?}");
+        eprintln!("K2   laws with latent-channel conditions {latent_laws} holding {latent_entries} set entries; statuses {status:?}");
     }
     // ---- stage 1: never-probed pairs and ambiguous (content-collision) situations.
     // Every query is scored; every abstention caused by an unresolved conflict is saved.
@@ -693,7 +721,7 @@ fn links_os(seed: u64, out: &mut Out) {
     }
     let groups: std::collections::BTreeSet<usize> = w.files.iter().map(|f| f.group).collect();
     let _ = writeln!(out.report, "      OS true groups {} for {} files", groups.len(), w.files.len());
-    let lat = a
+    let _lat = a
         .rel
         .licensed_in(ctx)
         .into_iter()

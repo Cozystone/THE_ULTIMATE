@@ -1,0 +1,17 @@
+
+===== seed 58
+  C4b-1 abstain without evidence PASS  seed 58: never-probed pairs (3 same-file, 25 different): all correct 28 wrong 0 abstain 0 of 28; feasible without unresolved conflict correct 28 wrong 0 abstain 0 of 28; content-collision situations (reported, not gated) correct 0 wrong 1 abstain 7 of 8; situations with conflicting licensed laws 0: answered 0 (correct 0, wrong 0, while unsettled 0), saved abstentions 0
+  C4b-2 learn from new evidence PASS  seed 58: saved abstentions 0; after 0 further probes (0 chosen to test an open conflict): answered 0 (correct 0, wrong 0; settled by >= 3 shared 0, dissolved by counterevidence 0, by latent partition revision 0, other 0), premature answers 0; []
+      OS latent law: #39748 act3 : same(r0,r1;c6009) => t15003 => Some(1) | LICENSED | n=169 counter=1 indep=6 int=168 transfer 62/63 utility 425b (int 425b) origin Generated
+      OS latent law: #81060 act3 : same(r0,r1;c6011) => t15003 => Some(1) | LICENSED | n=214 counter=1 indep=8 int=213 transfer 61/61 utility 541b (int 541b) origin Generated
+      OS latent law: #86956 act3 : same(r0,r1;c6013) => t15003 => Some(1) | LICENSED | n=282 counter=1 indep=11 int=281 transfer 62/62 utility 898b (int 898b) origin Generated
+      OS latent law: #97955 act3 : same(r0,r1;c6013) & same(r1,r2;c6013) => t25003 => Some(1) | LICENSED | n=31 counter=0 indep=8 int=31 transfer 28/28 utility 21b (int 21b) origin Refined { parent: 87216 }
+      OS inducer target 3 partitions (12, 10) versions (2, 20) observations 2840
+      OS inducer target 5003 partitions (1, 12) versions (9, 2) observations 2840
+      OS inducer target 10003 partitions (12, 11) versions (2, 10) observations 2840
+      OS inducer target 15003 partitions (4, 7) versions (16, 6) observations 2840
+      OS true groups 7 for 12 files
+  C4b-2 power (all seeds)    FAIL  saved abstentions 0; answered after the conflict was settled by >= 3 independent shared situations 0, of them correct 0 (>= 30 such cases needed for the stage-2 claim)
+
+E-C OVERALL: FAIL
+resources: wall 218.6 s, peak working set 3231 MB

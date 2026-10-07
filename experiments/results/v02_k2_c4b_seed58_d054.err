@@ -1,0 +1,13 @@
+K2 seed 58 after training (3000 probes): est 814 MB ws 3229 MB laws 350704
+K2   situation-key sets                   10969342 items      167 MB
+K2   relevant-situation sets              10969342 items      167 MB
+K2   bin episode lists                    20150694 items      153 MB
+K2   binding-key sets                      9884848 items      150 MB
+K2   laws (headers incl. inline fields, condition lists)     350704 items       74 MB
+K2   per-context evidence records           350704 items       53 MB
+K2   transfer trial records                1409406 items       32 MB
+K2   per-episode feature lists              431027 items        6 MB
+K2   law index                              201089 items        4 MB
+K2   stored episodes (fillers)                2900 items        3 MB
+K2   pruned husks 149615; laws by cases [<=1, 2-10, 11-100, 101-1000, >1000] = [544, 92421, 73067, 31473, 3584]; set entries by bucket = [1632, 1115835, 6155618, 15277298, 6741669]
+K2   laws with latent-channel conditions 153175 holding 19541464 set entries; statuses {"Candidate": 114831, "Contested": 22795, "Licensed": 96, "Provisional": 2565, "Revoked": 60769, "Split": 33}

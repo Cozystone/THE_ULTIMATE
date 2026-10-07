@@ -736,3 +736,43 @@ resource lines.
 | B | 198 MB | 92 MB |
 | F | 200 MB | 106 MB |
 | real-OS C4b training | 4.8 GB | 2.27 GB |
+
+## D054 K2 stage 2: bounded key sets, compaction of terminal and dead hypotheses (v0.2, 2026-10-07)
+Implements PREREG amendment 4. Real-OS C4b seed 58 after 3,000 probes is the measurement case.
+* **Bounded key sets.** At most SET_CAP = 64 keys per set per bin; a full set is saturated and
+  novelty becomes conservative (never more transfer credit).
+* **Terminal compaction.** On revocation or split the record is compacted. Counts, status
+  history, transfer tallies and up to 64 counterexample ids are kept; the law keeps its index
+  entry, so a recurring hypothesis is revived with its counterexamples.
+* **Item 1, stale candidates.** Every 1,000 ticks, never-licensed single-case candidates older
+  than 2,000 ticks are retired. Measured effect: none (the mass is not there).
+* **Item 1b, dead latent versions.** Measurement: 86% of laws (301,996 of 350,240) and 73% of
+  key-set entries had latent-channel conditions. Laws over a latent channel version its inducer
+  no longer emits can never match again (versions only grow); they are compacted and leave the
+  index (149,615 retired at 3,000 probes).
+* **D054c, representation.** Measurement with capacity-based accounting: the working set was
+  fixed per-hypothesis overhead (three hash sets per bin, growth over-allocation). Key sets are
+  now sorted vectors with exact capacity; outputs are identical to the hash-set build on R0 1-3,
+  B 1-2, D 4, E 46, F 1 and G3/G4 101-102.
+
+Tests:
+* key sets stay bounded while the law licenses, and a saturated law gets no further transfer
+  credit;
+* a revoked law is compacted with its counterexamples, and clean recurrences do not re-license it.
+
+Effect on the real-OS case (working set at 3,000 probes):
+
+| build | working set |
+|---|---|
+| v0.1 | ~10 GB at 9,000 probes |
+| D049-D051 | 4.8 GB |
+| D053 | 2.27 GB |
+| D051a + D053 | 3.43 GB (D051a adds inducers) |
+| D054 + D054c | 1.94 GB |
+
+## Known issue K2' (v0.3): hypothesis count grows with features x targets
+Growth is still ~0.6 GB per 1,000 real-OS probes. The remaining driver is outcome bins: laws
+predicting high-cardinality nominal outcomes (a 256-valued content hash after a probe) keep one bin
+per value, for every feature. Bounding this needs a principled rule for which outcomes deserve
+hypotheses (e.g. a target whose base-rate entropy is near log2 |alphabet| and that no feature has
+reduced). That is a behaviour change to be designed and tested on its own, not slipped into v0.2.

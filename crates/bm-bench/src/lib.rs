@@ -29,3 +29,13 @@ pub fn resources_line(start: std::time::Instant) -> String {
         peak_working_set_mb().map(|m| format!("{m:.0}")).unwrap_or_else(|| "n/a".to_string())
     )
 }
+
+/// Current working set of this process in MB (Windows; None elsewhere or on failure).
+pub fn working_set_mb() -> Option<f64> {
+    let pid = std::process::id();
+    let out = std::process::Command::new("powershell")
+        .args(["-NoProfile", "-Command", &format!("(Get-Process -Id {pid}).WorkingSet64")])
+        .output()
+        .ok()?;
+    String::from_utf8_lossy(&out.stdout).trim().parse::<f64>().ok().map(|b| b / 1048576.0)
+}

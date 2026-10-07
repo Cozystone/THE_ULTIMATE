@@ -3,7 +3,6 @@
 use crate::features::FeatureKind;
 use hdc_core::fixed::{log2_q16, Q};
 use hdc_core::Evidence;
-use std::collections::HashSet;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum Status {
@@ -90,7 +89,54 @@ impl Default for LicensePolicy {
 }
 
 const EP_CAP: usize = 4096;
+/// D054 (K2 stage 2): key sets per bin stop growing here. 64 exceeds every gate threshold.
+pub const SET_CAP: usize = 64;
+/// D054: counterexample episode ids kept when a terminal law is compacted.
+pub const TOMB_IDS: usize = 64;
 const TRIAL_CAP: usize = 256;
+
+/// D054c: a bounded set of 64-bit keys as a sorted vector with exact capacity (binary search).
+/// Same semantics as the bounded hash set it replaces, at a fraction of the fixed overhead.
+#[derive(Clone, Debug, Default)]
+pub struct KeySet {
+    v: Vec<u64>,
+    /// The set reached SET_CAP (or was compacted): membership of unseen keys is unknown.
+    pub sat: bool,
+}
+
+impl KeySet {
+    pub fn len(&self) -> usize {
+        self.v.len()
+    }
+    pub fn is_empty(&self) -> bool {
+        self.v.is_empty()
+    }
+    pub fn contains(&self, k: &u64) -> bool {
+        self.v.binary_search(k).is_ok()
+    }
+    pub fn iter(&self) -> impl Iterator<Item = &u64> {
+        self.v.iter()
+    }
+    /// Insert unless full; a full set stops growing and marks itself saturated.
+    pub fn put(&mut self, k: u64) {
+        if let Err(i) = self.v.binary_search(&k) {
+            if self.v.len() < SET_CAP {
+                self.v.reserve_exact(1);
+                self.v.insert(i, k);
+            } else {
+                self.sat = true;
+            }
+        }
+    }
+    /// Drop the keys, keep the knowledge that membership is no longer decidable.
+    pub fn compact(&mut self) {
+        self.v = Vec::new();
+        self.sat = true;
+    }
+    pub fn bytes(&self) -> u64 {
+        (self.v.capacity() * 8) as u64
+    }
+}
 
 #[derive(Clone, Debug)]
 pub struct OutcomeBin {
@@ -99,12 +145,12 @@ pub struct OutcomeBin {
     pub interventions: u32,
     /// Situation keys (episode signatures, bystanders included): robustness of a particular law
     /// across background conditions.
-    pub signatures: HashSet<u64>,
+    pub signatures: KeySet,
     /// D050: relevant-binding keys (the objects the law connects): independence of a general law.
-    pub bindings: HashSet<u64>,
+    pub bindings: KeySet,
     /// D050a: relevant-situation keys (fillers of the relevant roles, bystanders excluded):
     /// transfer novelty of a general law.
-    pub rsits: HashSet<u64>,
+    pub rsits: KeySet,
     /// Episode ids (lineage). Capped; `count` stays exact.
     pub episodes: Vec<u64>,
 }
@@ -155,6 +201,8 @@ pub struct CtxEvidence {
     pub first_t: u64,
     pub last_t: u64,
     pub refined_at: u32,
+    /// D054: the record was compacted (terminal law); key sets are gone, counts remain.
+    pub compacted: bool,
 }
 
 impl CtxEvidence {
@@ -171,6 +219,7 @@ impl CtxEvidence {
             first_t: t,
             last_t: t,
             refined_at: 0,
+            compacted: false,
         }
     }
 
@@ -203,23 +252,46 @@ impl CtxEvidence {
     /// to its binding (`particular`).
     pub fn independent(&self) -> u32 {
         self.majority_bin()
-            .map(|b| if b.bindings.len() >= 2 { b.bindings.len() as u32 } else { b.signatures.len() as u32 })
+            .map(|b| if b.bindings.len() >= 2 || b.bindings.sat { b.bindings.len() as u32 } else { b.signatures.len() as u32 })
             .unwrap_or(0)
     }
 
     /// D050: the single relevant binding of a particular law.
     pub fn particular(&self) -> Option<u64> {
-        self.majority_bin().and_then(|b| if b.bindings.len() == 1 { b.bindings.iter().next().copied() } else { None })
+        self.majority_bin().and_then(|b| if b.bindings.len() == 1 && !b.bindings.sat { b.bindings.iter().next().copied() } else { None })
     }
 
     /// D050/D050a: a held-out case for this law. General law: a situation of its relevant
     /// objects (their fillers, bystanders excluded) it has never been supported by. Particular law:
     /// a new situation of its own binding, background included.
     pub fn new_case(&self, rsit: u64, sig: u64) -> bool {
+        // D054: a case is new only if provably unseen; a saturated set proves nothing
         match self.particular() {
-            Some(_) => !self.bins.iter().any(|b| b.signatures.contains(&sig)),
-            None => !self.bins.iter().any(|b| b.rsits.contains(&rsit)),
+            Some(_) => !self.bins.iter().any(|b| b.signatures.sat || b.signatures.contains(&sig)),
+            None => !self.bins.iter().any(|b| b.rsits.sat || b.rsits.contains(&rsit)),
         }
+    }
+
+    /// D054: compaction of a terminal (revoked / split) record. Counts, status history, transfer
+    /// tallies and up to TOMB_IDS counterexample episode ids are kept; the key sets and the
+    /// supporting episode lists are freed. The law keeps its index entry, so a recurring
+    /// hypothesis is revived with its record and its counterexamples.
+    pub fn compact(&mut self) {
+        let maj = self.majority().map(|m| m.0);
+        for b in self.bins.iter_mut() {
+            b.signatures.compact();
+            b.bindings.compact();
+            b.rsits.compact();
+            if Some(b.val) == maj {
+                b.episodes = Vec::new();
+            } else {
+                b.episodes.truncate(TOMB_IDS);
+                b.episodes.shrink_to_fit();
+            }
+        }
+        self.transfer.trials = Vec::new();
+        self.scope_trials.trials = Vec::new();
+        self.compacted = true;
     }
 
     pub fn interventions(&self) -> u32 {
@@ -239,13 +311,14 @@ impl CtxEvidence {
         let pos = match self.bins.iter().position(|b| b.val == val) {
             Some(p) => p,
             None => {
+                self.bins.reserve_exact(1);
                 self.bins.push(OutcomeBin {
                     val,
                     count: 0,
                     interventions: 0,
-                    signatures: HashSet::new(),
-                    bindings: HashSet::new(),
-                    rsits: HashSet::new(),
+                    signatures: KeySet::default(),
+                    bindings: KeySet::default(),
+                    rsits: KeySet::default(),
                     episodes: Vec::new(),
                 });
                 self.bins.len() - 1
@@ -256,9 +329,10 @@ impl CtxEvidence {
         if intervention {
             b.interventions += 1;
         }
-        b.signatures.insert(sig);
-        b.bindings.insert(binding);
-        b.rsits.insert(rsit);
+        // D054/D054c: bounded key sets; a full set stops growing and marks itself saturated
+        b.signatures.put(sig);
+        b.bindings.put(binding);
+        b.rsits.put(rsit);
         if b.episodes.len() < EP_CAP {
             b.episodes.push(episode);
         }

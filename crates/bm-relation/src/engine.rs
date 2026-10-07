@@ -567,6 +567,21 @@ impl RelationEngine {
                 }
             }
         }
+        // capacity-based accounting (allocated, not just used)
+        let (mut cap_sets, mut cap_eps, mut cap_hist, mut cap_trials, mut cap_bins, mut cap_cond, mut cap_ctx) = (0u64, 0u64, 0u64, 0u64, 0u64, 0u64, 0u64);
+        for l in &self.laws {
+            cap_cond += (l.condition.capacity() * std::mem::size_of::<FeatureKind>() + (l.lineage.children.capacity() + l.competing.capacity()) * 8 + l.active_ctx.capacity() * 8) as u64;
+            cap_ctx += (l.ctx.capacity() * std::mem::size_of::<CtxEvidence>()) as u64;
+            for e in &l.ctx {
+                cap_hist += (e.history.capacity() * 16) as u64;
+                cap_trials += ((e.transfer.trials.capacity() + e.scope_trials.trials.capacity()) * std::mem::size_of::<TransferTrial>()) as u64;
+                cap_bins += (e.bins.capacity() * std::mem::size_of::<OutcomeBin>()) as u64;
+                for b in &e.bins {
+                    cap_sets += b.signatures.bytes() + b.bindings.bytes() + b.rsits.bytes();
+                    cap_eps += (b.episodes.capacity() * 8) as u64;
+                }
+            }
+        }
         let feat_entries: u64 = self.feat_kinds.iter().map(|v| v.len() as u64).sum();
         let store_fillers: u64 = self.store.iter().map(|e| e.roles.iter().map(|r| r.fillers.len() as u64).sum::<u64>()).sum();
         let mut v = vec![
@@ -581,6 +596,13 @@ impl RelationEngine {
             ("stored episodes (fillers)", self.store.len() as u64, store_fillers * 16 + self.store.len() as u64 * 128),
             ("law index", self.index.len() as u64, self.index.len() as u64 * 24),
         ];
+        v.push(("[alloc] key sets (capacity)", 0, cap_sets));
+        v.push(("[alloc] bin episode lists (capacity)", 0, cap_eps));
+        v.push(("[alloc] status histories", 0, cap_hist));
+        v.push(("[alloc] transfer trial lists", 0, cap_trials));
+        v.push(("[alloc] outcome bins", 0, cap_bins));
+        v.push(("[alloc] per-context records", 0, cap_ctx));
+        v.push(("[alloc] conditions, lineage, competitors", 0, cap_cond));
         v.sort_by(|a, b| b.2.cmp(&a.2));
         v
     }
@@ -859,7 +881,88 @@ impl RelationEngine {
                 self.evaluate(l, ctx);
             }
         }
+        // D054 (K2 stage 2, item 1): wake-time retirement of stale single-case candidates
+        if self.tick % 1000 == 0 {
+            self.retire_stale(2000);
+        }
         rep
+    }
+
+    /// D054 (item 1b): a hypothesis conditioned on a latent channel version its inducer no longer
+    /// emits can never match again (versions only grow). Its record is compacted (counts, status
+    /// history and counterexamples kept) and it leaves the index and the selection count.
+    pub fn retire_dead_latent(&mut self) -> u32 {
+        if self.latent.is_empty() {
+            return 0;
+        }
+        let hi = 3000 + 1000 * self.latent.len() as u16;
+        let live: std::collections::HashSet<u16> = self.latent.iter().flat_map(|i| i.live_channels()).collect();
+        let dead = |ch: u16| ch >= 3000 && ch < hi && !live.contains(&ch);
+        let mut n = 0;
+        for l in 0..self.laws.len() {
+            if self.laws[l].pruned {
+                continue;
+            }
+            let uses_dead = self.laws[l].condition.iter().any(|f| match *f {
+                FeatureKind::Abs { ch, .. } | FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } | FeatureKind::Order { ch, .. } | FeatureKind::Delta { ch, .. } => dead(ch),
+            });
+            if !uses_dead {
+                continue;
+            }
+            let key = key_fp(self.laws[l].condition_fp, self.laws[l].target);
+            if self.index.get(&key) == Some(&l) {
+                self.index.remove(&key);
+            }
+            let target = self.laws[l].target;
+            let ctxs: Vec<u64> = self.laws[l].ctx.iter().filter(|e| e.total() > 0).map(|e| e.context).collect();
+            for c in ctxs {
+                if let Some(x) = self.per_target_ctx.get_mut(&(target, c)) {
+                    *x = x.saturating_sub(1);
+                }
+            }
+            for e in self.laws[l].ctx.iter_mut() {
+                if !e.compacted {
+                    e.compact();
+                }
+            }
+            self.laws[l].pruned = true;
+            n += 1;
+        }
+        n
+    }
+
+    /// D054: a never-licensed, non-base hypothesis that has seen at most one case in every
+    /// context and is older than `min_age` ticks leaves the hypothesis space (D018 at wake time).
+    /// Its one case stays in the episode store; a single-case record holds no counterexample.
+    /// If the hypothesis is generated again it starts afresh.
+    pub fn retire_stale(&mut self, min_age: u64) -> u32 {
+        let now = self.tick;
+        let mut n = self.retire_dead_latent();
+        for l in 0..self.laws.len() {
+            let law = &self.laws[l];
+            if law.pruned || law.is_base() || now.saturating_sub(law.lineage.created_t) <= min_age {
+                continue;
+            }
+            if law.ctx.iter().any(|e| e.status == Status::Licensed || e.total() > 1) {
+                continue;
+            }
+            let key = key_fp(law.condition_fp, law.target);
+            let ctxs: Vec<u64> = law.ctx.iter().filter(|e| e.total() > 0).map(|e| e.context).collect();
+            let target = law.target;
+            if self.index.get(&key) == Some(&l) {
+                self.index.remove(&key);
+            }
+            for c in ctxs {
+                if let Some(x) = self.per_target_ctx.get_mut(&(target, c)) {
+                    *x = x.saturating_sub(1);
+                }
+            }
+            self.laws[l].pruned = true;
+            self.laws[l].ctx = Vec::new();
+            self.laws[l].competing = Vec::new();
+            n += 1;
+        }
+        n
     }
 
     /// Hidden-condition search: rank co-present features by entropy reduction among the
@@ -1091,6 +1194,13 @@ impl RelationEngine {
             }
         };
         self.laws[l].ctx_mut(ctx, t).set_status(new, t);
+        // D054: a terminal record is compacted (counts and counterexamples kept)
+        if new.terminal() {
+            let e = self.laws[l].ctx_mut(ctx, t);
+            if !e.compacted {
+                e.compact();
+            }
+        }
     }
 
     fn matching(&mut self, ep: &Episode, target: u32) -> Vec<usize> {

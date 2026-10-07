@@ -333,6 +333,16 @@ LAT   new {:?}", old_link, self.link);
         }
     }
 
+    /// D054: latent channels this inducer can still emit: the current versions and the earlier
+    /// versions kept by D039e. Any other channel of this inducer is retired for ever.
+    pub fn live_channels(&self) -> Vec<u16> {
+        let (b, l) = self.channels();
+        let mut v = vec![b, l];
+        v.extend(self.prev_block.iter().map(|(ver, _)| self.block_ch.wrapping_add(2 * ver)));
+        v.extend(self.prev_link.iter().map(|(ver, _)| self.link_ch.wrapping_add(2 * ver)));
+        v
+    }
+
     pub fn classes(&self) -> (usize, usize) {
         let b: BTreeSet<i64> = self.block.values().copied().collect();
         let l: BTreeSet<i64> = self.link.values().copied().collect();
