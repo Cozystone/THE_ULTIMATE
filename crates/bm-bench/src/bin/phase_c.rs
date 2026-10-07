@@ -490,34 +490,178 @@ fn links_os(seed: u64, out: &mut Out) {
         a.feed(ev);
         fed += 1;
     }
+    // ---- stage 1: never-probed pairs and ambiguous (content-collision) situations.
+    // Every query is scored; every abstention caused by an unresolved conflict is saved.
+    let mut saved: Vec<Case> = Vec::new();
+    let mut st = Stage1::default();
     let mut sc = Score::default();
     let mut sc_feas = Score::default();
-    let mut held_v: Vec<(usize, usize)> = held.into_iter().collect();
+    let mut sc_clear = Score::default(); // feasible and not an unresolved conflict
+    let mut coll = Score::default();
+    let mut held_v: Vec<(usize, usize)> = held.iter().copied().collect();
     held_v.sort();
     let pos: Vec<_> = held_v.iter().copied().filter(|&(i, j)| w.files[i].group == w.files[j].group).collect();
     let neg: Vec<_> = held_v.iter().copied().filter(|&(i, j)| w.files[i].group != w.files[j].group).collect();
     for &(i, j) in pos.iter().chain(neg.iter()) {
-        let Ok((ev, truth)) = w.step(Some((osw::PROBE, vec![i, j]))) else { break };
-        let gr = a.g.ground(&ev);
-        let truth_changed = (ev.pre.value(slot_of(&truth, j).unwrap(), osw::CONTENT) != ev.post.value(slot_of(&truth, j).unwrap(), osw::CONTENT)) as i64;
-        let pred = (|| {
-            let r = role_of(&gr, slot_of(&truth, j)?)?;
-            let ep = to_episode_scene(&gr)?.without_outcomes();
-            let t = target_id(r, osw::CONTENT) + CHANGE;
-            let ans = a.rel.predict(&ep, t);
-            if std::env::var("DIAG_C").is_ok() && ans.value().is_none() {
-                eprintln!("OSABST pair ({i},{j}) same {} reason {:?}", w.files[i].group == w.files[j].group, ans);
-                for (l, v) in a.rel.explain(&ep, t) {
-                    eprintln!("    lic {} -> {v}", a.rel.summary(l, ep.context));
-                }
-            }
-            ans.value()
-        })();
+        let Some((pred, truth_changed, unresolved)) = judge_os(&mut a, &mut w, i, j, &mut saved, &mut st) else { break };
         sc.add(pred, truth_changed);
-        if w.files[i].group != w.files[j].group || feasible(n, &trained_pos, i, j) {
+        let feas = w.files[i].group != w.files[j].group || feasible(n, &trained_pos, i, j);
+        if feas {
             sc_feas.add(pred, truth_changed);
+            if !unresolved {
+                sc_clear.add(pred, truth_changed);
+            }
         }
     }
+    // ambiguous situations on demand: unrecorded rewrites (the learner does not see them) until two
+    // different files share a content class, then that pair is probed as a test
+    let mut made = 0;
+    let mut tries = 0;
+    while made < 8 && tries < 20000 {
+        tries += 1;
+        let f = rng.below(n as u64) as usize;
+        if w.execute(osw::WRITE, &[f]).is_err() {
+            break;
+        }
+        let classes: Vec<i64> = (0..n).map(|k| w.content_class(k).unwrap_or(-1)).collect();
+        let mut found = None;
+        for i in 0..n {
+            for j in 0..n {
+                if found.is_none() && i != j && w.files[i].group != w.files[j].group && classes[i] == classes[j] {
+                    found = Some((i, j));
+                }
+            }
+        }
+        if let Some((i, j)) = found {
+            if let Some((pred, truth_changed, _)) = judge_os(&mut a, &mut w, i, j, &mut saved, &mut st) {
+                coll.add(pred, truth_changed);
+                made += 1;
+            }
+        }
+    }
+    // gate: situations where the agent's own licensed laws conflict must be abstained unless the
+    // conflict is settled by >= 3 independent shared situations (then the answer must be right).
+    // The ground-truth-selected collision situations are reported, not gated: they are by
+    // construction the exception set of a law that is ~98% right on natural situations.
+    let stage1_ok = sc.wrong * 100 <= sc.n() * 5 && sc_clear.ok * 100 >= sc_clear.n() * 90 && st.resolved_wrong == 0 && st.unresolved_answered == 0;
+    out.gate(
+        "C4b-1 abstain without evidence",
+        stage1_ok,
+        format!(
+            "seed {seed}: never-probed pairs ({} same-file, {} different): all {}; feasible without unresolved conflict {}; content-collision situations (reported, not gated) {}; situations with conflicting licensed laws {}: answered {} (correct {}, wrong {}, while unsettled {}), saved abstentions {}",
+            pos.len(),
+            neg.len(),
+            sc.s(),
+            sc_clear.s(),
+            coll.s(),
+            st.conflict_n,
+            st.answered,
+            st.resolved_ok,
+            st.resolved_wrong,
+            st.unresolved_answered,
+            saved.len()
+        ),
+    );
+    let _ = &sc_feas;
+    // ---- stage 2: life goes on (probes of trained pairs, fed), with an evidence-seeking choice:
+    // among up to 20 candidate pairs the agent previews, it probes one on which its own licensed
+    // laws disagree (an experiment on its open conflict), otherwise the first candidate. Saved cases
+    // are re-judged every 100 probes on their exact original query. Each answer is classified:
+    // settled (the conflict rests on >= 3 independent shared situations), dissolved by
+    // counterevidence (a law that answered before is now contested or revoked), or other.
+    let n_saved = saved.len() as u32;
+    // (probes, indep, correct, mechanism 0 settled / 1 counterevidence / 2 other)
+    let mut answered: Vec<Option<(u32, u32, bool, u8)>> = vec![None; saved.len()];
+    let (mut premature, mut fed2, mut sought) = (0u32, 0u32, 0u32);
+    let ctx2 = w.context;
+    while fed2 < 6000 && answered.iter().any(|x| x.is_none()) {
+        let mut choice: Option<(usize, usize)> = None;
+        let mut first: Option<(usize, usize)> = None;
+        for _ in 0..20 {
+            let p = rng.sample_distinct(n, 2);
+            if held.contains(&(p[0], p[1])) {
+                continue;
+            }
+            first.get_or_insert((p[0], p[1]));
+            let Ok((pv, tr)) = w.preview(p[0], p[1]) else { continue };
+            let gr = a.g.ground(&pv);
+            let Some(sj) = slot_of(&tr, p[1]) else { continue };
+            let (Some(r), Some(q)) = (role_of(&gr, sj), to_episode_scene(&gr)) else { continue };
+            let vals: std::collections::BTreeSet<i64> = a.rel.explain(&q.without_outcomes(), target_id(r, osw::CONTENT) + CHANGE).into_iter().map(|x| x.1).collect();
+            if vals.len() > 1 {
+                choice = Some((p[0], p[1]));
+                break;
+            }
+        }
+        let Some((i, j)) = choice.or(first) else { continue };
+        if choice.is_some() {
+            sought += 1;
+        }
+        let Ok((ev, _)) = w.step(Some((osw::PROBE, vec![i, j]))) else { break };
+        a.feed(ev);
+        fed2 += 1;
+        if fed2 % 100 == 0 {
+            for (k, c) in saved.iter().enumerate() {
+                if answered[k].is_some() {
+                    continue;
+                }
+                let ce = a.rel.conflict_evidence(&c.q, c.t);
+                let indep = ce.iter().map(|x| x.2).min().unwrap_or(0);
+                if let Some(v) = a.rel.predict(&c.q, c.t).value() {
+                    if !ce.is_empty() && indep < bm_relation::engine::MIN_SHARED_INDEPENDENT {
+                        premature += 1;
+                    }
+                    let now: Vec<usize> = a.rel.explain(&c.q, c.t).into_iter().map(|x| x.0).collect();
+                    let gone: Vec<usize> = c.laws.iter().copied().filter(|l| !now.contains(l)).collect();
+                    let mech = if !ce.is_empty() {
+                        0 // settled by shared situations
+                    } else if gone.iter().any(|&l| matches!(a.rel.laws[l].status_in(ctx2), bm_relation::Status::Contested | bm_relation::Status::Revoked | bm_relation::Status::Restricted)) {
+                        1 // a competitor lost its licence through new counterevidence
+                    } else if gone.iter().all(|&l| a.rel.laws[l].condition.iter().any(|f| feat_ch(f) >= 3000)) {
+                        3 // a competitor over a latent channel stopped matching: its partition version was retired
+                    } else {
+                        2
+                    };
+                    answered[k] = Some((fed2, indep, v == c.truth, mech));
+                }
+            }
+        }
+    }
+    if std::env::var("DIAG_C4B").is_ok() {
+        for (k, c) in saved.iter().enumerate() {
+            let ce = a.rel.conflict_evidence(&c.q, c.t);
+            eprintln!("C4BSAVED {k} answered {:?} now {:?} conflict {:?}", answered[k], a.rel.predict(&c.q, c.t), ce);
+            for &l in &c.laws {
+                eprintln!("    then {} now-status {:?}", a.rel.summary(l, ctx2), a.rel.laws[l].status_in(ctx2));
+            }
+            for (l, v) in a.rel.explain(&c.q, c.t) {
+                eprintln!("    now {} => {v}", a.rel.summary(l, ctx2));
+            }
+        }
+    }
+    let mech_n = |m: u8| answered.iter().filter(|x| matches!(x, Some((_, _, _, mm)) if *mm == m)).count();
+    let (settled, dissolved_ev, other, revision) = (mech_n(0), mech_n(1), mech_n(2), mech_n(3));
+    let n_ans = answered.iter().filter(|x| x.is_some()).count() as u32;
+    let n_ok = answered.iter().filter(|x| matches!(x, Some((_, _, true, _)))).count() as u32;
+    let detail: Vec<String> = answered
+        .iter()
+        .map(|x| match x {
+            Some((p, i, ok, m)) => format!("{}@{p}probes/{i}indep/{}", if *ok { "ok" } else { "WRONG" }, ["settled", "counterevidence", "other", "revision"][*m as usize]),
+            None => "still-abstained".to_string(),
+        })
+        .collect();
+    let settled_ok = answered.iter().filter(|x| matches!(x, Some((_, _, true, 0)))).count() as u32;
+    STAGE2.with(|s| {
+        let mut s = s.borrow_mut();
+        s.0 += n_saved;
+        s.1 += settled as u32;
+        s.2 += settled_ok;
+    });
+    out.gate(
+        "C4b-2 learn from new evidence",
+        premature == 0 && n_ok == n_ans && other == 0,
+        format!("seed {seed}: saved abstentions {n_saved}; after {fed2} further probes ({sought} chosen to test an open conflict): answered {n_ans} (correct {n_ok}, wrong {}; settled by >= 3 shared {settled}, dissolved by counterevidence {dissolved_ev}, by latent partition revision {revision}, other {other}), premature answers {premature}; {:?}", n_ans - n_ok, detail),
+    );
     let ctx = w.context;
     for l in a.rel.licensed_in(ctx).into_iter().filter(|&l| a.rel.laws[l].condition.iter().any(|f| matches!(f, FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } if *ch >= 3000))).take(4) {
         let _ = writeln!(out.report, "      OS latent law: {}", a.rel.summary(l, ctx));
@@ -541,11 +685,85 @@ fn links_os(seed: u64, out: &mut Out) {
         .into_iter()
         .filter(|&l| a.rel.laws[l].condition.iter().any(|f| matches!(f, FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } if *ch >= 3000)))
         .count();
-    out.gate(
-        "C4b latent cause (real OS)",
-        sc_feas.ok * 100 >= sc_feas.n() * 90 && sc.wrong * 100 <= sc.n() * 5,
-        format!("seed {seed}: real hard links in {}: never-probed file pairs ({} same-file, {} different): all {}; oracle-feasible {}; latent-channel licensed laws {lat}", w.root.display(), pos.len(), neg.len(), sc.s(), sc_feas.s()),
-    );
+}
+
+fn feat_ch(f: &FeatureKind) -> u16 {
+    match f {
+        FeatureKind::Abs { ch, .. } | FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } | FeatureKind::Order { ch, .. } | FeatureKind::Delta { ch, .. } => *ch,
+    }
+}
+
+/// A saved abstention: the exact query, its target and the truth (stage 2 re-judges it).
+struct Case {
+    q: bm_relation::Episode,
+    t: u32,
+    truth: i64,
+    /// licensed laws that answered the query when it was abstained
+    laws: Vec<usize>,
+}
+
+#[derive(Default)]
+struct Stage1 {
+    conflict_n: u32,
+    answered: u32,
+    resolved_ok: u32,
+    resolved_wrong: u32,
+    /// answers given while the conflict rested on < 3 independent shared situations (must be 0)
+    unresolved_answered: u32,
+}
+
+/// Judge one live real-OS situation (a test probe; it is not fed, so it teaches nothing).
+/// Returns (answer, truth, unresolved conflict).
+fn judge_os(a: &mut Agent, w: &mut FsWorld, i: usize, j: usize, saved: &mut Vec<Case>, st: &mut Stage1) -> Option<(Option<i64>, i64, bool)> {
+    let (ev, truth) = w.step(Some((osw::PROBE, vec![i, j]))).ok()?;
+    let gr = a.g.ground(&ev);
+    let sj = slot_of(&truth, j)?;
+    let truth_changed = (ev.pre.value(sj, osw::CONTENT) != ev.post.value(sj, osw::CONTENT)) as i64;
+    let r = role_of(&gr, sj)?;
+    let q = to_episode_scene(&gr)?.without_outcomes();
+    let t = target_id(r, osw::CONTENT) + CHANGE;
+    let ans = a.rel.predict(&q, t);
+    let ce = a.rel.conflict_evidence(&q, t);
+    let unresolved = !ce.is_empty() && ce.iter().any(|c| c.2 < bm_relation::engine::MIN_SHARED_INDEPENDENT);
+    if !ce.is_empty() {
+        st.conflict_n += 1;
+        if ans.value().is_some() && unresolved {
+            st.unresolved_answered += 1;
+        }
+        if let Some(v) = ans.value() {
+            st.answered += 1;
+            if v == truth_changed {
+                st.resolved_ok += 1;
+            } else {
+                st.resolved_wrong += 1;
+            }
+        }
+    }
+    if std::env::var("DIAG_C4B").is_ok() && ans.value().is_none() {
+        eprintln!("C4BABST pair ({i},{j}) groups ({},{}) reason {:?} conflict {:?}", w.files[i].group, w.files[j].group, ans, ce);
+    }
+    if std::env::var("DIAG_C4B").is_ok() && ans.value().is_some() && ans.value() != Some(truth_changed) {
+        eprintln!("C4BWRONG pair ({i},{j}) groups ({},{}) predicted {:?} truth {truth_changed} conflict {:?}", w.files[i].group, w.files[j].group, ans.value(), ce);
+        for (l, v) in a.rel.explain(&q, t) {
+            eprintln!("    by {} => {v}", a.rel.summary(l, q.context));
+        }
+        for ind in &a.rel.latent {
+            let mut e = q.clone();
+            ind.augment(&mut e);
+            let lat: Vec<Vec<(u16, i64)>> = e.roles.iter().take(2).map(|r| r.fillers.iter().filter(|f| f.ch >= 3000).map(|f| (f.ch, f.val)).collect()).collect();
+            eprintln!("    inducer target {} fillers {:?}", ind.target, lat);
+        }
+    }
+    if matches!(ans, bm_relation::Answer::Abstain(bm_relation::Abstain::Conflict)) {
+        let laws = a.rel.explain(&q, t).into_iter().map(|x| x.0).collect();
+        saved.push(Case { q, t, truth: truth_changed, laws });
+    }
+    Some((ans.value(), truth_changed, unresolved))
+}
+
+thread_local! {
+    /// (saved abstentions, later answered, answered correctly) over all seeds (C4b-2 power).
+    static STAGE2: std::cell::RefCell<(u32, u32, u32)> = const { std::cell::RefCell::new((0, 0, 0)) };
 }
 
 fn main() {
@@ -568,6 +786,14 @@ fn main() {
         let _ = writeln!(out.report, "      ablation without latent induction: {}", without.s());
         let _ = with;
         links_os(seed, &mut out);
+    }
+    let (s_saved, s_ans, s_ok) = STAGE2.with(|s| *s.borrow());
+    if s_saved > 0 || std::env::var("ONLY_OS").is_ok() || std::env::var("ONLY_LINKS").is_err() {
+        out.gate(
+            "C4b-2 power (all seeds)",
+            s_ans >= 30,
+            format!("saved abstentions {s_saved}; answered after the conflict was settled by >= 3 independent shared situations {s_ans}, of them correct {s_ok} (>= 30 such cases needed for the stage-2 claim)"),
+        );
     }
     println!("{}", out.report);
     println!("E-C OVERALL: {}", if out.all { "PASS" } else { "FAIL" });

@@ -3,5 +3,6 @@
 
 pub mod devices;
 pub mod ground;
+pub mod heldout;
 pub mod os;
 pub mod r0;

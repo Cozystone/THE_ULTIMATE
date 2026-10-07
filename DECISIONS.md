@@ -559,3 +559,36 @@ colliding content class; the licensed content law (6 collision counterexamples) 
 law disagree, and fewer than 3 shared cases exist to settle it (D041). Re-scoring past episodes
 under the current latent partition would be circular (the partition was induced from those
 outcomes). No change: abstention is the honest answer with this evidence.
+
+## D041a Conflicts are settled by independent shared situations (2026-10-07)
+Requested by the user for the two-stage C4b test. D041 counted shared episodes, so one situation
+probed five times counted five times. Choice: shared cases are counted by distinct situation
+signatures; a conflict is settled only by >= 3 independent shared situations
+(`MIN_SHARED_INDEPENDENT`), in favour of the value that happened in strictly more of them. A
+read-only `conflict_evidence` view reports, per pair of disagreeing groups, the independent shared
+count and each side's record. Test: two licensed laws in conflict stay unanswered through five
+copies of one shared situation plus a second one, and are settled by the third.
+
+## D041b Shared cases are found without the episode-list cap (2026-10-07)
+Evidence: two-stage C4b development, seed 31: the content law had 7,944 cases but each outcome bin
+keeps at most 4,096 episode ids (EP_CAP), so every later shared case, including all of stage 2,
+was invisible to conflict resolution. Choice: when a law's list is truncated, shared cases are found
+by testing each law's condition against the stored feature set of every episode in the context.
+
+## Known issue K1 (not fixed in v0.1): order/delta transforms on nominal labels
+Evidence: two-stage C4b development, seeds 30 and 31. The saved conflicts are the perfect
+content law `diff(content) => unchanged` (7,944 cases, 0 counterexamples) against laws such as
+`r0.ext=2 & delta(r0,r1; identity)=-6 => changed`. The identity channel and latent class channels
+carry nominal labels; differences of labels are arithmetic on names. Such a law memorises one
+linked pair while looking relational, earns transfer credit from changing bystanders, and
+conflicts with the general law on any new pair that happens to have the same label difference.
+Shared evidence with the content law almost never occurs, so these conflicts stay open and the
+engine abstains (no wrong answer). This corrects the earlier explanation that the C4b abstentions
+were hash collisions: some are, most observed in development are K1. The freeze instruction holds:
+v0.1 keeps K1; the fix (no order/delta transforms on identity and latent-label channels, or a
+learned ordinal/nominal channel test) belongs to v0.2 with its own fresh held-out test.
+
+## Known issue K2 (not fixed in v0.1): hypothesis growth on long real-OS runs
+Two-stage C4b runs (9,000 real-OS probes) reach ~10-11 GB working set per process, against 569 MB
+for the whole Phase F battery. Hypothesis count grows with refinement and latent versions; nothing
+bounds it except D018 pruning. Target for v0.2: a memory budget with MDL-ranked eviction.

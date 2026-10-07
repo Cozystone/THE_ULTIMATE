@@ -184,6 +184,44 @@ impl FsWorld {
         ))
     }
 
+    /// Look without acting: the scene the probe `(a, b)` would start from, carrying the action, with
+    /// post = pre (used by an agent to evaluate a candidate probe before choosing it).
+    pub fn preview(&mut self, a: usize, b: usize) -> std::io::Result<(Event, Vec<(u16, usize)>)> {
+        let mut vis: Vec<usize> = vec![a, b];
+        while vis.len() < self.visible.min(self.files.len()) {
+            let c = self.rng.below(self.files.len() as u64) as usize;
+            if !vis.contains(&c) {
+                vis.push(c);
+            }
+        }
+        let mut slots: Vec<u16> = (0..vis.len() as u16).collect();
+        self.rng.shuffle(&mut slots);
+        let truth: Vec<(u16, usize)> = vis.iter().enumerate().map(|(i, &f)| (slots[i], f)).collect();
+        let mut pre = Vec::new();
+        for &(s, f) in &truth {
+            self.observe_file(f, s, &mut pre)?;
+        }
+        let arg_slots = [a, b].iter().map(|x| truth.iter().find(|y| y.1 == *x).expect("arg visible").0).collect();
+        Ok((
+            Event {
+                id: 0,
+                t: self.t,
+                source: 20,
+                context: self.context,
+                pre: Scene { tokens: pre.clone() },
+                act: Some(Act { id: PROBE, args: arg_slots }),
+                post: Scene { tokens: pre },
+                kind: Kind::Intervention,
+            },
+            truth,
+        ))
+    }
+
+    /// Ground truth for evaluation harnesses: the sensed content class of a file now.
+    pub fn content_class(&self, i: usize) -> std::io::Result<i64> {
+        Ok((fnv1a64(&fs::read(self.path(i)?)?) % 256) as i64)
+    }
+
     /// Remove the sandbox (only if it carries the marker).
     pub fn cleanup(&self) -> std::io::Result<()> {
         if self.root.join(MARKER).exists() && self.root.starts_with(std::env::temp_dir()) {

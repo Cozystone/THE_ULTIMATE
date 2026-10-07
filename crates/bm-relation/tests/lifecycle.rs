@@ -318,3 +318,50 @@ fn an_older_partition_version_speaks_only_where_the_relation_is_unchanged() {
     let (x, y) = latent_of(&ind, 4, 5, l_new);
     assert!(x.is_some() && x == y);
 }
+
+fn ent3(colour: i64, shape: i64, id: i64) -> Entity {
+    Entity::new(&[(0, colour), (1, shape), (3, id)])
+}
+
+/// D041a: a conflict between licensed laws is settled only by >= 3 independent shared situations;
+/// repeated copies of one situation count once.
+#[test]
+fn conflicts_are_settled_only_by_independent_shared_situations() {
+    let pol = LicensePolicy { noise_tol_num: 10, noise_tol_den: 100, ..Default::default() };
+    let mut e = RelationEngine::with_policy(41, pol);
+    let mut rng = Rng::new(42);
+    let mut id = 0i64;
+    let mut next = || {
+        id += 1;
+        id
+    };
+    // law A: same colour => 1 (shapes 0..5); different colours: random
+    for _ in 0..500 {
+        let ca = rng.below(6) as i64;
+        let cb = if rng.below(2) == 0 { ca } else { rng.below(6) as i64 };
+        let (sa, sb) = (rng.below(5) as i64, rng.below(5) as i64);
+        // different colours: the outcome is a coin flip (nothing general explains it)
+        let out = if ca == cb { 1 } else { rng.below(2) as i64 };
+        e.observe(ep("C", ent3(ca, sa, next()), ent3(cb, sb, next()), out, Kind::Intervention));
+    }
+    // law B: a shape-9 first object => 0 (only seen with different colours so far)
+    for _ in 0..120 {
+        let ca = rng.below(6) as i64;
+        let cb = (ca + 1 + rng.below(5) as i64) % 6;
+        e.observe(ep("C", ent3(ca, 9, next()), ent3(cb, rng.below(5) as i64, next()), 0, Kind::Intervention));
+    }
+    let query = |e: &mut RelationEngine, c: i64| ep("C", ent3(c, 9, 900_000 + c), ent3(c, 2, 900_100 + c), 0, Kind::Intervention).without_outcomes();
+    let q = query(&mut e, 4);
+    assert!(matches!(e.predict(&q, T), Answer::Abstain(Abstain::Conflict)), "two licensed laws disagree: abstain, got {:?}", e.predict(&q, T));
+    // one shared situation repeated five times is one case
+    let rep = ep("C", ent3(1, 9, 777), ent3(1, 3, 778), 0, Kind::Intervention);
+    for _ in 0..5 {
+        e.observe(rep.clone());
+    }
+    // a second independent shared situation
+    e.observe(ep("C", ent3(2, 9, next()), ent3(2, 1, next()), 0, Kind::Intervention));
+    assert!(matches!(e.predict(&q, T), Answer::Abstain(Abstain::Conflict)), "2 independent shared situations are not enough");
+    // the third independent shared situation settles it, in favour of the law that was right
+    e.observe(ep("C", ent3(3, 9, next()), ent3(3, 4, next()), 0, Kind::Intervention));
+    assert_eq!(e.predict(&q, T).value(), Some(0), "settled by 3 independent shared situations");
+}

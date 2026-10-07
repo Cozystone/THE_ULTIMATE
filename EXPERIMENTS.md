@@ -511,3 +511,28 @@ E1 McNemar p <= 8.9e-16 on every seed; E2, E3 and the link part pass on all 15 s
 | D active inference | v3, seeds 1-15 | PASS |
 | E self-model, sleep | v4, seeds 46-60 | PASS |
 | F battery | v2, seeds 1-15 | PASS |
+
+### C4b two-stage test (user decision 2026-10-07: keep the abstentions, extend the test)
+Design (development seeds 30, 31 only, disclosed):
+* C4b-1 "abstain without evidence": never-probed real-OS pairs plus 8 content-collision situations
+  produced by unrecorded rewrites. Gate: whenever the agent's own licensed laws conflict and the
+  conflict rests on < 3 independent shared situations, it must abstain (answers while unsettled =
+  0); conflicts it does settle must be answered correctly; never-probed pairs <= 5% wrong; feasible
+  pairs without an unresolved conflict >= 90% correct. The collision situations are reported, not
+  gated: they are selected by ground truth as the exception set of a law that is ~98% right on
+  natural situations (with no established latent class, no agent can tell them from real links).
+* C4b-2 "learn from new evidence": life continues for up to 6,000 fed probes of trained pairs; the
+  agent previews up to 20 candidates per step and probes one on which its licensed laws disagree
+  (an experiment on its open conflict). Every saved abstention is re-judged every 100 probes on
+  its exact original query. Each answer is classified: settled (>= 3 independent shared
+  situations), dissolved by counterevidence, dissolved by latent partition revision, other. Gate
+  per seed: no answer while unsettled, no wrong answer, no "other". Power gate over all seeds:
+  >= 30 answers that came from settled conflicts, otherwise the stage-2 claim is not demonstrated.
+* Development outcome: C4b-1 PASS on seeds 30, 31 (every conflict abstained). C4b-2: 0 settled
+  answers; seed 31 had 13 evidence-seeking probes and one answer after a latent version was
+  retired. Reason: Known issue K1 (DECISIONS).
+
+### Validation run of the frozen learner (pre-registered before the run)
+Learner = v3 learner + D041a + D041b; this commit becomes tag `bitmind-v0.1`. Seeds: R0 1-25,
+B 1-25, D 1-15, F 1-15 (registered criteria); C 46-60 and E 46-60 (fresh). C includes the
+two-stage C4b above in place of the old single C4b gate. E uses the E-E v4 criterion.

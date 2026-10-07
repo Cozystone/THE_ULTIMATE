@@ -9,6 +9,9 @@ use hdc_core::fixed::{log2_q16, ratio_q16};
 use hdc_core::rng::mix64;
 use std::collections::HashMap;
 
+/// D041a: independent shared situations needed before a conflict between licensed laws is settled.
+pub const MIN_SHARED_INDEPENDENT: u32 = 3;
+
 /// Why the engine refused to answer. Silence is preferred to confident wrongness.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Abstain {
@@ -1114,30 +1117,19 @@ impl RelationEngine {
         }
     }
 
-    /// D041: settle a conflict between licensed laws by their record on the cases where both
+    /// D041/D041a: settle a conflict between licensed laws by their record on the cases where both
     /// applied. For every pair of value groups, the overlap of their laws' episodes is scored; the
     /// group whose laws were right strictly more often (with >= 3 shared cases) wins every pairwise
     /// comparison, otherwise the conflict stands and the engine abstains.
     fn resolve_conflict(&self, groups: &[(i64, Vec<usize>, i64)], ctx: u64, target: u32) -> Option<usize> {
-        let ids = |l: usize| -> std::collections::HashSet<u64> {
-            self.laws[l].ctx(ctx).map(|e| e.all_ids().into_iter().collect()).unwrap_or_default()
-        };
         let mut wins = vec![0usize; groups.len()];
         for a in 0..groups.len() {
             for b in (a + 1)..groups.len() {
-                let ia: std::collections::HashSet<u64> = groups[a].1.iter().flat_map(|&l| ids(l)).collect();
-                let ib: std::collections::HashSet<u64> = groups[b].1.iter().flat_map(|&l| ids(l)).collect();
-                let shared: Vec<u64> = ia.intersection(&ib).copied().collect();
-                if shared.len() < 3 {
+                let (indep, ra, rb) = self.shared_record(groups, a, b, ctx, target);
+                // D041a: the shared cases must be independent (distinct situations); repeated
+                // probes of one situation are one case
+                if indep < MIN_SHARED_INDEPENDENT {
                     continue;
-                }
-                let (mut ra, mut rb) = (0, 0);
-                for e in shared {
-                    match self.store.get(e).outcome(target) {
-                        Some(o) if o == groups[a].0 => ra += 1,
-                        Some(o) if o == groups[b].0 => rb += 1,
-                        _ => {}
-                    }
                 }
                 if ra > rb {
                     wins[a] += 1;
@@ -1148,6 +1140,78 @@ impl RelationEngine {
         }
         let need = groups.len() - 1;
         wins.iter().position(|&w| w == need)
+    }
+
+    /// Record of two value groups on the cases where both applied: (independent shared
+    /// situations, situations where group a's value happened, situations where group b's did).
+    fn shared_record(&self, groups: &[(i64, Vec<usize>, i64)], a: usize, b: usize, ctx: u64, target: u32) -> (u32, u32, u32) {
+        // D041b: per-law episode lists are capped (EP_CAP); when a list is truncated, shared cases
+        // are found by testing each law's condition against the stored features of every episode
+        // in the context, so late evidence is never invisible
+        let truncated = |l: usize| self.laws[l].ctx(ctx).map(|e| (e.all_ids().len() as u32) < e.total()).unwrap_or(false);
+        let applies = |l: usize, id: u64| -> bool {
+            let law = &self.laws[l];
+            let ep = self.store.get(id);
+            ep.action == law.action && law.condition.iter().all(|k| self.feat_kinds[id as usize].contains(k))
+        };
+        let ids = |l: usize| -> std::collections::HashSet<u64> {
+            self.laws[l].ctx(ctx).map(|e| e.all_ids().into_iter().collect()).unwrap_or_default()
+        };
+        let any_trunc = groups[a].1.iter().chain(groups[b].1.iter()).any(|&l| truncated(l));
+        let shared: Vec<u64> = if any_trunc {
+            (0..self.store.len() as u64)
+                .filter(|&id| self.store.get(id).context == ctx && self.store.get(id).outcome(target).is_some())
+                .filter(|&id| groups[a].1.iter().any(|&l| applies(l, id)) && groups[b].1.iter().any(|&l| applies(l, id)))
+                .collect()
+        } else {
+            let ia: std::collections::HashSet<u64> = groups[a].1.iter().flat_map(|&l| ids(l)).collect();
+            let ib: std::collections::HashSet<u64> = groups[b].1.iter().flat_map(|&l| ids(l)).collect();
+            ia.intersection(&ib).copied().collect()
+        };
+        let mut sigs: std::collections::HashSet<u64> = std::collections::HashSet::new();
+        let mut sa: std::collections::HashSet<u64> = std::collections::HashSet::new();
+        let mut sb: std::collections::HashSet<u64> = std::collections::HashSet::new();
+        for e in shared {
+            let ep = self.store.get(e);
+            let sig = ep.signature();
+            sigs.insert(sig);
+            match ep.outcome(target) {
+                Some(o) if o == groups[a].0 => {
+                    sa.insert(sig);
+                }
+                Some(o) if o == groups[b].0 => {
+                    sb.insert(sig);
+                }
+                _ => {}
+            }
+        }
+        (sigs.len() as u32, sa.len() as u32, sb.len() as u32)
+    }
+
+    /// Diagnostic and evaluation view of a conflict for a query: for every pair of disagreeing
+    /// licensed value groups, (value a, value b, independent shared situations, right a, right b).
+    /// Empty when the licensed laws agree or nothing is licensed.
+    pub fn conflict_evidence(&mut self, ep: &Episode, target: u32) -> Vec<(i64, i64, u32, u32, u32)> {
+        let ctx = ep.context;
+        let mut aug = ep.clone();
+        self.augment(&mut aug);
+        let m = self.matching(&aug, target);
+        let mut by_val: Vec<(i64, Vec<usize>, i64)> = Vec::new();
+        for l in m.into_iter().filter(|&l| self.laws[l].applicable(ctx)) {
+            let Some(v) = self.laws[l].ctx(ctx).and_then(|e| e.majority()).map(|m| m.0) else { continue };
+            match by_val.iter_mut().find(|x| x.0 == v) {
+                Some(x) => x.1.push(l),
+                None => by_val.push((v, vec![l], 0)),
+            }
+        }
+        let mut out = Vec::new();
+        for a in 0..by_val.len() {
+            for b in (a + 1)..by_val.len() {
+                let (i, ra, rb) = self.shared_record(&by_val, a, b, ctx, target);
+                out.push((by_val[a].0, by_val[b].0, i, ra, rb));
+            }
+        }
+        out
     }
 
     /// Competing hypotheses: other non-base laws for the same action/target sharing at least one
