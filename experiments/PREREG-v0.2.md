@@ -149,3 +149,11 @@ Abstention never counts as correct.
   components, no LLM. Constitution check before each freeze.
 * Development seeds and every threshold above are fixed by this document. A change requires a
   dated amendment written before the run it affects.
+
+## Amendment 1 (2026-10-07, before any v0.2 learner change)
+Running the unit tests against `bitmind-v0.1` showed that test 3 (identity continuity) passes on
+v0.1. That is intended: it guards a capability that must survive, so "each must fail on v0.1"
+applies to tests 1, 2, 4 and 5 only. Test 1 as first written also passed on v0.1 because its
+training pairs gave identity arithmetic no consistent coincidence. It now draws half of the
+training pairs as neighbours inside a colour block, so in engine A's numbering same-colour pairs
+often differ by one identity unit, which is the trap v0.1 fell into in G4.
