@@ -123,3 +123,39 @@ the benchmark itself, not the learner, makes it infeasible, and must be dated be
 * Stop rule: if the 2 GB H5-development target cannot be met without harming correctness, the
   tradeoff is reported and work stops; no indefinite layering of retention patches.
 * Constitution check and all tests green before the freeze.
+
+## Amendment 1: diagnosis result and mechanism (2026-10-08, before any learner behaviour change)
+Diagnosis (`experiments/results/v03_k2_diagnosis.txt`, learner = v0.2 plus read-only accounting):
+
+| run | 1k | 5k | 10k | 20k | dominant at the last checkpoint |
+|---|---|---|---|---|---|
+| H5 201 / 207 / 212 | 0.7 / 0.7 / 0.9 GB | 2.5 / 2.3 / 3.4 GB | 3.8 / 3.4 / 4.8 GB | 5.3 / 4.8 / 6.7 GB | conjunctions involving latent channels: 1.38M of 1.74M laws, 4.1 GB of 5.7 GB (seed 212); revoked + retired laws still hold 3.6 GB |
+| real-OS seed 58 | 0.86 GB | 2.8 GB | 4.1 GB | - | laws over targets with > 64 outcome values: 2.8 GB of 3.6 GB; latent conjunctions 2.3 GB (overlapping) |
+
+**Correction to section 1.** K2′-o is confirmed for the real-OS world. K2′-c is confirmed, but its
+main generator is not sensed high-cardinality marks; it is hidden-condition refinement building
+conjunction children over versioned latent features (every partition revision brings new latent
+values, and each impure parent receives up to 8 children per refinement). In H5 all targets
+have <= 8 outcome values, so K2′-o is absent there.
+
+**Mechanism D055 (evidence-gated materialization), fixed now:**
+1. **Single features.** For each (action, target, context), a bounded table counts outcomes per
+   feature value; a law is materialized for a value only when its outcome counts carry
+   LLR >= log2(M) + 4 bits against the base law's Laplace-smoothed distribution, with >= 3 cases.
+   LLR is the information in bits, n x KL(empirical || baseline). M is the number of feature
+   values tested for that target in that context (multiple-comparison protection, the same
+   currency as D012). Base laws always exist.
+2. **Refinement.** A hidden-condition child is created only if, on the parent's replayed episodes,
+   the child's outcome counts carry LLR >= log2(M_r) + 4 bits against the parent's distribution.
+   M_r is the number of candidate features examined for that target in that context.
+3. **Materialization by replay.** A law that earns capacity is initialized from the stored episodes
+   whose features contain its condition: counts, keys and counterexamples. As in D014, replay gives
+   no transfer credit and no utility, so earning capacity is never counted as new evidence.
+4. **Bounds.** A value table holds at most 4,096 values per feature family (further values are
+   counted as untracked and cannot earn capacity) and at most 8 outcomes per value (others are
+   pooled). Tables of retired latent channel versions are dropped. Nothing about a materialized
+   law or its counterexamples is deleted.
+5. **Explanation.** An abstention on a query whose features exist only as table entries is
+   attributable as "deferred: insufficient evidence".
+
+The constants (4 bits, >= 3 cases, 4,096, 8) are fixed here and change only by dated amendment.

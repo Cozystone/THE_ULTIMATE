@@ -1,0 +1,45 @@
+v0.3 K2' diagnosis (PREREG-v0.3 section 2). Learner: bitmind-v0.2 + read-only k2_breakdown. Full per-checkpoint tables: experiments/results/v03diag/*.txt
+
+== H5 seed 201 step 1000: working set 697 MB (peak 697 MB); laws 393220 (579 MB attributed to laws)
+== H5 seed 201 step 5000: working set 2535 MB (peak 2535 MB); laws 1038813 (2057 MB attributed to laws)
+== H5 seed 201 step 10000: working set 3780 MB (peak 3781 MB); laws 1233360 (3134 MB attributed to laws)
+== H5 seed 201 step 20000: working set 5280 MB (peak 5281 MB); laws 1322844 (4500 MB attributed to laws)
+== H5 seed 207 step 1000: working set 659 MB (peak 659 MB); laws 362670 (543 MB attributed to laws)
+== H5 seed 207 step 5000: working set 2343 MB (peak 2344 MB); laws 926269 (1910 MB attributed to laws)
+== H5 seed 207 step 10000: working set 3422 MB (peak 3423 MB); laws 1026038 (2829 MB attributed to laws)
+== H5 seed 207 step 20000: working set 4837 MB (peak 4870 MB); laws 1120689 (4176 MB attributed to laws)
+== H5 seed 212 step 1000: working set 948 MB (peak 1036 MB); laws 525364 (774 MB attributed to laws)
+== H5 seed 212 step 5000: working set 3354 MB (peak 3356 MB); laws 1414376 (2719 MB attributed to laws)
+== H5 seed 212 step 10000: working set 4794 MB (peak 4796 MB); laws 1585701 (3949 MB attributed to laws)
+== H5 seed 212 step 20000: working set 6736 MB (peak 6739 MB); laws 1736609 (5711 MB attributed to laws)
+== real-OS seed 58 step 1000: working set 857 MB (peak 857 MB); laws 206360 (661 MB attributed to laws)
+== real-OS seed 58 step 5000: working set 2831 MB (peak 2832 MB); laws 413394 (2220 MB attributed to laws)
+== real-OS seed 58 step 10000: working set 4102 MB (peak 4102 MB); laws 500638 (3558 MB attributed to laws)
+
+Largest categories at the last checkpoint:
+== H5 seed 212 step 20000: working set 6736 MB (peak 6739 MB); laws 1736609 (5711 MB attributed to laws)
+   target outcomes <=8                                    1736609 laws/items    5711 MB
+   cond conjunction with latent                           1375958 laws/items    4144 MB
+   status Revoked                                          217513 laws/items    1825 MB
+   status pruned                                          1186386 laws/items    1771 MB
+   status Candidate                                        278515 laws/items    1586 MB
+   cond conjunction                                         84499 laws/items     757 MB
+   status Contested                                         53998 laws/items     523 MB
+   cond absolute latent card 9-64                          175552 laws/items     346 MB
+   cond absolute latent card <=8                            47616 laws/items     150 MB
+   cond relational latent card <=8                          21832 laws/items      96 MB
+   cond relational latent card 9-64                         22008 laws/items      84 MB
+   store: per-episode feature lists                         19900 laws/items      83 MB
+== real-OS seed 58 step 10000: working set 4102 MB (peak 4102 MB); laws 500638 (3558 MB attributed to laws)
+   target outcomes >64                                     331840 laws/items    2823 MB
+   cond conjunction with latent                            312792 laws/items    2327 MB
+   status Revoked                                           86050 laws/items    1609 MB
+   status pruned                                           272897 laws/items    1036 MB
+   status Candidate                                        125392 laws/items     855 MB
+   target outcomes <=8                                     168798 laws/items     734 MB
+   cond conjunction                                         11780 laws/items     471 MB
+   cond conjunction with latent with >64-card absolute      98947 laws/items     214 MB
+   cond absolute latent card 9-64                           16128 laws/items     158 MB
+   cond conjunction with >64-card absolute                  42063 laws/items      99 MB
+   cond relational latent card 9-64                          2968 laws/items      70 MB
+   cond absolute latent card <=8                             4248 laws/items      52 MB
