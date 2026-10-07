@@ -64,7 +64,13 @@ fn corrupt(e: &Event, miss_pct: u64, rng: &mut hdc_core::Rng) -> Event {
     c
 }
 
+/// F1 (amendment 2, v0.2): recall is measured after the system's sleep consolidation (D052);
+/// `sleep = false` reproduces the v0.1 protocol and is reported alongside.
 fn f1(seed: u64) -> (Score, Score) {
+    f1_with(seed, true)
+}
+
+fn f1_with(seed: u64, sleep: bool) -> (Score, Score) {
     let setup = Setup { noise_pct: 5, miss_pct: 10, ..Default::default() };
     let mut w = GroundWorld::new(seed, 4, 4, setup, "f1");
     let mut g = Grounder::new(seed);
@@ -79,6 +85,9 @@ fn f1(seed: u64) -> (Score, Score) {
                 ids.push(id);
             }
         }
+    }
+    if sleep {
+        mem.consolidate(&mut g);
     }
     let nm = g.noise_model();
     let mut rng = hdc_core::Rng::new(seed ^ 0xF11);
@@ -361,10 +370,11 @@ fn main() {
     for &seed in &seeds {
         let _ = writeln!(out.report, "\n===== seed {seed}");
         let (r30, r50) = f1(seed);
+        let (n30, n50) = f1_with(seed, false);
         out.gate(
             "F1 one-shot recall",
             r30.ok * 100 >= r30.n() * 95 && r30.wrong * 100 <= r30.n() * 2 && r50.wrong * 100 <= r50.n() * 2,
-            format!("seed {seed}: events seen once, cue with 30% tokens missing: {}; 50% missing: {}", r30.s(), r50.s()),
+            format!("seed {seed}: events seen once, after sleep consolidation, cue with 30% tokens missing: {}; 50% missing: {} (without consolidation, v0.1 protocol: 30% {}; 50% {})", r30.s(), r50.s(), n30.s(), n50.s()),
         );
         let (eq, ord) = f2(seed);
         out.gate(

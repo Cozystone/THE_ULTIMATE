@@ -157,3 +157,14 @@ applies to tests 1, 2, 4 and 5 only. Test 1 as first written also passed on v0.1
 training pairs gave identity arithmetic no consistent coincidence. It now draws half of the
 training pairs as neighbours inside a colour block, so in engine A's numbering same-colour pairs
 often differ by one identity unit, which is the trap v0.1 fell into in G4.
+
+## Amendment 2 (2026-10-07, before any F regression run of v0.2)
+F1 diagnosis (`experiments/results/v02_f1_diagnosis.txt`, seeds 101-115, v0.1 protocol): every
+wrong recall (28) and most abstentions (147 of 184) are retrieval failures. The true event is not
+among the 32 candidates because it was encoded when its objects had no mature concept. There are
+no collisions and 4 alignment ties. With one consolidation after training
+(`v02_f1_diagnosis_reconsolidated.txt`): 0 wrong; at 30% missing only 2 of 3000 queries missed, both
+abstentions.
+Change: the learner gets a sleep-time consolidation (D052) that re-grounds stored events from their
+raw records. The F1 protocol becomes "experience, the system's sleep consolidation, then recall";
+the v0.1 no-sleep numbers are reported alongside on every seed. Criteria unchanged.

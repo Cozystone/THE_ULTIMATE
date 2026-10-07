@@ -677,3 +677,15 @@ Test: the inducer attaches to the change flag when the pair determines it. With 
 no inducer is enabled; this failure case failed until the significance test was added.
 Development result (G4 is development data, seeds 101-115): 15/15 seeds, 400 correct, 0 wrong,
 0 abstain (v0.1: 9/15, 25 wrong).
+
+## D052 Episodic memory is consolidated in sleep (v0.2, 2026-10-07)
+Evidence: the F1 replication failure (seeds 101-115) is attributed by `diag_f1` to retrieval misses.
+Events were encoded while their objects were still unknown or noisy, and queries grounded through
+mature concepts no longer land near them. D032 had the remedy (reconsolidation), but only the B2
+test ever called it.
+Choice: `EventMemory::consolidate(grounder)` re-grounds every stored event from its immutable raw
+record. If any grounding changed it rebuilds the event vectors and reports how many changed; it is
+idempotent. It is part of the system's sleep; F1 now runs after it (PREREG amendment 2).
+Tests: mechanism (changes stale groundings, idempotent, never degrades recall); outcome on the F1
+world seed 101: without sleep 178 ok / 4 wrong / 18 abstain, with consolidation 199 / 0 / 1.
+`EventMemory::recall_trace` (read-only) was added for the diagnosis.

@@ -151,6 +151,17 @@ fn overlap(a: &[u64], b: &[u64]) -> u32 {
     n
 }
 
+/// v0.2 F1 diagnostic view of one recall decision.
+#[derive(Clone, Debug)]
+pub struct RecallTrace {
+    pub candidates: usize,
+    pub true_rank: Option<usize>,
+    pub true_score: u32,
+    pub best: Option<(u64, u32)>,
+    pub second_score: u32,
+    pub query_tokens: u32,
+}
+
 impl EventMemory {
     pub fn new(seed: u64) -> Self {
         let mut im = ItemMemory::new(seed);
@@ -237,6 +248,30 @@ impl EventMemory {
         }
     }
 
+    /// Diagnostic only (v0.2, F1): the `recall_event` decision for a query whose true event is
+    /// known: rank of the true event among the proposed candidates, its alignment score, the best
+    /// candidate, the runner-up score and the query size. Changes nothing.
+    pub fn recall_trace(&mut self, gq: &Grounded, raw: &crate::event::Event, true_id: u64) -> RecallTrace {
+        let h = self.encode(gq);
+        let mut scored: Vec<(u32, u32, u64, u32)> = Vec::new();
+        for (id, d) in self.mem.top_k(&h, 32) {
+            if let Some(st) = self.slots.get(&id) {
+                let (a, tot) = aligned_agreement(raw, st);
+                scored.push((a, tot, id, d));
+            }
+        }
+        scored.sort_by(|a, b| b.0.cmp(&a.0).then(a.3.cmp(&b.3)));
+        let true_rank = scored.iter().position(|x| x.2 == true_id);
+        RecallTrace {
+            candidates: scored.len(),
+            true_rank,
+            true_score: true_rank.map(|r| scored[r].0).unwrap_or(0),
+            best: scored.first().map(|x| (x.2, x.0)),
+            second_score: scored.get(1).map(|x| x.0).unwrap_or(0),
+            query_tokens: scored.first().map(|x| x.1).unwrap_or(0),
+        }
+    }
+
     /// D030: the HDC memory proposes the nearest stored events; integer fact agreement verifies.
     /// Accept the unique best candidate if it leads the runner-up by at least two facts and
     /// explains at least half of the query's facts. Otherwise abstain.
@@ -266,6 +301,32 @@ impl EventMemory {
 
     /// Reconsolidation (D032): re-encode stored events with the current grounding. Event vectors
     /// written while concepts were immature are replaced; the raw events are never changed.
+    /// D052: sleep-time consolidation of episodic memory. Every stored event is grounded again
+    /// from its immutable raw record with the current concepts; if any grounding changed (an object
+    /// that was unknown at storage time now has a concept, or a concept was merged, split or
+    /// corrected), the event vectors are rebuilt (D032). Raw events are never modified. Returns the
+    /// number of events whose grounding changed.
+    pub fn consolidate(&mut self, g: &mut crate::ground::Grounder) -> u32 {
+        let mut ids: Vec<u64> = self.slots.keys().copied().collect();
+        ids.sort_unstable();
+        let mut changed = 0u32;
+        let mut regrounded: Vec<Grounded> = Vec::with_capacity(ids.len());
+        for id in ids {
+            let raw = g.store.get(id).clone();
+            let now = g.ground(&raw);
+            let before = &self.slots[&id];
+            let key = |x: &Grounded| -> Vec<(u16, Option<u32>, Vec<(u16, i64)>)> { x.slots.iter().map(|s| (s.slot, s.concept, s.props.clone())).collect() };
+            if key(&now) != key(before) {
+                changed += 1;
+            }
+            regrounded.push(now);
+        }
+        if changed > 0 {
+            self.reconsolidate(regrounded.iter());
+        }
+        changed
+    }
+
     pub fn reconsolidate<'a, I: IntoIterator<Item = &'a Grounded>>(&mut self, groundings: I) {
         self.mem = CleanupMemory::with_z(6);
         self.tokens.clear();

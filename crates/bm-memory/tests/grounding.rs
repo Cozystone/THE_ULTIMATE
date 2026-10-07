@@ -199,3 +199,56 @@ fn duplicate_protos_do_not_churn_and_every_object_is_born() {
         assert!(last_ok, "seed {seed}: last scene not fully identified");
     }
 }
+
+/// D052 mechanism: under sensor noise, events stored early carry groundings made with immature
+/// concepts; consolidation re-grounds them from the raw record (changed > 0) without degrading
+/// recall. Failure case: a second consolidation finds nothing stale and changes nothing.
+#[test]
+fn consolidation_restores_recall_of_events_stored_before_concepts_existed() {
+    let mut w = Tiny::new(5);
+    let mut g = Grounder::new(6);
+    let mut mem = EventMemory::new(7);
+    let mut early = Vec::new();
+    let mut noise = Rng::new(9);
+    for _ in 0..800 {
+        let (mut ev, _) = w.step();
+        // sensor noise as in the F1 world: 5% wrong values, 10% missing tokens
+        for sc in [&mut ev.pre, &mut ev.post] {
+            sc.tokens.retain(|_| noise.below(100) >= 10);
+            for t in sc.tokens.iter_mut() {
+                if noise.below(100) < 5 {
+                    t.val = noise.below(4) as i64 + 50;
+                }
+            }
+        }
+        if let Some(gr) = g.observe(ev.clone()) {
+            mem.store(&gr);
+            // the first stored events: grounded with the least mature concepts
+            if early.len() < 60 {
+                early.push((gr.event, ev));
+            }
+        }
+    }
+    let mut rng = Rng::new(8);
+    let cues: Vec<(u64, Event)> = early
+        .iter()
+        .map(|(id, ev)| {
+            let mut q = ev.clone();
+            q.pre.tokens.retain(|_| rng.below(10) >= 3);
+            q.post.tokens.retain(|_| rng.below(10) >= 3);
+            (*id, q)
+        })
+        .collect();
+    let score = |mem: &mut EventMemory, g: &mut Grounder| -> usize {
+        cues.iter().filter(|(id, q)| { let gq = g.ground(q); mem.recall_event(&gq, q).map(|h| h.id) == Some(*id) }).count()
+    };
+    let before = score(&mut mem, &mut g);
+    let changed = mem.consolidate(&mut g);
+    let after = score(&mut mem, &mut g);
+    assert!(changed > 0, "early events were grounded before concepts existed");
+    // recall in this tiny world is limited by near-duplicate events; the outcome test on the F1
+    // world is crates/bm-bench/tests/consolidation.rs
+    assert!(after >= before, "consolidation must not degrade recall: before {before}, after {after}");
+    assert_eq!(mem.consolidate(&mut g), 0, "nothing stale after consolidation");
+    assert_eq!(score(&mut mem, &mut g), after);
+}

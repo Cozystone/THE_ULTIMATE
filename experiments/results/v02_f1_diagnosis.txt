@@ -1,0 +1,18 @@
+seed 101: {"30% abstain decision-rule": 1, "30% abstain retrieval": 17, "30% wrong retrieval": 4, "50% abstain decision-rule": 1, "50% abstain retrieval": 22, "50% wrong retrieval": 4}
+seed 102: {"30% abstain retrieval": 12, "30% wrong retrieval": 2, "50% abstain decision-rule": 4, "50% abstain retrieval": 12, "50% wrong retrieval": 2}
+seed 103: {"30% abstain retrieval": 9, "30% wrong retrieval": 5, "50% abstain decision-rule": 1, "50% abstain retrieval": 18, "50% wrong retrieval": 4}
+seed 104: {"50% abstain decision-rule": 4}
+seed 105: {"50% abstain decision-rule": 1, "50% abstain retrieval": 1}
+seed 106: {"30% abstain retrieval": 13, "30% wrong retrieval": 1, "50% abstain decision-rule": 2, "50% abstain retrieval": 12, "50% wrong retrieval": 2}
+seed 107: {"50% abstain alignment-tie": 1, "50% abstain decision-rule": 2}
+seed 108: {"50% abstain alignment-tie": 1, "50% abstain decision-rule": 2}
+seed 109: {"50% abstain decision-rule": 2}
+seed 110: {"50% abstain decision-rule": 3, "50% abstain retrieval": 1}
+seed 111: {"30% abstain decision-rule": 1, "30% abstain retrieval": 4, "30% wrong retrieval": 1, "50% abstain decision-rule": 3, "50% abstain retrieval": 3, "50% wrong retrieval": 2}
+seed 112: {"50% abstain decision-rule": 2}
+seed 113: {"30% abstain retrieval": 9, "30% wrong retrieval": 1, "50% abstain decision-rule": 3, "50% abstain retrieval": 13}
+seed 114: {"50% abstain alignment-tie": 2, "50% abstain retrieval": 1}
+seed 115: {"50% abstain decision-rule": 1}
+
+TOTAL over seeds [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115]: {"30% abstain decision-rule": 2, "30% abstain retrieval": 64, "30% wrong retrieval": 14, "50% abstain alignment-tie": 4, "50% abstain decision-rule": 31, "50% abstain retrieval": 83, "50% wrong retrieval": 14}
+resources: wall 96.5 s, peak working set 24 MB
