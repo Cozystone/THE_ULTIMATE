@@ -214,3 +214,32 @@ Growth is linear in experience, so H5 (>= 20,000 steps, <= 2 GB) cannot pass wit
   difference between the rounds is reported.
 * H5 then tests the budget on a held-out long-horizon world.
 * If stage 2 changes a regression result, the result is reported, not tuned away.
+
+## Amendment 5: Phase H harness details (2026-10-08, after the `bitmind-v0.2` freeze, before any H run)
+Worlds: `crates/bm-worlds/src/heldout2.rs`; harness: `crates/bm-bench/src/bin/phase_h.rs`; seeds
+201-215; a smoke test on seed 999 only checks that the harness runs.
+
+* **H1.** Fit world, 12 training objects with sizes 1-10, 1,500 PLACE probes. Then 6 new objects
+  with sizes 11-16 and 200 queries, each involving at least one new object.
+* **H2.** Rank world, 12 objects, 20% of ordered pairs held out, 2,000 PROBE probes. The gate is
+  scored on held-out pairs whose two objects each took part in >= 5 training probes ("established");
+  all held-out pairs are reported.
+* **H3.** H1 and H2 repeated with the same seeds and every nominal value relabelled through a random
+  bijection; answers compared query by query.
+* **H4.** Spike world, 20 objects. The conflict region is a spike acting on a same-colour partner;
+  even-indexed region pairs are saved queries (never probed), odd-indexed pairs can be probed later.
+  Phase 1: 2,500 probes outside the region. Stage 2: up to 4,000 probes. The agent chooses a
+  candidate on which its licensed laws disagree, otherwise an odd-indexed region pair it happens
+  to draw, otherwise a random non-query pair. Saved queries are re-judged every 50 probes.
+* **H5.** Fit world, 20 objects, 20,000 steps: 60% PLACE (held-out pairs excluded), 20% TOGGLE,
+  20% WAIT nuisance. A fixed query set of 100 held-out pairs is scored at mid-run and at the end.
+  Counterexample counts of every law are audited between mid-run and end. Working set is sampled
+  every 2,000 steps.
+
+Outcome classes per answer:
+* correct relational;
+* wrong;
+* safe abstention (licensed laws conflict);
+* insufficient evidence (any other abstention);
+* identity leakage (a law naming a mark or a concept identity answered on a new object, H1; or
+  answers changed under relabelling, H3).
