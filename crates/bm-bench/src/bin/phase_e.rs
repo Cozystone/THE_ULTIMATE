@@ -44,7 +44,7 @@ fn target_for(gr: &Grounded, truth: &[(u16, usize)], dev: usize) -> Option<u32> 
 }
 
 // ------------------------------------------------------------ E1 consolidation (door + links)
-fn e1_door(seed: u64) -> (u32, u32, u32, u32, String, (u32, u32, u32)) {
+fn e1_door(seed: u64) -> (u32, u32, u32, u32, String, (u32, u32, u32, u32, u32)) {
     let mut w = DeviceWorld::new(Scenario::Door, seed, "door-e1");
     let mut g = Grounder::new(seed);
     let mut rel = RelationEngine::with_policy(seed ^ 0xE1, wake_policy());
@@ -71,7 +71,7 @@ fn e1_door(seed: u64) -> (u32, u32, u32, u32, String, (u32, u32, u32)) {
     let desc = format!("{st:?}");
     // identical future: score USE predictions on the door before each outcome
     let (mut ok_s, mut ok_t, mut n_s, mut n_t) = (0, 0, 0, 0);
-    let (mut k_s, mut k_t, mut k_n) = (0u32, 0u32, 0u32);
+    let (mut k_s, mut k_t, mut k_n, mut disc_b, mut disc_c) = (0u32, 0u32, 0u32, 0u32, 0u32);
     for _ in 0..1600 {
         let (act, args) = w.random_action();
         let before = w.devs[dv::DOOR].on;
@@ -92,6 +92,9 @@ fn e1_door(seed: u64) -> (u32, u32, u32, u32, String, (u32, u32, u32)) {
                     k_n += 1;
                     k_s += (ps == Some(truth_change)) as u32;
                     k_t += (pt == Some(truth_change)) as u32;
+                    let (rs, rt) = (ps == Some(truth_change), pt == Some(truth_change));
+                    disc_b += (rs && !rt) as u32;
+                    disc_c += (rt && !rs) as u32;
                 }
                 if std::env::var("DIAG_E").is_ok() {
                     eprintln!("DIAG_E key={} power={} truth={truth_change} sleep={ps:?} twin={pt:?}", args[0] == dv::KEY, w.devs[dv::POWER].on);
@@ -106,7 +109,7 @@ fn e1_door(seed: u64) -> (u32, u32, u32, u32, String, (u32, u32, u32)) {
         rel.observe(ep.clone());
         twin_rel.observe(ep);
     }
-    (ok_s, n_s, ok_t, n_t, desc, (k_s, k_t, k_n))
+    (ok_s, n_s, ok_t, n_t, desc, (k_s, k_t, k_n, disc_b, disc_c))
 }
 
 fn clone_engine(r: &RelationEngine) -> RelationEngine {
@@ -336,16 +339,19 @@ fn main() {
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
     for &seed in &seeds {
         let _ = writeln!(out.report, "\n===== seed {seed}");
-        let (s_ok, s_n, t_ok, t_n, desc, (k_s, k_t, k_n)) = e1_door(seed);
+        let (s_ok, s_n, t_ok, t_n, desc, (k_s, k_t, k_n, disc_b, disc_c)) = e1_door(seed);
+        let p_mcnemar = binom_tail(disc_b, disc_b + disc_c);
         let (ls_ok, ls_n, lt_ok, lt_n) = e1_links(seed);
         let _ = writeln!(out.report, "      sleep: {desc}");
         out.gate(
             "E1 consolidation",
             // v2 criterion (E-E v2): the door margin is measured on the cases the hidden
             // conjunction governs (USE on the key), where a gain is possible at all
-            s_ok * 100 >= s_n * 90 && k_n > 0 && k_s * 2 >= k_t * 2 + k_n && ls_ok * 100 >= ls_n * 85 && ls_ok >= lt_ok + ls_n / 10,
+            // v3 criterion (E-E v4): exact one-sided McNemar test on the key cases (paired, no
+            // ceiling), sleep >= 90% on them and overall
+            s_ok * 100 >= s_n * 90 && k_n > 0 && k_s * 100 >= k_n * 90 && p_mcnemar <= 0.001 && ls_ok * 100 >= ls_n * 85 && ls_ok >= lt_ok + ls_n / 10,
             format!(
-                "seed {seed}: door USE after sleep {s_ok}/{s_n} vs no-sleep twin {t_ok}/{t_n} (USE on the key: sleep {k_s}/{k_n}, twin {k_t}/{k_n}; v1 margin would give {}); never-probed link pairs after sleep {ls_ok}/{ls_n} vs twin {lt_ok}/{lt_n}",
+                "seed {seed}: door USE after sleep {s_ok}/{s_n} vs no-sleep twin {t_ok}/{t_n} (USE on the key: sleep {k_s}/{k_n}, twin {k_t}/{k_n}; discordant sleep-only {disc_b} twin-only {disc_c}, McNemar p = {p_mcnemar:.2e}; v1 margin would give {}); never-probed link pairs after sleep {ls_ok}/{ls_n} vs twin {lt_ok}/{lt_n}",
                 if s_ok >= t_ok + s_n / 10 { "PASS" } else { "FAIL" }
             ),
         );
@@ -373,4 +379,13 @@ fn main() {
     println!("E-E OVERALL: {}", if out.all { "PASS" } else { "FAIL" });
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../experiments/results/phase_e.json");
     std::fs::write(&path, format!("{{\"overall_pass\":{},\"gates\":[\n{}\n]}}", out.all, out.json.join(",\n"))).expect("write");
+}
+
+/// P(X >= b) for X ~ Binomial(n, 1/2): exact one-sided McNemar test (reporting only, floats).
+fn binom_tail(b: u32, n: u32) -> f64 {
+    if n == 0 {
+        return 1.0;
+    }
+    let ln_c = |k: u32| -> f64 { (1..=k).map(|i| ((n - k + i) as f64 / i as f64).ln()).sum() };
+    (b..=n).map(|k| (ln_c(k) - n as f64 * std::f64::consts::LN_2).exp()).sum::<f64>().min(1.0)
 }

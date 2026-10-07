@@ -1,0 +1,142 @@
+
+===== seed 36
+  C1 untrained combinations  PASS  seed 36: 150 unseen (state, action) combinations x 5 devices: correct 750 wrong 0 abstain 0 of 750
+  C2 intervention vs observation PASS  seed 36: passive P(L=I) = 467/586; do(TOGGLE indicator) lamp-change: causal model correct 200 wrong 0 abstain 0 of 200; association model lamp=indicator correct 93 wrong 107 abstain 0 of 200; laws licensed from passive WAIT 0
+  C5 counterfactual          PASS  seed 36: 'had I toggled the switch instead, would the lamp have changed?' correct 200 wrong 0 abstain 0 of 200
+      edge #5 act1 : r0.c3=0 => t3 => Some(1) | LICENSED | n=418 counter=0 indep=60 int=418 transfer 57/57 utility 422b (int 422b) origin Generated
+      edge #80 act1 : true => t5003 => Some(1) | LICENSED | n=849 counter=0 indep=126 int=849 transfer 123/123 utility 1327b (int 1327b) origin Generated
+      edge #241 act1 : r0.c0=10 => t15003 => Some(1) | LICENSED | n=169 counter=0 indep=25 int=169 transfer 22/22 utility 386b (int 386b) origin Generated
+      edge #243 act1 : r0.c2=100 => t15003 => Some(1) | LICENSED | n=169 counter=0 indep=25 int=169 transfer 22/22 utility 64b (int 64b) origin Generated
+      edge #244 act1 : r0.c1000=2 => t15003 => Some(1) | LICENSED | n=169 counter=0 indep=25 int=169 transfer 22/22 utility 64b (int 64b) origin Generated
+      edge #268 act1 : delta(r0,r1;c0)=+2 => t15003 => Some(1) | LICENSED | n=169 counter=0 indep=25 int=169 transfer 22/22 utility 64b (int 64b) origin Generated
+      phase-1 law now: #2468 act2 : true => t45003 => Some(1) | REVOKED | n=536 counter=194 indep=16 int=342 transfer 13/14 utility 331b (int 331b) origin Generated
+      conditional law: #2478 act2 : r1.c3=1 => t45003 => Some(1) | LICENSED | n=342 counter=0 indep=16 int=342 transfer 13/13 utility 58b (int 58b) origin Generated
+  C3 hidden condition        PASS  seed 36: phase-1 licensed unconditional laws 1 ["#2468 act2 : true => t45003 => Some(1) | LICENSED | n=170 counter=0 indep=16 int=170 transfer 13/13 utility 255b (int 255b) origin Generated"]; withdrawn after Some(14) phase-2 events; power-conditioned licensed laws 1 (refined lineage false); USE with random power: correct 200 wrong 0 abstain 0 of 200
+      latent law: #58195 act3 : r1.c3=0 & diff(r0,r1;c3013) => t10003 => Some(0) | LICENSED | n=664 counter=0 indep=664 int=664 transfer 661/661 utility 70b (int 70b) origin Refined { parent: 57171 }
+      latent law: #61169 act3 : diff(r0,r1;c3015) => t15003 => Some(0) | LICENSED | n=983 counter=0 indep=982 int=983 transfer 979/979 utility 144b (int 144b) origin Generated
+      latent law: #66342 act3 : r1.c3=1 & diff(r0,r1;c3015) => t10003 => Some(1) | LICENSED | n=326 counter=0 indep=325 int=326 transfer 320/320 utility 68b (int 68b) origin Refined { parent: 61117 }
+      latent partitions (block classes, link classes) = (6, 7) for 7 hidden classes
+  C4a latent cause (micro)   PASS  seed 36: never-probed pairs (6 positive, 42 negative): all correct 48 wrong 0 abstain 0 of 48; oracle-feasible correct 48 wrong 0 abstain 0 of 48; licensed laws over latent channels 11
+      ablation without latent induction: correct 9 wrong 0 abstain 39 of 48
+      OS latent law: #52151 act3 : same(r0,r1;c4009) => t15003 => Some(1) | LICENSED | n=216 counter=0 indep=216 int=216 transfer 213/213 utility 46b (int 46b) origin Generated
+      OS latent law: #52152 act3 : same(r0,r1;c4007) => t15003 => Some(1) | LICENSED | n=91 counter=0 indep=91 int=91 transfer 88/88 utility 28b (int 28b) origin Generated
+      OS latent law: #55142 act3 : same(r0,r1;c4011) => t15003 => Some(1) | LICENSED | n=271 counter=0 indep=271 int=271 transfer 268/268 utility 891b (int 891b) origin Generated
+      OS latent law: #61064 act3 : same(r0,r2;c4011) => t25003 => Some(1) | LICENSED | n=280 counter=0 indep=280 int=280 transfer 277/277 utility 835b (int 835b) origin Generated
+      OS inducer target 5003 partitions (1, 12) versions (20, 4) observations 2840
+      OS inducer target 15003 partitions (4, 8) versions (15, 5) observations 2840
+      OS true groups 7 for 12 files
+  C4b latent cause (real OS) PASS  seed 36: real hard links in C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phasec_36: never-probed file pairs (2 same-file, 23 different): all correct 23 wrong 0 abstain 2 of 25; oracle-feasible correct 23 wrong 0 abstain 0 of 23; latent-channel licensed laws 5
+
+===== seed 37
+  C1 untrained combinations  PASS  seed 37: 150 unseen (state, action) combinations x 5 devices: correct 750 wrong 0 abstain 0 of 750
+  C2 intervention vs observation PASS  seed 37: passive P(L=I) = 458/561; do(TOGGLE indicator) lamp-change: causal model correct 200 wrong 0 abstain 0 of 200; association model lamp=indicator correct 88 wrong 112 abstain 0 of 200; laws licensed from passive WAIT 0
+  C5 counterfactual          PASS  seed 37: 'had I toggled the switch instead, would the lamp have changed?' correct 200 wrong 0 abstain 0 of 200
+      edge #5 act1 : r0.c3=0 => t3 => Some(1) | LICENSED | n=450 counter=0 indep=65 int=450 transfer 62/62 utility 400b (int 400b) origin Generated
+      edge #80 act1 : true => t5003 => Some(1) | LICENSED | n=867 counter=0 indep=130 int=867 transfer 127/127 utility 1355b (int 1355b) origin Generated
+      edge #170 act1 : r1.c3=0 => t10003 => Some(0) | LICENSED | n=444 counter=0 indep=66 int=444 transfer 63/63 utility 422b (int 422b) origin Generated
+      edge #240 act1 : true => t15003 => Some(0) | LICENSED | n=867 counter=0 indep=130 int=867 transfer 127/127 utility 857b (int 857b) origin Generated
+      edge #335 act1 : r2.c3=1 => t20003 => Some(1) | LICENSED | n=415 counter=0 indep=66 int=415 transfer 63/63 utility 407b (int 407b) origin Generated
+      edge #372 act1 : order(r0,r2;c3)< => t20003 => Some(1) | LICENSED | n=207 counter=0 indep=31 int=207 transfer 28/28 utility 18b (int 18b) origin Generated
+      phase-1 law now: #1716 act2 : true => t15003 => Some(1) | REVOKED | n=575 counter=226 indep=16 int=349 transfer 13/14 utility 343b (int 343b) origin Generated
+      conditional law: #1741 act2 : r4.c3=1 => t15003 => Some(1) | LICENSED | n=349 counter=0 indep=16 int=349 transfer 13/13 utility 83b (int 83b) origin Generated
+  C3 hidden condition        PASS  seed 37: phase-1 licensed unconditional laws 1 ["#1716 act2 : true => t15003 => Some(1) | LICENSED | n=171 counter=0 indep=16 int=171 transfer 13/13 utility 257b (int 257b) origin Generated"]; withdrawn after Some(24) phase-2 events; power-conditioned licensed laws 1 (refined lineage false); USE with random power: correct 200 wrong 0 abstain 0 of 200
+      latent law: #55236 act3 : same(r0,r1;c3013) => t15003 => Some(1) | LICENSED | n=95 counter=0 indep=95 int=95 transfer 92/92 utility 79b (int 79b) origin Generated
+      latent law: #55717 act3 : r1.c3=1 & diff(r0,r1;c3013) => t10003 => Some(1) | LICENSED | n=383 counter=0 indep=382 int=383 transfer 379/379 utility 63b (int 63b) origin Refined { parent: 52490 }
+      latent law: #64935 act3 : same(r0,r1;c3015) => t15003 => Some(1) | LICENSED | n=118 counter=0 indep=118 int=118 transfer 115/115 utility 88b (int 88b) origin Generated
+      latent partitions (block classes, link classes) = (7, 7) for 7 hidden classes
+  C4a latent cause (micro)   PASS  seed 37: never-probed pairs (5 positive, 44 negative): all correct 49 wrong 0 abstain 0 of 49; oracle-feasible correct 49 wrong 0 abstain 0 of 49; licensed laws over latent channels 11
+      ablation without latent induction: correct 0 wrong 0 abstain 49 of 49
+      OS latent law: #41080 act3 : same(r0,r1;c4005) => t15003 => Some(1) | LICENSED | n=312 counter=0 indep=312 int=312 transfer 309/309 utility 130b (int 130b) origin Generated
+      OS latent law: #77976 act3 : same(r0,r1;c4007) => t15003 => Some(1) | LICENSED | n=360 counter=0 indep=360 int=360 transfer 357/357 utility 273b (int 273b) origin Generated
+      OS latent law: #112390 act3 : same(r0,r1;c4009) => t15003 => Some(1) | LICENSED | n=398 counter=0 indep=398 int=398 transfer 395/395 utility 847b (int 847b) origin Generated
+      OS latent law: #132008 act3 : same(r0,r1;c4009) & same(r1,r2;c4009) => t25003 => Some(1) | LICENSED | n=78 counter=0 indep=78 int=78 transfer 74/74 utility 57b (int 57b) origin Refined { parent: 112809 }
+      OS inducer target 5003 partitions (1, 12) versions (19, 4) observations 2840
+      OS inducer target 15003 partitions (4, 7) versions (12, 4) observations 2840
+      OS true groups 7 for 12 files
+  C4b latent cause (real OS) PASS  seed 37: real hard links in C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phasec_37: never-probed file pairs (1 same-file, 26 different): all correct 27 wrong 0 abstain 0 of 27; oracle-feasible correct 27 wrong 0 abstain 0 of 27; latent-channel licensed laws 5
+
+===== seed 38
+  C1 untrained combinations  PASS  seed 38: 150 unseen (state, action) combinations x 5 devices: correct 750 wrong 0 abstain 0 of 750
+  C2 intervention vs observation PASS  seed 38: passive P(L=I) = 464/593; do(TOGGLE indicator) lamp-change: causal model correct 200 wrong 0 abstain 0 of 200; association model lamp=indicator correct 90 wrong 110 abstain 0 of 200; laws licensed from passive WAIT 0
+  C5 counterfactual          PASS  seed 38: 'had I toggled the switch instead, would the lamp have changed?' correct 200 wrong 0 abstain 0 of 200
+      edge #5 act1 : r0.c3=0 => t3 => Some(1) | LICENSED | n=435 counter=0 indep=64 int=435 transfer 61/61 utility 415b (int 415b) origin Generated
+      edge #80 act1 : true => t5003 => Some(1) | LICENSED | n=849 counter=0 indep=130 int=849 transfer 127/127 utility 1327b (int 1327b) origin Generated
+      edge #170 act1 : r1.c3=0 => t10003 => Some(0) | LICENSED | n=415 counter=0 indep=65 int=415 transfer 62/62 utility 404b (int 404b) origin Generated
+      edge #240 act1 : true => t15003 => Some(0) | LICENSED | n=849 counter=0 indep=130 int=849 transfer 127/127 utility 1319b (int 1319b) origin Generated
+      edge #335 act1 : r2.c3=1 => t20003 => Some(1) | LICENSED | n=404 counter=0 indep=64 int=404 transfer 61/61 utility 411b (int 411b) origin Generated
+      edge #400 act1 : true => t25003 => Some(0) | LICENSED | n=849 counter=0 indep=130 int=849 transfer 127/127 utility 839b (int 839b) origin Generated
+      phase-1 law now: #2328 act2 : true => t45003 => Some(1) | REVOKED | n=559 counter=200 indep=16 int=359 transfer 13/14 utility 347b (int 347b) origin Generated
+      conditional law: #2338 act2 : r1.c3=1 => t45003 => Some(1) | LICENSED | n=359 counter=0 indep=16 int=359 transfer 13/13 utility 68b (int 68b) origin Generated
+  C3 hidden condition        PASS  seed 38: phase-1 licensed unconditional laws 1 ["#2328 act2 : true => t45003 => Some(1) | LICENSED | n=183 counter=0 indep=16 int=183 transfer 13/13 utility 275b (int 275b) origin Generated"]; withdrawn after Some(13) phase-2 events; power-conditioned licensed laws 1 (refined lineage false); USE with random power: correct 200 wrong 0 abstain 0 of 200
+      latent law: #39984 act3 : r1.c3=0 & diff(r0,r1;c3013) => t10003 => Some(0) | LICENSED | n=611 counter=0 indep=610 int=611 transfer 607/607 utility 99b (int 99b) origin Refined { parent: 38847 }
+      latent law: #40754 act3 : same(r0,r1;c3013) => t15003 => Some(1) | LICENSED | n=147 counter=0 indep=147 int=147 transfer 144/144 utility 369b (int 369b) origin Generated
+      latent law: #40756 act3 : same(r0,r1;c3011) => t15003 => Some(1) | LICENSED | n=74 counter=0 indep=74 int=74 transfer 71/71 utility 40b (int 40b) origin Generated
+      latent partitions (block classes, link classes) = (6, 7) for 7 hidden classes
+  C4a latent cause (micro)   PASS  seed 38: never-probed pairs (3 positive, 32 negative): all correct 35 wrong 0 abstain 0 of 35; oracle-feasible correct 35 wrong 0 abstain 0 of 35; licensed laws over latent channels 10
+      ablation without latent induction: correct 0 wrong 0 abstain 35 of 35
+      OS latent law: #24684 act3 : same(r0,r1;c4003) => t15003 => Some(1) | LICENSED | n=394 counter=1 indep=393 int=393 transfer 390/391 utility 1026b (int 1026b) origin Generated
+      OS latent law: #46027 act3 : same(r0,r1;c4005) => t15003 => Some(1) | LICENSED | n=391 counter=1 indep=390 int=390 transfer 387/388 utility 1019b (int 1019b) origin Generated
+      OS latent law: #82207 act3 : same(r0,r1;c4007) => t15003 => Some(1) | LICENSED | n=403 counter=1 indep=402 int=402 transfer 399/399 utility 918b (int 918b) origin Generated
+      OS latent law: #237824 act3 : r0.c0=1 & same(r0,r2;c4030) => t25003 => Some(1) | LICENSED | n=235 counter=0 indep=235 int=235 transfer 232/232 utility 76b (int 76b) origin Refined { parent: 234213 }
+      OS inducer target 5003 partitions (1, 12) versions (21, 6) observations 2840
+      OS inducer target 15003 partitions (4, 7) versions (15, 3) observations 2840
+      OS true groups 7 for 12 files
+  C4b latent cause (real OS) PASS  seed 38: real hard links in C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phasec_38: never-probed file pairs (1 same-file, 33 different): all correct 34 wrong 0 abstain 0 of 34; oracle-feasible correct 34 wrong 0 abstain 0 of 34; latent-channel licensed laws 4
+
+===== seed 39
+  C1 untrained combinations  PASS  seed 39: 150 unseen (state, action) combinations x 5 devices: correct 750 wrong 0 abstain 0 of 750
+  C2 intervention vs observation PASS  seed 39: passive P(L=I) = 502/599; do(TOGGLE indicator) lamp-change: causal model correct 200 wrong 0 abstain 0 of 200; association model lamp=indicator correct 103 wrong 97 abstain 0 of 200; laws licensed from passive WAIT 0
+  C5 counterfactual          PASS  seed 39: 'had I toggled the switch instead, would the lamp have changed?' correct 200 wrong 0 abstain 0 of 200
+      edge #5 act1 : r0.c3=0 => t3 => Some(1) | LICENSED | n=412 counter=0 indep=59 int=412 transfer 56/56 utility 422b (int 422b) origin Generated
+      edge #78 act1 : true => t5003 => Some(1) | LICENSED | n=846 counter=0 indep=123 int=846 transfer 120/120 utility 1322b (int 1322b) origin Generated
+      edge #274 act1 : order(r0,r2;c0)> => t15003 => Some(0) | LICENSED | n=665 counter=0 indep=98 int=665 transfer 95/95 utility 240b (int 240b) origin Generated
+      edge #327 act1 : r2.c3=0 => t20003 => Some(0) | LICENSED | n=457 counter=0 indep=63 int=457 transfer 60/60 utility 442b (int 442b) origin Generated
+      edge #390 act1 : true => t25003 => Some(0) | LICENSED | n=846 counter=0 indep=123 int=846 transfer 120/120 utility 1322b (int 1322b) origin Generated
+      edge #488 act1 : r3.c3=1 => t30003 => Some(1) | LICENSED | n=412 counter=0 indep=62 int=412 transfer 59/59 utility 356b (int 356b) origin Generated
+      phase-1 law now: #3190 act2 : true => t35003 => Some(1) | REVOKED | n=531 counter=209 indep=16 int=322 transfer 13/14 utility 315b (int 315b) origin Generated
+      conditional law: #3200 act2 : r1.c3=1 => t35003 => Some(1) | LICENSED | n=322 counter=0 indep=16 int=322 transfer 13/13 utility 60b (int 60b) origin Generated
+  C3 hidden condition        PASS  seed 39: phase-1 licensed unconditional laws 1 ["#3190 act2 : true => t35003 => Some(1) | LICENSED | n=165 counter=0 indep=16 int=165 transfer 13/13 utility 247b (int 247b) origin Generated"]; withdrawn after Some(21) phase-2 events; power-conditioned licensed laws 1 (refined lineage false); USE with random power: correct 200 wrong 0 abstain 0 of 200
+      latent law: #59753 act3 : same(r0,r1;c3015) => t15003 => Some(1) | LICENSED | n=109 counter=0 indep=109 int=109 transfer 106/106 utility 69b (int 69b) origin Generated
+      latent law: #64740 act3 : same(r0,r1;c3017) => t15003 => Some(1) | LICENSED | n=145 counter=0 indep=145 int=145 transfer 142/142 utility 424b (int 424b) origin Generated
+      latent law: #70400 act3 : r1.c3=0 & same(r0,r1;c3017) => t10003 => Some(1) | LICENSED | n=74 counter=0 indep=74 int=74 transfer 71/71 utility 58b (int 58b) origin Refined { parent: 64644 }
+      latent partitions (block classes, link classes) = (6, 7) for 7 hidden classes
+  C4a latent cause (micro)   PASS  seed 39: never-probed pairs (4 positive, 46 negative): all correct 50 wrong 0 abstain 0 of 50; oracle-feasible correct 50 wrong 0 abstain 0 of 50; licensed laws over latent channels 8
+      ablation without latent induction: correct 0 wrong 0 abstain 50 of 50
+      OS latent law: #47694 act3 : same(r0,r1;c4005) => t15003 => Some(1) | LICENSED | n=133 counter=0 indep=133 int=133 transfer 130/130 utility 82b (int 82b) origin Generated
+      OS latent law: #121786 act3 : same(r0,r1;c4007) => t15003 => Some(1) | LICENSED | n=157 counter=0 indep=157 int=157 transfer 154/154 utility 70b (int 70b) origin Generated
+      OS latent law: #142811 act3 : same(r0,r1;c4009) => t15003 => Some(1) | LICENSED | n=206 counter=0 indep=206 int=206 transfer 203/203 utility 719b (int 719b) origin Generated
+      OS latent law: #161441 act3 : same(r0,r3;c4009) => t35003 => Some(1) | LICENSED | n=159 counter=0 indep=159 int=159 transfer 156/156 utility 617b (int 617b) origin Generated
+      OS inducer target 5003 partitions (1, 12) versions (14, 2) observations 2840
+      OS inducer target 15003 partitions (5, 7) versions (17, 4) observations 2840
+      OS true groups 7 for 12 files
+  C4b latent cause (real OS) PASS  seed 39: real hard links in C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phasec_39: never-probed file pairs (4 same-file, 25 different): all correct 29 wrong 0 abstain 0 of 29; oracle-feasible correct 29 wrong 0 abstain 0 of 29; latent-channel licensed laws 4
+
+===== seed 40
+  C1 untrained combinations  PASS  seed 40: 150 unseen (state, action) combinations x 5 devices: correct 750 wrong 0 abstain 0 of 750
+  C2 intervention vs observation PASS  seed 40: passive P(L=I) = 475/593; do(TOGGLE indicator) lamp-change: causal model correct 200 wrong 0 abstain 0 of 200; association model lamp=indicator correct 110 wrong 90 abstain 0 of 200; laws licensed from passive WAIT 0
+  C5 counterfactual          PASS  seed 40: 'had I toggled the switch instead, would the lamp have changed?' correct 200 wrong 0 abstain 0 of 200
+      edge #785 act1 : r0.c3=1 => t3 => Some(0) | LICENSED | n=407 counter=0 indep=61 int=407 transfer 58/58 utility 399b (int 399b) origin Generated
+      edge #854 act1 : true => t5003 => Some(1) | LICENSED | n=839 counter=0 indep=125 int=839 transfer 122/122 utility 1311b (int 1311b) origin Generated
+      edge #938 act1 : r1.c3=1 => t10003 => Some(1) | LICENSED | n=488 counter=0 indep=62 int=488 transfer 59/59 utility 328b (int 328b) origin Generated
+      edge #1002 act1 : true => t15003 => Some(0) | LICENSED | n=839 counter=0 indep=125 int=839 transfer 122/122 utility 1311b (int 1311b) origin Generated
+      edge #1151 act1 : r0.c0=10 => t25003 => Some(1) | LICENSED | n=200 counter=0 indep=27 int=200 transfer 24/24 utility 393b (int 393b) origin Generated
+      edge #1153 act1 : r0.c2=100 => t25003 => Some(1) | LICENSED | n=200 counter=0 indep=27 int=200 transfer 24/24 utility 48b (int 48b) origin Generated
+      phase-1 law now: #1326 act2 : true => t35003 => Some(1) | REVOKED | n=530 counter=198 indep=16 int=332 transfer 13/14 utility 322b (int 322b) origin Generated
+      conditional law: #1351 act2 : r4.c3=1 => t35003 => Some(1) | LICENSED | n=332 counter=0 indep=16 int=332 transfer 13/13 utility 67b (int 67b) origin Generated
+  C3 hidden condition        PASS  seed 40: phase-1 licensed unconditional laws 1 ["#1326 act2 : true => t35003 => Some(1) | LICENSED | n=157 counter=0 indep=16 int=157 transfer 13/13 utility 235b (int 235b) origin Generated"]; withdrawn after Some(11) phase-2 events; power-conditioned licensed laws 1 (refined lineage false); USE with random power: correct 200 wrong 0 abstain 0 of 200
+      latent law: #43303 act3 : same(r0,r1;c3015) => t15003 => Some(1) | LICENSED | n=125 counter=0 indep=124 int=125 transfer 121/121 utility 77b (int 77b) origin Generated
+      latent law: #50726 act3 : r1.c3=0 & same(r0,r1;c3015) => t10003 => Some(1) | LICENSED | n=62 counter=0 indep=61 int=62 transfer 58/58 utility 19b (int 19b) origin Refined { parent: 43242 }
+      latent law: #55273 act3 : diff(r0,r1;c3017) => t15003 => Some(0) | LICENSED | n=1058 counter=0 indep=1055 int=1058 transfer 1052/1052 utility 187b (int 187b) origin Generated
+      latent partitions (block classes, link classes) = (6, 7) for 7 hidden classes
+  C4a latent cause (micro)   PASS  seed 40: never-probed pairs (6 positive, 42 negative): all correct 48 wrong 0 abstain 0 of 48; oracle-feasible correct 48 wrong 0 abstain 0 of 48; licensed laws over latent channels 11
+      ablation without latent induction: correct 0 wrong 0 abstain 48 of 48
+      OS latent law: #44854 act3 : same(r0,r1;c4007) => t15003 => Some(1) | LICENSED | n=167 counter=0 indep=167 int=167 transfer 164/164 utility 67b (int 67b) origin Generated
+      OS latent law: #53641 act3 : same(r0,r1;c4009) => t15003 => Some(1) | LICENSED | n=240 counter=0 indep=240 int=240 transfer 237/237 utility 82b (int 82b) origin Generated
+      OS latent law: #87080 act3 : same(r0,r3;c4011) => t35003 => Some(1) | LICENSED | n=176 counter=0 indep=176 int=176 transfer 173/173 utility 612b (int 612b) origin Generated
+      OS latent law: #87993 act3 : same(r0,r2;c4011) => t25003 => Some(1) | LICENSED | n=433 counter=0 indep=433 int=433 transfer 430/430 utility 836b (int 836b) origin Generated
+      OS inducer target 5003 partitions (1, 12) versions (12, 2) observations 2840
+      OS inducer target 15003 partitions (4, 7) versions (15, 5) observations 2840
+      OS true groups 7 for 12 files
+  C4b latent cause (real OS) PASS  seed 40: real hard links in C:\Users\anseo\AppData\Local\Temp\bitmind_fs_phasec_40: never-probed file pairs (6 same-file, 30 different): all correct 36 wrong 0 abstain 0 of 36; oracle-feasible correct 36 wrong 0 abstain 0 of 36; latent-channel licensed laws 5
+
+E-C OVERALL: PASS

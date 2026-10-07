@@ -1,0 +1,227 @@
+
+===== seed 31
+      sleep: SleepStats { laws_before: 5150, laws_after: 26532, refined_children: 21382, latent_inductions: 0, pruned: 0, redundant: 5024 }
+  E1 consolidation             PASS  seed 31: door USE after sleep 420/420 vs no-sleep twin 352/420 (USE on the key: sleep 93/93, twin 25/93; v1 margin would give PASS); never-probed link pairs after sleep 52/52 vs twin 0/52
+      self-report: I hold 45 licensed laws here.
+      self-report: law 16: act1 : r0.c5=0 => t5 because of 190 independent cases, 534 of my own interventions, 185 successful predictions on new combinations.
+      self-report: law 26: act1 : r0.c6=1 => t6 because of 38 independent cases, 85 of my own interventions, 33 successful predictions on new combinations.
+      self-report: law 53: act2 : r0.c6=9 => t6 because of 33 independent cases, 68 of my own interventions, 29 successful predictions on new combinations.
+      self-report: law 114: act3 : diff(r0,r1;c0) => t5 because of 789 independent cases, 793 of my own interventions, 786 successful predictions on new combinations.
+      self-report: law 115: act3 : order(r0,r1;c0)< => t5 because of 400 independent cases, 402 of my own interventions, 397 successful predictions on new combinations.
+      self-report: I do not know: role0.?, role0.pos, role1.?.
+      self-report: when I answer about role0.lit, I am right 97% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 31: ECE raw 3.75% calibrated 1.11%; accuracy on targets the self-model calls known 3149/3237
+  E3 verification actions      PASS  seed 31: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 32
+      sleep: SleepStats { laws_before: 5170, laws_after: 26604, refined_children: 21434, latent_inductions: 0, pruned: 0, redundant: 5197 }
+  E1 consolidation             PASS  seed 32: door USE after sleep 384/387 vs no-sleep twin 350/387 (USE on the key: sleep 62/65, twin 28/65; v1 margin would give FAIL); never-probed link pairs after sleep 50/50 vs twin 0/50
+      self-report: I hold 36 licensed laws here.
+      self-report: law 23: act2 : r0.c5=0 => t5 because of 200 independent cases, 508 of my own interventions, 192 successful predictions on new combinations.
+      self-report: law 62: act1 : r0.c5=0 => t5 because of 203 independent cases, 536 of my own interventions, 196 successful predictions on new combinations.
+      self-report: law 71: act1 : r0.c6=4 => t6 because of 40 independent cases, 79 of my own interventions, 35 successful predictions on new combinations.
+      self-report: law 192: act3 : diff(r0,r1;c0) => t5 because of 743 independent cases, 748 of my own interventions, 740 successful predictions on new combinations.
+      self-report: law 193: act3 : order(r0,r1;c0)> => t5 because of 389 independent cases, 390 of my own interventions, 386 successful predictions on new combinations.
+      self-report: I do not know: role0.?, role0.?, role0.?, role0.?, role0.pos, role1.?, role1.?, role1.?, role1.?, role1.pos.
+      self-report: when I answer about role0.lit, I am right 98% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 32: ECE raw 2.88% calibrated 0.10%; accuracy on targets the self-model calls known 2482/2510
+  E3 verification actions      PASS  seed 32: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 33
+      sleep: SleepStats { laws_before: 5010, laws_after: 25778, refined_children: 20768, latent_inductions: 0, pruned: 0, redundant: 6095 }
+  E1 consolidation             PASS  seed 33: door USE after sleep 391/391 vs no-sleep twin 313/391 (USE on the key: sleep 78/78, twin 0/78; v1 margin would give PASS); never-probed link pairs after sleep 47/47 vs twin 13/47
+      self-report: I hold 46 licensed laws here.
+      self-report: law 32: act3 : diff(r0,r1;c0) => t5 because of 778 independent cases, 786 of my own interventions, 775 successful predictions on new combinations.
+      self-report: law 33: act3 : order(r0,r1;c0)< => t5 because of 389 independent cases, 396 of my own interventions, 386 successful predictions on new combinations.
+      self-report: law 47: act3 : r0.c6=1 => t6 because of 76 independent cases, 76 of my own interventions, 73 successful predictions on new combinations.
+      self-report: law 149: act3 : diff(r0,r1;c0) => t10005 because of 781 independent cases, 789 of my own interventions, 778 successful predictions on new combinations.
+      self-report: law 150: act3 : order(r0,r1;c0)< => t10005 because of 377 independent cases, 384 of my own interventions, 374 successful predictions on new combinations.
+      self-report: I do not know: role0.?, role0.pos, role1.?.
+      self-report: when I answer about role0.lit, I am right 98% of the time.
+      self-report: when I answer about role0.pos, I am right 96% of the time.
+  E2 calibration               PASS  seed 33: ECE raw 4.34% calibrated 0.48%; accuracy on targets the self-model calls known 3389/3457
+  E3 verification actions      PASS  seed 33: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 34
+      sleep: SleepStats { laws_before: 5030, laws_after: 25937, refined_children: 20907, latent_inductions: 0, pruned: 0, redundant: 5799 }
+  E1 consolidation             FAIL  seed 34: door USE after sleep 407/407 vs no-sleep twin 367/407 (USE on the key: sleep 85/85, twin 45/85; v1 margin would give PASS); never-probed link pairs after sleep 47/47 vs twin 0/47
+      self-report: I hold 43 licensed laws here.
+      self-report: law 16: act1 : r0.c5=0 => t5 because of 186 independent cases, 556 of my own interventions, 183 successful predictions on new combinations.
+      self-report: law 26: act1 : r0.c6=2 => t6 because of 28 independent cases, 54 of my own interventions, 24 successful predictions on new combinations.
+      self-report: law 80: act3 : diff(r0,r1;c0) => t5 because of 717 independent cases, 719 of my own interventions, 714 successful predictions on new combinations.
+      self-report: law 81: act3 : order(r0,r1;c0)< => t5 because of 339 independent cases, 341 of my own interventions, 336 successful predictions on new combinations.
+      self-report: law 191: act3 : diff(r0,r1;c0) => t10005 because of 714 independent cases, 717 of my own interventions, 711 successful predictions on new combinations.
+      self-report: I do not know: role0.?, role0.pos, role1.?.
+      self-report: when I answer about role0.lit, I am right 99% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 34: ECE raw 3.51% calibrated 0.29%; accuracy on targets the self-model calls known 3037/3077
+  E3 verification actions      PASS  seed 34: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 35
+      sleep: SleepStats { laws_before: 5070, laws_after: 26119, refined_children: 21049, latent_inductions: 0, pruned: 0, redundant: 5828 }
+  E1 consolidation             PASS  seed 35: door USE after sleep 403/403 vs no-sleep twin 308/403 (USE on the key: sleep 95/95, twin 0/95; v1 margin would give PASS); never-probed link pairs after sleep 49/49 vs twin 0/49
+      self-report: I hold 49 licensed laws here.
+      self-report: law 6: act1 : r0.c5=0 => t5 because of 186 independent cases, 514 of my own interventions, 177 successful predictions on new combinations.
+      self-report: law 15: act1 : r0.c6=1 => t6 because of 32 independent cases, 70 of my own interventions, 28 successful predictions on new combinations.
+      self-report: law 25: act1 : r0.c6=2 => t6 because of 36 independent cases, 83 of my own interventions, 30 successful predictions on new combinations.
+      self-report: law 34: act2 : r0.c6=9 => t6 because of 36 independent cases, 81 of my own interventions, 31 successful predictions on new combinations.
+      self-report: law 46: act2 : r0.c6=0 => t6 because of 38 independent cases, 82 of my own interventions, 34 successful predictions on new combinations.
+      self-report: I do not know: role1.pos.
+      self-report: when I answer about role0.lit, I am right 98% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 35: ECE raw 4.28% calibrated 0.17%; accuracy on targets the self-model calls known 4156/4264
+  E3 verification actions      PASS  seed 35: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 36
+      sleep: SleepStats { laws_before: 5150, laws_after: 26381, refined_children: 21231, latent_inductions: 0, pruned: 0, redundant: 5649 }
+  E1 consolidation             PASS  seed 36: door USE after sleep 399/400 vs no-sleep twin 326/400 (USE on the key: sleep 73/74, twin 0/74; v1 margin would give PASS); never-probed link pairs after sleep 48/48 vs twin 0/48
+      self-report: I hold 46 licensed laws here.
+      self-report: law 8: act3 : r0.c6=4 => t6 because of 88 independent cases, 89 of my own interventions, 85 successful predictions on new combinations.
+      self-report: law 86: act3 : same(r0,r1;c0) => t5 because of 112 independent cases, 113 of my own interventions, 109 successful predictions on new combinations.
+      self-report: law 132: act3 : same(r0,r1;c0) => t10005 because of 122 independent cases, 123 of my own interventions, 119 successful predictions on new combinations.
+      self-report: law 172: act3 : diff(r0,r1;c0) => t5 because of 742 independent cases, 749 of my own interventions, 739 successful predictions on new combinations.
+      self-report: law 173: act3 : order(r0,r1;c0)< => t5 because of 377 independent cases, 379 of my own interventions, 374 successful predictions on new combinations.
+      self-report: I do not know: role0.pos.
+      self-report: when I answer about role0.lit, I am right 97% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 36: ECE raw 4.18% calibrated 0.59%; accuracy on targets the self-model calls known 3177/3248
+  E3 verification actions      PASS  seed 36: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 37
+      sleep: SleepStats { laws_before: 5050, laws_after: 25999, refined_children: 20949, latent_inductions: 0, pruned: 0, redundant: 5474 }
+  E1 consolidation             PASS  seed 37: door USE after sleep 367/367 vs no-sleep twin 298/367 (USE on the key: sleep 75/75, twin 6/75; v1 margin would give PASS); never-probed link pairs after sleep 49/49 vs twin 0/49
+      self-report: I hold 51 licensed laws here.
+      self-report: law 8: act2 : r0.c6=4 => t6 because of 37 independent cases, 72 of my own interventions, 33 successful predictions on new combinations.
+      self-report: law 24: act3 : diff(r0,r1;c0) => t5 because of 748 independent cases, 755 of my own interventions, 744 successful predictions on new combinations.
+      self-report: law 25: act3 : order(r0,r1;c0)> => t5 because of 373 independent cases, 374 of my own interventions, 369 successful predictions on new combinations.
+      self-report: law 90: act3 : diff(r0,r1;c0) => t10005 because of 762 independent cases, 769 of my own interventions, 759 successful predictions on new combinations.
+      self-report: law 91: act3 : order(r0,r1;c0)> => t10005 because of 384 independent cases, 386 of my own interventions, 381 successful predictions on new combinations.
+      self-report: I have no target that I mostly fail to predict.
+      self-report: when I answer about role0.lit, I am right 98% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 37: ECE raw 4.26% calibrated 0.18%; accuracy on targets the self-model calls known 4544/4662
+  E3 verification actions      PASS  seed 37: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 38
+      sleep: SleepStats { laws_before: 4970, laws_after: 25485, refined_children: 20515, latent_inductions: 0, pruned: 0, redundant: 5641 }
+  E1 consolidation             PASS  seed 38: door USE after sleep 414/414 vs no-sleep twin 342/414 (USE on the key: sleep 72/72, twin 0/72; v1 margin would give PASS); never-probed link pairs after sleep 35/35 vs twin 0/35
+      self-report: I hold 51 licensed laws here.
+      self-report: law 7: act1 : r0.c5=1 => t5 because of 134 independent cases, 237 of my own interventions, 125 successful predictions on new combinations.
+      self-report: law 17: act1 : r0.c6=4 => t6 because of 30 independent cases, 59 of my own interventions, 27 successful predictions on new combinations.
+      self-report: law 25: act2 : r0.c5=0 => t5 because of 190 independent cases, 540 of my own interventions, 182 successful predictions on new combinations.
+      self-report: law 35: act2 : r0.c6=5 => t6 because of 34 independent cases, 68 of my own interventions, 29 successful predictions on new combinations.
+      self-report: law 36: act1 : r0.c5=0 => t5 because of 179 independent cases, 525 of my own interventions, 173 successful predictions on new combinations.
+      self-report: I have no target that I mostly fail to predict.
+      self-report: when I answer about role0.lit, I am right 97% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 38: ECE raw 4.07% calibrated 0.47%; accuracy on targets the self-model calls known 4717/4857
+  E3 verification actions      PASS  seed 38: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 39
+      sleep: SleepStats { laws_before: 4930, laws_after: 25421, refined_children: 20491, latent_inductions: 0, pruned: 0, redundant: 5483 }
+  E1 consolidation             PASS  seed 39: door USE after sleep 400/400 vs no-sleep twin 347/400 (USE on the key: sleep 81/81, twin 28/81; v1 margin would give PASS); never-probed link pairs after sleep 50/50 vs twin 0/50
+      self-report: I hold 40 licensed laws here.
+      self-report: law 59: act3 : diff(r0,r1;c0) => t5 because of 733 independent cases, 737 of my own interventions, 730 successful predictions on new combinations.
+      self-report: law 60: act3 : order(r0,r1;c0)< => t5 because of 357 independent cases, 361 of my own interventions, 354 successful predictions on new combinations.
+      self-report: law 69: act3 : r0.c6=4 => t6 because of 80 independent cases, 80 of my own interventions, 77 successful predictions on new combinations.
+      self-report: law 152: act3 : diff(r0,r1;c0) => t10005 because of 714 independent cases, 716 of my own interventions, 711 successful predictions on new combinations.
+      self-report: law 153: act3 : order(r0,r1;c0)< => t10005 because of 349 independent cases, 350 of my own interventions, 346 successful predictions on new combinations.
+      self-report: I do not know: role0.?, role0.pos, role1.?, role1.pos.
+      self-report: when I answer about role0.lit, I am right 98% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 39: ECE raw 4.09% calibrated 0.16%; accuracy on targets the self-model calls known 2738/2778
+  E3 verification actions      PASS  seed 39: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 40
+      sleep: SleepStats { laws_before: 4970, laws_after: 25465, refined_children: 20495, latent_inductions: 0, pruned: 0, redundant: 5204 }
+  E1 consolidation             PASS  seed 40: door USE after sleep 404/404 vs no-sleep twin 333/404 (USE on the key: sleep 71/71, twin 0/71; v1 margin would give PASS); never-probed link pairs after sleep 48/48 vs twin 0/48
+      self-report: I hold 61 licensed laws here.
+      self-report: law 47: act3 : diff(r0,r1;c0) => t5 because of 644 independent cases, 648 of my own interventions, 641 successful predictions on new combinations.
+      self-report: law 48: act3 : order(r0,r1;c0)> => t5 because of 310 independent cases, 311 of my own interventions, 307 successful predictions on new combinations.
+      self-report: law 49: act3 : delta(r0,r1;c0)=-1 => t5 because of 109 independent cases, 109 of my own interventions, 106 successful predictions on new combinations.
+      self-report: law 71: act3 : r0.c6=3 => t6 because of 72 independent cases, 72 of my own interventions, 69 successful predictions on new combinations.
+      self-report: law 143: act3 : diff(r0,r1;c0) => t10005 because of 665 independent cases, 669 of my own interventions, 661 successful predictions on new combinations.
+      self-report: I do not know: role0.?, role0.pos, role1.?.
+      self-report: when I answer about role0.lit, I am right 98% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 40: ECE raw 4.51% calibrated 0.16%; accuracy on targets the self-model calls known 3271/3339
+  E3 verification actions      PASS  seed 40: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 41
+      sleep: SleepStats { laws_before: 4990, laws_after: 25660, refined_children: 20670, latent_inductions: 0, pruned: 0, redundant: 5200 }
+  E1 consolidation             PASS  seed 41: door USE after sleep 369/369 vs no-sleep twin 311/369 (USE on the key: sleep 60/60, twin 2/60; v1 margin would give PASS); never-probed link pairs after sleep 46/46 vs twin 0/46
+      self-report: I hold 47 licensed laws here.
+      self-report: law 16: act3 : diff(r0,r1;c0) => t5 because of 780 independent cases, 783 of my own interventions, 777 successful predictions on new combinations.
+      self-report: law 17: act3 : order(r0,r1;c0)> => t5 because of 369 independent cases, 370 of my own interventions, 366 successful predictions on new combinations.
+      self-report: law 45: act3 : r0.c6=6 => t6 because of 67 independent cases, 68 of my own interventions, 63 successful predictions on new combinations.
+      self-report: law 90: act3 : diff(r0,r1;c0) => t10005 because of 772 independent cases, 776 of my own interventions, 769 successful predictions on new combinations.
+      self-report: law 91: act3 : order(r0,r1;c0)> => t10005 because of 368 independent cases, 368 of my own interventions, 365 successful predictions on new combinations.
+      self-report: I do not know: role0.pos.
+      self-report: when I answer about role0.lit, I am right 97% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 41: ECE raw 4.43% calibrated 0.50%; accuracy on targets the self-model calls known 3269/3339
+  E3 verification actions      PASS  seed 41: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 42
+      sleep: SleepStats { laws_before: 5090, laws_after: 26190, refined_children: 21100, latent_inductions: 0, pruned: 0, redundant: 5691 }
+  E1 consolidation             PASS  seed 42: door USE after sleep 410/410 vs no-sleep twin 344/410 (USE on the key: sleep 76/76, twin 10/76; v1 margin would give PASS); never-probed link pairs after sleep 52/52 vs twin 0/52
+      self-report: I hold 41 licensed laws here.
+      self-report: law 101: act3 : diff(r0,r1;c0) => t5 because of 818 independent cases, 824 of my own interventions, 815 successful predictions on new combinations.
+      self-report: law 119: act3 : r0.c6=6 => t6 because of 94 independent cases, 96 of my own interventions, 91 successful predictions on new combinations.
+      self-report: law 212: act3 : diff(r0,r1;c0) => t10005 because of 820 independent cases, 827 of my own interventions, 817 successful predictions on new combinations.
+      self-report: law 213: act3 : order(r0,r1;c0)< => t10005 because of 421 independent cases, 424 of my own interventions, 418 successful predictions on new combinations.
+      self-report: law 282: act2 : r0.c5=0 => t5 because of 202 independent cases, 533 of my own interventions, 193 successful predictions on new combinations.
+      self-report: I do not know: role0.?, role0.?, role0.pos, role1.?, role1.?, role1.pos.
+      self-report: when I answer about role0.lit, I am right 98% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 42: ECE raw 3.32% calibrated 0.11%; accuracy on targets the self-model calls known 2425/2461
+  E3 verification actions      PASS  seed 42: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 43
+      sleep: SleepStats { laws_before: 5190, laws_after: 26719, refined_children: 21529, latent_inductions: 0, pruned: 0, redundant: 6547 }
+  E1 consolidation             PASS  seed 43: door USE after sleep 381/381 vs no-sleep twin 318/381 (USE on the key: sleep 63/63, twin 0/63; v1 margin would give PASS); never-probed link pairs after sleep 49/49 vs twin 0/49
+      self-report: I hold 49 licensed laws here.
+      self-report: law 7: act1 : r0.c5=1 => t5 because of 143 independent cases, 262 of my own interventions, 108 successful predictions on new combinations.
+      self-report: law 16: act2 : r0.c5=0 => t5 because of 179 independent cases, 505 of my own interventions, 171 successful predictions on new combinations.
+      self-report: law 26: act2 : r0.c6=2 => t6 because of 38 independent cases, 72 of my own interventions, 34 successful predictions on new combinations.
+      self-report: law 55: act2 : r0.c6=8 => t6 because of 37 independent cases, 68 of my own interventions, 32 successful predictions on new combinations.
+      self-report: law 73: act3 : diff(r0,r1;c0) => t5 because of 693 independent cases, 698 of my own interventions, 690 successful predictions on new combinations.
+      self-report: I do not know: role0.pos, role1.pos.
+      self-report: when I answer about role0.lit, I am right 97% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 43: ECE raw 3.70% calibrated 0.39%; accuracy on targets the self-model calls known 2747/2796
+  E3 verification actions      PASS  seed 43: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 44
+      sleep: SleepStats { laws_before: 4830, laws_after: 24894, refined_children: 20064, latent_inductions: 0, pruned: 0, redundant: 5531 }
+  E1 consolidation             PASS  seed 44: door USE after sleep 393/393 vs no-sleep twin 351/393 (USE on the key: sleep 81/81, twin 39/81; v1 margin would give PASS); never-probed link pairs after sleep 54/56 vs twin 0/56
+      self-report: I hold 41 licensed laws here.
+      self-report: law 16: act2 : r0.c5=0 => t5 because of 185 independent cases, 553 of my own interventions, 179 successful predictions on new combinations.
+      self-report: law 78: act3 : same(r0,r1;c0) => t5 because of 78 independent cases, 78 of my own interventions, 75 successful predictions on new combinations.
+      self-report: law 148: act3 : same(r0,r1;c0) => t10005 because of 76 independent cases, 76 of my own interventions, 73 successful predictions on new combinations.
+      self-report: law 247: act3 : diff(r0,r1;c0) => t5 because of 798 independent cases, 799 of my own interventions, 795 successful predictions on new combinations.
+      self-report: law 248: act3 : order(r0,r1;c0)< => t5 because of 415 independent cases, 415 of my own interventions, 412 successful predictions on new combinations.
+      self-report: I do not know: role0.?, role0.pos, role1.?.
+      self-report: when I answer about role0.lit, I am right 98% of the time.
+      self-report: when I answer about role0.pos, I am right 94% of the time.
+  E2 calibration               PASS  seed 44: ECE raw 4.15% calibrated 0.31%; accuracy on targets the self-model calls known 3146/3205
+  E3 verification actions      PASS  seed 44: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+===== seed 45
+      sleep: SleepStats { laws_before: 5090, laws_after: 26315, refined_children: 21225, latent_inductions: 0, pruned: 0, redundant: 5426 }
+  E1 consolidation             PASS  seed 45: door USE after sleep 374/374 vs no-sleep twin 316/374 (USE on the key: sleep 58/58, twin 0/58; v1 margin would give PASS); never-probed link pairs after sleep 58/58 vs twin 0/58
+      self-report: I hold 48 licensed laws here.
+      self-report: law 6: act1 : r0.c5=0 => t5 because of 175 independent cases, 524 of my own interventions, 171 successful predictions on new combinations.
+      self-report: law 69: act3 : diff(r0,r1;c0) => t5 because of 703 independent cases, 704 of my own interventions, 700 successful predictions on new combinations.
+      self-report: law 70: act3 : order(r0,r1;c0)> => t5 because of 333 independent cases, 333 of my own interventions, 330 successful predictions on new combinations.
+      self-report: law 97: act3 : r0.c6=4 => t6 because of 92 independent cases, 93 of my own interventions, 89 successful predictions on new combinations.
+      self-report: law 180: act3 : diff(r0,r1;c0) => t10005 because of 706 independent cases, 707 of my own interventions, 703 successful predictions on new combinations.
+      self-report: I do not know: role0.?, role0.pos, role1.?, role1.pos.
+      self-report: when I answer about role0.lit, I am right 98% of the time.
+      self-report: when I answer about role0.pos, I am right 95% of the time.
+  E2 calibration               PASS  seed 45: ECE raw 3.90% calibrated 0.21%; accuracy on targets the self-model calls known 2953/3000
+  E3 verification actions      PASS  seed 45: first 30 wake actions testing sleep-generated hypotheses: active 30, fixed-rotation policy 0
+
+E-E OVERALL: FAIL

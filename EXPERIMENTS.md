@@ -480,3 +480,20 @@ Learner = v2 learner + D036a + D039e + D039f. Criteria as in v2 (C2 baseline con
 key-case margin as amended). Seeds: B 1-25, D 1-15, F 1-15 (criteria unchanged since their
 registration); C and E on fresh seeds 31-45. R0 v7 stands (R0 uses no grounding, latent
 induction or sleep).
+
+### Results v3 (2026-10-07)
+* E-B v10 (seeds 1-25): **PASS 200/200**. E-D v3 (seeds 1-15): **PASS** (D1 ratio 0.51, 15/15).
+  E-F v2 (seeds 1-15): **PASS** every gate (observe median 199 us, predict 100 us, 569 MB).
+* E-C v5 (fresh seeds 31-45): 14/15 seeds pass every gate. **FAIL** C4b seed 31: 25 correct,
+  0 wrong, 4 abstain of 29 (86%): content-hash collision conflicts, the known evidence limit
+  (DECISIONS "C4b conflicts ..."). All other C gates pass on all 15 seeds. No further change to
+  Phase C: this is reported as the result.
+* E-E v3 (fresh seeds 31-45): **FAIL** E1 seed 34 only: USE on the key after sleep 85/85 vs twin
+  45/85. The v2 margin (twin + 50% of key cases = 87.5) is again unreachable when the twin is
+  above 50%: a fixed margin is the wrong statistic for a paired comparison (my design error, twice).
+  E2, E3 and the link part pass on all seeds.
+
+### Pre-registration E-E v4 (before the run; last criterion change for E1)
+E1 door part: exact one-sided McNemar test on USE-on-the-key cases (discordant pairs sleep-only vs
+twin-only), p <= 0.001, sleep >= 90% correct on those cases and >= 90% overall. Link part, E2, E3
+unchanged. Fresh seeds 46-60. If this fails, the failure is reported; no further criterion change.
