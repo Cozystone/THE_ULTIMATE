@@ -524,3 +524,38 @@ chimera guard). Result on the development seeds: 16-20 concepts, C4a seeds 3 and
 never-probed pair, E-B seeds 1-5 and 22 PASS. Test: 16 look-alike objects are all born without churn.
 Rejected on the way: D039c (replaying the store into an inducer enabled while awake) did not change
 the abstentions and introduced 2 wrong answers on seed 2; withdrawn before any formal run.
+
+## D036a A stored observation without a concept is one noisy sample (2026-10-07)
+Evidence: E-B v9 seed 15, B2 completion at 20% missing 469/479 = 97.9% (< 98%). Every wrong fill
+came from the correctly recalled event: the stored slot had no concept at storage time, so its
+property values were single observations under 5% sensor noise, while the 98% posterior (D036)
+covered only event and slot identity. Choice: for such slots a property is filled only if
+P(event) x P(slot) x P(match on that channel, from the measured noise model) >= 98%. Slots stored
+with a concept keep their concept-corrected values. Result seed 15: 360/360 at 20% missing (fewer
+fills, none wrong). Covered by the B2 gate (completion accuracy) on 25 seeds.
+
+## D039e An older partition version speaks where its relation is unchanged (2026-10-07)
+Evidence: E-C v4 seed 19, C4a 0 correct, 0 wrong, 50 abstain. At observation 1050 a new positive
+probe merged entity 12 into its true class (8 -> 7 link classes, now correct); the version bump
+(D039) made every licensed latent law stop matching and too few positives remained to re-license.
+Choice: each generator keeps its last two earlier partitions. For the argument pair, an earlier
+version's filler is exported when its same/different relation equals the current version's (and
+was observed, D039f); laws licensed on it keep answering there. Pairs whose relation changed see
+only the new version and must wait for new licences. Test included (failure case: the changed
+pair gets no old-version filler).
+
+## D039f Sameness inside a latent class also needs an observed pair (2026-10-07)
+Evidence: with D039e, seed 2 gave 2 wrong answers on (14,15): two singleton classes that never
+produced the rarer outcome are interchangeable, so BLOCK put them in one block, and "same block"
+was exported for their own pair although no pair inside that block had ever been observed.
+D039b required evidence only for differences. Choice: a class relation (same or different) is
+exported for the argument pair only if some pair between those classes was observed. Link classes
+are built from observed positive pairs, so their sameness stays exported. Test included (fails
+without D039f).
+
+## C4b conflicts from content-hash collisions are left unresolved (2026-10-07)
+Evidence: E-C v4 seed 30, C4b 26/30, 0 wrong, 4 abstain (Conflict): different files with
+colliding content class; the licensed content law (6 collision counterexamples) and the latent
+law disagree, and fewer than 3 shared cases exist to settle it (D041). Re-scoring past episodes
+under the current latent partition would be circular (the partition was induced from those
+outcomes). No change: abstention is the honest answer with this evidence.

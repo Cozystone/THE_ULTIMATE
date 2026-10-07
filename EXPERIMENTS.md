@@ -465,3 +465,18 @@ experiments run on fresh seeds 16-30; nothing about these seeds has been looked 
   criterion unchanged. The v1 margin is printed alongside for comparison. E2, E3 unchanged.
 * E-F v1: seeds 1-15 as pre-registered above, run after the others so latency is not measured
   under contention.
+
+### Results v2 (2026-10-07)
+* E-D v2 (seeds 1-15): **PASS** (D1 ratio 0.60, active <= random on 15/15).
+* E-E v2 (fresh seeds 16-30): **PASS** on every seed.
+* E-F v1 (seeds 1-15): **PASS** on every gate; F8 observe median 159 us, predict median 83 us, peak
+  working set 569 MB, <= 1.69 mJ per observation (estimate).
+* E-B v9 (seeds 1-25): **FAIL 199/200**: seed 15 B2 completion 97.9% (cause and fix: D036a).
+* E-C v4 (fresh seeds 16-30): **FAIL** 2 gate instances: C4a seed 19 (0/0/50; D039e, D039f) and
+  C4b seed 30 (26 correct, 0 wrong, 4 abstain = 86.7% < 90%; collision conflicts, no change).
+
+### Pre-registration v3: E-B v10, E-C v5, E-D v3, E-E v3, E-F v2 (before these runs)
+Learner = v2 learner + D036a + D039e + D039f. Criteria as in v2 (C2 baseline condition and E1
+key-case margin as amended). Seeds: B 1-25, D 1-15, F 1-15 (criteria unchanged since their
+registration); C and E on fresh seeds 31-45. R0 v7 stands (R0 uses no grounding, latent
+induction or sleep).

@@ -353,8 +353,15 @@ impl EventMemory {
             if stored.slots[si].slot != ss {
                 continue;
             }
-            if p_event * p_slot / Q >= FILL_POSTERIOR_Q16 {
-                pairs.push((qs, stored.slots[si].clone()));
+            let p_id = p_event * p_slot / Q;
+            if p_id >= FILL_POSTERIOR_Q16 {
+                let mut sg = stored.slots[si].clone();
+                if sg.concept.is_none() {
+                    // D036a: without a concept the stored value is one noisy observation; its own
+                    // reliability (measured match probability of the channel) enters the posterior
+                    sg.props.retain(|&(c, _)| p_id * hdc_core::fixed::exp2_neg_q16(-nm.terms(c).0) / Q >= FILL_POSTERIOR_Q16);
+                }
+                pairs.push((qs, sg));
             }
         }
         Some((hit, pairs))

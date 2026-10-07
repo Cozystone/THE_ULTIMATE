@@ -17,6 +17,9 @@
 use crate::episode::{Episode, Filler};
 use std::collections::{BTreeMap, BTreeSet};
 
+/// D039e: earlier partition versions kept per generator.
+const PREV_KEEP: usize = 2;
+
 #[derive(Clone, Debug)]
 pub struct LatentInducer {
     pub action: u16,
@@ -39,6 +42,9 @@ pub struct LatentInducer {
     /// Consecutive inductions without any change (induction slows down once stable).
     pub stable_runs: u32,
     total: usize,
+    /// D039e: the last earlier versions of each partition, (version, partition).
+    prev_block: Vec<(u16, BTreeMap<i64, i64>)>,
+    prev_link: Vec<(u16, BTreeMap<i64, i64>)>,
 }
 
 impl LatentInducer {
@@ -58,6 +64,8 @@ impl LatentInducer {
             link_version: 0,
             stable_runs: 0,
             total: 0,
+            prev_block: Vec::new(),
+            prev_link: Vec::new(),
         }
     }
 
@@ -119,10 +127,25 @@ impl LatentInducer {
         self.induce_inner();
         let changed_b = self.block != old_block;
         let changed_l = self.link != old_link;
+        if std::env::var("DIAG_LAT").is_ok() && (changed_b || changed_l) {
+            eprintln!("LAT obs {} block changed {changed_b} link changed {changed_l} link classes {} -> {}", self.total, distinct(&old_link), distinct(&self.link));
+            if changed_l {
+                eprintln!("LAT   old {:?}
+LAT   new {:?}", old_link, self.link);
+            }
+        }
         if changed_b && !old_block.is_empty() {
+            self.prev_block.push((self.block_version, old_block));
+            if self.prev_block.len() > PREV_KEEP {
+                self.prev_block.remove(0);
+            }
             self.block_version += 1;
         }
         if changed_l && !old_link.is_empty() {
+            self.prev_link.push((self.link_version, old_link));
+            if self.prev_link.len() > PREV_KEEP {
+                self.prev_link.remove(0);
+            }
             self.link_version += 1;
         }
         if changed_b || changed_l {
@@ -266,7 +289,10 @@ impl LatentInducer {
         let pair_ok = |part: &BTreeMap<i64, i64>| -> bool {
             match (ids.first().copied().flatten(), ids.get(1).copied().flatten()) {
                 (Some(a), Some(b)) => match (part.get(&a), part.get(&b)) {
-                    (Some(&ca), Some(&cb)) => ca == cb || self.observed_between(part, ca, cb),
+                    // D039b/D039f: same or different, the relation between the two classes must
+                    // have been observed (a block of interchangeable entities says nothing about
+                    // the outcome between its own members until such a pair was seen)
+                    (Some(&ca), Some(&cb)) => self.observed_between(part, ca, cb),
                     _ => true,
                 },
                 _ => true,
@@ -288,6 +314,23 @@ impl LatentInducer {
                 }
             }
         }
+        // D039e: an earlier partition version still speaks for an argument pair whose relation
+        // (same / different class) it shares with the current version; laws licensed on it keep
+        // applying there, and only pairs whose relation changed must wait for new licences
+        if let (Some(Some(a)), Some(Some(b))) = (ids.first().copied(), ids.get(1).copied()) {
+            for (prev, cur, base) in [(&self.prev_block, &self.block, self.block_ch), (&self.prev_link, &self.link, self.link_ch)] {
+                let (Some(ca), Some(cb)) = (cur.get(&a), cur.get(&b)) else { continue };
+                for (v, m) in prev.iter() {
+                    let (Some(&oa), Some(&ob)) = (m.get(&a), m.get(&b)) else { continue };
+                    if (oa == ob) != (ca == cb) || !self.observed_between(m, oa, ob) {
+                        continue;
+                    }
+                    let ch = base.wrapping_add(2 * v);
+                    ep.roles[0].fillers.push(Filler { ch, val: oa });
+                    ep.roles[1].fillers.push(Filler { ch, val: ob });
+                }
+            }
+        }
     }
 
     pub fn classes(&self) -> (usize, usize) {
@@ -295,4 +338,8 @@ impl LatentInducer {
         let l: BTreeSet<i64> = self.link.values().copied().collect();
         (b.len(), l.len())
     }
+}
+
+fn distinct(m: &BTreeMap<i64, i64>) -> usize {
+    m.values().collect::<std::collections::BTreeSet<_>>().len()
 }

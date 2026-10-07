@@ -405,6 +405,24 @@ fn links(seed: u64, out: &mut Out, latent: bool) -> Score {
         let p = predict_change(&mut a, &ev, &truth, j, dv::ON);
         let t = (w.devs[j].on != before) as i64;
         sc.add(p, t);
+        if std::env::var("DIAG_WRONG").is_ok() && latent && p.is_some() && p != Some(t) {
+            let gr = a.g.ground(&ev);
+            if let (Some(sl), Some(ord)) = (truth.iter().find(|x| x.1 == j).map(|x| x.0), scene_role_order(&gr)) {
+                let r = ord.iter().position(|&s| s == sl).unwrap_or(0);
+                let ep = to_episode_scene(&gr).unwrap().without_outcomes();
+                let tg = target_id(r, dv::ON) + CHANGE;
+                eprintln!("WRONG pair ({i},{j}) classes ({},{}) predicted {p:?} truth {t}", w.devs[i].class, w.devs[j].class);
+                for (l, v) in a.rel.explain(&ep, tg) {
+                    eprintln!("    by {} => {v}", a.rel.summary(l, ctx));
+                }
+                for ind in &a.rel.latent {
+                    let mut e = ep.clone();
+                    ind.augment(&mut e);
+                    let lat: Vec<Vec<(u16, i64)>> = e.roles.iter().take(2).map(|r| r.fillers.iter().filter(|f| f.ch >= 3000).map(|f| (f.ch, f.val)).collect()).collect();
+                    eprintln!("    fillers {:?}", lat);
+                }
+            }
+        }
         if std::env::var("DIAG_C4").is_ok() && latent {
             let pos_t = w.devs[i].class == w.devs[j].class;
             let f = if pos_t { feasible(n, &trained_pos, i, j) } else { neg_feasible(n, &trained_pos, &trained_neg, i, j) };
@@ -535,6 +553,10 @@ fn main() {
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
     for &seed in &seeds {
         let _ = writeln!(out.report, "\n===== seed {seed}");
+        if std::env::var("ONLY_OS").is_ok() {
+            links_os(seed, &mut out);
+            continue;
+        }
         if std::env::var("ONLY_LINKS").is_ok() {
             links(seed, &mut out, true);
             continue;

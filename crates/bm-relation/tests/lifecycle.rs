@@ -243,3 +243,78 @@ fn sleep_never_licenses_a_conjunction_for_a_random_outcome() {
     }
     assert!(asked > 10);
 }
+
+const ID_CH: u16 = 9;
+
+fn pair_ep(a: i64, b: i64, out: i64) -> Episode {
+    Episode {
+        id: 0,
+        t: 0,
+        context: context_of("L"),
+        source: 0,
+        action: 1,
+        roles: vec![Entity::new(&[(ID_CH, a)]), Entity::new(&[(ID_CH, b)])],
+        n_args: 2,
+        outcomes: vec![(T, out)],
+        kind: Kind::Intervention,
+    }
+}
+
+fn latent_of(ind: &LatentInducer, a: i64, b: i64, ch: u16) -> (Option<i64>, Option<i64>) {
+    let mut e = pair_ep(a, b, 0).without_outcomes();
+    ind.augment(&mut e);
+    (e.roles[0].get(ch), e.roles[1].get(ch))
+}
+
+/// Hidden classes {1,2,3}, {4}, {5}; outcome = same class. Pairs (4,5) and (1,3) never probed.
+fn class_world(ind: &mut LatentInducer, skip: &[(i64, i64)]) {
+    let class = |x: i64| if x <= 3 { 0 } else { x };
+    for _ in 0..3 {
+        for a in 1..=5 {
+            for b in 1..=5 {
+                if a == b || skip.contains(&(a, b)) || skip.contains(&(b, a)) {
+                    continue;
+                }
+                ind.add(&pair_ep(a, b, (class(a) == class(b)) as i64));
+            }
+        }
+    }
+    ind.induce();
+}
+
+#[test]
+fn a_latent_relation_is_exported_only_when_observed() {
+    let mut ind = LatentInducer::new(1, T, ID_CH, 3000, 3001);
+    class_world(&mut ind, &[(4, 5), (1, 3)]);
+    let (bch, lch) = ind.channels();
+    // 1 and 3 were never probed together, but their link class was established by observed
+    // positive pairs (1,2), (2,3): the relation is exported
+    let (x, y) = latent_of(&ind, 1, 3, lch);
+    assert!(x.is_some() && x == y, "same link class exported");
+    // D039f failure case: 4 and 5 are interchangeable (same block), but no pair inside that block
+    // was ever observed, so "same block" is not established for their own pair
+    let (x, y) = latent_of(&ind, 4, 5, bch);
+    assert_eq!((x, y), (None, None), "unobserved within-block relation is not exported");
+}
+
+#[test]
+fn an_older_partition_version_speaks_only_where_the_relation_is_unchanged() {
+    let mut ind = LatentInducer::new(1, T, ID_CH, 3000, 3001);
+    class_world(&mut ind, &[(4, 5), (1, 3)]);
+    let (_, l_old) = ind.channels();
+    // new evidence: 4 and 5 turn out to be linked; the link partition changes (new version)
+    for _ in 0..3 {
+        ind.add(&pair_ep(4, 5, 1));
+        ind.add(&pair_ep(5, 4, 1));
+    }
+    ind.induce();
+    let (_, l_new) = ind.channels();
+    assert_ne!(l_old, l_new, "partition change gets a new channel");
+    // (1,2): same class in both versions -> the old version still applies (D039e)
+    let (x, y) = latent_of(&ind, 1, 2, l_old);
+    assert!(x.is_some() && x == y);
+    // (4,5): different in the old version, same in the new one -> old version is silent
+    assert_eq!(latent_of(&ind, 4, 5, l_old), (None, None));
+    let (x, y) = latent_of(&ind, 4, 5, l_new);
+    assert!(x.is_some() && x == y);
+}
