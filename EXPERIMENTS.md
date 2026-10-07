@@ -601,3 +601,6 @@ Freeze check passed before the run (learner crates identical to `bitmind-v0.1`).
 | G5 Phase F battery on seeds 101-115 | F2-F8 15/15; **F1 11/15** | F1 at 30% missing 89-93% on 4 seeds (< 95%), wrong up to 2.5% (> 2%) |
 Overall Phase G: **FAIL** (G4, F1). Diagnosis of G4: known issues K1 and K4 (DECISIONS). F1: not yet
 diagnosed. Per the pre-registered reporting rule nothing in the learner was changed.
+
+## v0.2
+Pre-registration: `experiments/PREREG-v0.2.md` (committed before any v0.2 learner change).
