@@ -159,3 +159,32 @@ have <= 8 outcome values, so K2′-o is absent there.
    attributable as "deferred: insufficient evidence".
 
 The constants (4 bits, >= 3 cases, 4,096, 8) are fixed here and change only by dated amendment.
+
+## Amendment 2: baseline of the D055 gate includes a copy model (2026-10-08, before the regression of record)
+Development measurement (`experiments/results/v03dev/`, D055 build):
+
+| case | step | working set | laws |
+|---|---|---|---|
+| H5 seed 201 (v0.2: 5.3 GB, 1,322,844 laws) | 20,000 | 202 MB | 5,616 |
+| real-OS seed 58 | 5,000 | 2.87 GB | 219,829 |
+
+In the real-OS case, 216,678 of those laws predict targets with > 64 outcome values. A probe
+leaves the partner file's content unchanged, so its post-probe content class equals its pre-probe
+value. Against a 256-value base rate, any feature that isolates three episodes with the same post
+value carries ~24 bits and passes the gate. This is mostly refinement conjunctions over latent
+channels.
+
+**Change (D055a).** The gate's baseline is a mixture of the best copy source and the smoothed base
+(single features) or parent (refinement) distribution:
+* for each (action, target, context) the engine counts how often each input filler (role, channel)
+  equals the outcome;
+* the best source with >= 20 cases contributes its measured rate q;
+* the baseline probability of an outcome o is q x [o equals the source's value in that episode]
+  + (1 - q) x p_dist(o).
+
+Each deferred value and each refinement candidate accumulates its baseline log-likelihood case by
+case. LLR = sum h log2(h / n) - sum over cases log2 p_baseline(case). Threshold, margin and case
+minimum are unchanged.
+
+Rationale: "the output repeats an input" is a generic chance-level model (persistence), no more
+world-specific than a base rate; a hypothesis must beat it to claim information.
