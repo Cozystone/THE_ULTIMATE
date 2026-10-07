@@ -638,3 +638,20 @@ Peak working set:
 * real-OS C chunks 2.1-4.6 GB (v0.1: ~10 GB);
 * G chunks ~3.8 GB (real-OS G1/G2);
 * everything else < 0.5 GB.
+
+### Result: Phase H, held-out validation of the frozen v0.2 learner (seeds 201-215)
+Freeze guard passed before and after the run (learner crates identical to `bitmind-v0.2`). Raw
+output: `experiments/results/v02_phase_h/`. Harness build `078a89d`.
+
+| gate | seeds | outcome totals | verdict |
+|---|---|---|---|
+| H1 relational transfer to new objects and never-seen sizes | 15/15 | correct 2,647; wrong 0; safe abstention 98; insufficient 0; identity leakage 0 | PASS |
+| H2 cyclic hidden ranks (established pairs) | 13/15 | correct 376; wrong 0; safe abstention 11; leakage 0 | FAIL (210: 23/26, 211: 26/30, below 90% by abstentions only) |
+| H3a/H3b identity and label permutation | 15/15 | identical answers 3,000/3,000 (H1) and 391/391 (H2) | PASS |
+| H4 reachable conflict | 0/15 | stage 1 safe abstention 160/160, wrong 0, answers while unsettled 0. Stage 2: 0 answers by D041 settlement; 154 answered correctly after the conflict dissolved (the competing licence lost to counterevidence), with 3-14 distinct region pairs probed by then; 6 still abstained; wrong 0 | FAIL |
+| H5 20,000 steps under a 2 GB budget | 0/15 | peak working set 3.5-6.9 GB; accuracy end 1,070 vs mid 1,058 correct; wrong 4 (seeds 207, 213); counterexample counts never decreased | FAIL (memory budget) |
+
+Outcome classes over all H answers:
+* wrong confident answers: 4 (all in H5);
+* identity leakage: 0;
+* memory-budget failure: 15/15 H5 runs.
