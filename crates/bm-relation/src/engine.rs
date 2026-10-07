@@ -191,6 +191,41 @@ impl RelationEngine {
         self.latent.push(LatentInducer::new(action, target, id_ch, 3000 + 1000 * k, 3001 + 1000 * k));
     }
 
+    /// D051: how much better than chance a repeated (a, b) pair repeats its outcome on `target`:
+    /// (observed repeat rate - sum of squared marginal frequencies) in Q16, and the number of
+    /// repeats. Uses the stored episodes of this action and context.
+    pub fn pair_repeatability(&self, action: u16, ctx: u64, target: u32, idc: u16) -> Option<(i64, u32)> {
+        use hdc_core::fixed::Q;
+        let mut last: HashMap<(i64, i64), i64> = HashMap::new();
+        let mut marg: HashMap<i64, u64> = HashMap::new();
+        let (mut hits, mut repeats, mut total) = (0u64, 0u64, 0u64);
+        for e in self.store.iter() {
+            if e.action != action || e.context != ctx || e.roles.len() < 2 {
+                continue;
+            }
+            let (Some(a), Some(b), Some(o)) = (e.roles[0].get(idc), e.roles[1].get(idc), e.outcome(target)) else { continue };
+            *marg.entry(o).or_insert(0) += 1;
+            total += 1;
+            if let Some(prev) = last.insert((a, b), o) {
+                repeats += 1;
+                hits += (prev == o) as u64;
+            }
+        }
+        if repeats == 0 || total == 0 {
+            return None;
+        }
+        let rate = hits as i64 * Q / repeats as i64;
+        let chance: i64 = marg.values().map(|&c| (c * c) as i64 * Q / (total * total) as i64).sum();
+        // significance: excess repeats over chance must exceed 3 standard deviations of
+        // Binomial(repeats, chance) (z > 3, as in D046); otherwise no evidence of pair dependence
+        let d = hits as i128 * Q as i128 - repeats as i128 * chance as i128;
+        let var = repeats as i128 * chance as i128 * (Q - chance) as i128;
+        if d <= 0 || d * d <= 9 * var {
+            return Some((0, repeats as u32));
+        }
+        Some((rate - chance, repeats as u32))
+    }
+
     fn latent_bookkeeping(&mut self, ep: &Episode) {
         for ind in self.latent.iter_mut() {
             let before = ind.observations();
@@ -212,29 +247,36 @@ impl RelationEngine {
             }
             let n = self.unexplained.entry((ep.action, t, ep.context)).or_insert(0);
             *n += 1;
-            if *n == 60 {
+            // D051: decide once enough repeated pairs exist (re-checked every 20 episodes)
+            if *n >= 60 && (*n - 60) % 20 == 0 {
                 let licensed = self.laws.iter().any(|l| l.target == t && l.action == ep.action && l.applicable(ep.context));
                 let same_slot = self.latent.iter().any(|l| l.action == ep.action && l.target / 10_000 == t / 10_000 && l.target % 1000 == t % 1000);
                 if !licensed && !same_slot {
-                    // D038a: among this slot's targets, base the hypothesis on the most structured
-                    // one (lowest outcome entropy under the unconditional law)
+                    // D051 (replaces D038a): a latent pair cause predicts that the outcome is a
+                    // function of the pair. Among this slot's targets, choose the one whose outcome
+                    // repeats for a repeated pair most often beyond chance; wait until >= 10
+                    // repeated pairs exist.
                     let ctx = ep.context;
-                    let mut best = (i64::MAX, t);
+                    let mut best: Option<(i64, u32)> = None;
+                    let mut enough = false;
                     for &(t2, _) in &ep.outcomes {
                         if t2 / 10_000 != t / 10_000 || t2 % 1000 != t % 1000 {
                             continue;
                         }
-                        let h = self
-                            .laws
-                            .iter()
-                            .find(|l| l.is_base() && l.action == ep.action && l.target == t2)
-                            .and_then(|l| l.ctx(ctx))
-                            .map(|e| hdc_core::fixed::entropy_q16(&e.bins.iter().map(|b| b.count as u64).collect::<Vec<_>>()))
-                            .unwrap_or(i64::MAX - 1);
-                        if h < best.0 {
-                            best = (h, t2);
+                        if let Some((score, repeats)) = self.pair_repeatability(ep.action, ctx, t2, idc) {
+                            if repeats >= 10 {
+                                enough = true;
+                                if best.map(|b| score > b.0 || (score == b.0 && t2 < b.1)).unwrap_or(true) {
+                                    best = Some((score, t2));
+                                }
+                            }
                         }
                     }
+                    let Some((score, t_best)) = best else { continue };
+                    if !enough || score <= 0 {
+                        continue;
+                    }
+                    let best = (score, t_best);
                     self.enable_latent(ep.action, best.1, idc);
                 }
             }

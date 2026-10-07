@@ -192,3 +192,44 @@ fn an_identity_channel_declared_ordinal_is_vetoed() {
     assert!(!e.vetoed.contains(&1), "a shared magnitude was vetoed");
     assert!(label_arithmetic(&e).is_empty(), "licensed label arithmetic: {:?}", label_arithmetic(&e));
 }
+
+/// D051 (K3): the latent inducer attaches to the target the pair determines. Two targets of the
+/// same slot: the change flag (balanced, a function of hidden classes of the pair) and the
+/// after-state value (balanced, it also depends on the prior state). Failure case: when no target
+/// is a function of the pair, no inducer is enabled.
+#[test]
+fn latent_induction_attaches_to_the_pair_determined_target() {
+    const IDC: u16 = 9;
+    let run = |pair_determined: bool| -> Vec<u32> {
+        let mut rng = Rng::new(23);
+        let mut e = RelationEngine::new(6);
+        e.identity_channel = Some(IDC);
+        let class: Vec<i64> = (0..12).map(|i| (i * 7 % 12 % 2) as i64).collect();
+        let mut state = vec![0i64; 12];
+        for _ in 0..1200 {
+            let p = rng.sample_distinct(12, 2);
+            let (a, b) = (p[0], p[1]);
+            let change = if pair_determined { (class[a] != class[b]) as i64 } else { rng.below(2) as i64 };
+            let before = state[b];
+            state[b] ^= change;
+            let ea = Entity::bound(a as i64, &[(IDC, a as i64), (2, state[a])]);
+            let eb = Entity::bound(b as i64, &[(IDC, b as i64), (2, before)]);
+            let episode = Episode {
+                id: 0,
+                t: 0,
+                context: context_of("L"),
+                source: 0,
+                action: 3,
+                roles: vec![ea, eb],
+                n_args: 2,
+                // role 1, channel 2: value target 10002 and change target 15002
+                outcomes: vec![(10002, state[b]), (15002, change)],
+                kind: Kind::Intervention,
+            };
+            e.observe(episode);
+        }
+        e.latent.iter().map(|l| l.target).collect()
+    };
+    assert_eq!(run(true), vec![15002], "inducer must attach to the change flag");
+    assert!(run(false).is_empty(), "no pair-determined target: no latent hypothesis");
+}

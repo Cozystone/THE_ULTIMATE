@@ -1,0 +1,50 @@
+
+===== seed 101
+  G4 anti-equivalence latent     PASS  seed 101: never-probed pairs: all correct 34 wrong 0 abstain 0 of 34; established without unresolved conflict correct 34 wrong 0 abstain 0 of 34; licensed latent laws 16
+
+===== seed 102
+  G4 anti-equivalence latent     PASS  seed 102: never-probed pairs: all correct 27 wrong 0 abstain 0 of 27; established without unresolved conflict correct 27 wrong 0 abstain 0 of 27; licensed latent laws 7
+
+===== seed 103
+  G4 anti-equivalence latent     PASS  seed 103: never-probed pairs: all correct 20 wrong 0 abstain 0 of 20; established without unresolved conflict correct 20 wrong 0 abstain 0 of 20; licensed latent laws 14
+
+===== seed 104
+  G4 anti-equivalence latent     PASS  seed 104: never-probed pairs: all correct 20 wrong 0 abstain 0 of 20; established without unresolved conflict correct 20 wrong 0 abstain 0 of 20; licensed latent laws 15
+
+===== seed 105
+  G4 anti-equivalence latent     PASS  seed 105: never-probed pairs: all correct 27 wrong 0 abstain 0 of 27; established without unresolved conflict correct 27 wrong 0 abstain 0 of 27; licensed latent laws 8
+
+===== seed 106
+  G4 anti-equivalence latent     PASS  seed 106: never-probed pairs: all correct 27 wrong 0 abstain 0 of 27; established without unresolved conflict correct 27 wrong 0 abstain 0 of 27; licensed latent laws 8
+
+===== seed 107
+  G4 anti-equivalence latent     PASS  seed 107: never-probed pairs: all correct 30 wrong 0 abstain 0 of 30; established without unresolved conflict correct 30 wrong 0 abstain 0 of 30; licensed latent laws 7
+
+===== seed 108
+  G4 anti-equivalence latent     PASS  seed 108: never-probed pairs: all correct 25 wrong 0 abstain 0 of 25; established without unresolved conflict correct 25 wrong 0 abstain 0 of 25; licensed latent laws 17
+
+===== seed 109
+  G4 anti-equivalence latent     PASS  seed 109: never-probed pairs: all correct 31 wrong 0 abstain 0 of 31; established without unresolved conflict correct 31 wrong 0 abstain 0 of 31; licensed latent laws 16
+
+===== seed 110
+  G4 anti-equivalence latent     PASS  seed 110: never-probed pairs: all correct 29 wrong 0 abstain 0 of 29; established without unresolved conflict correct 29 wrong 0 abstain 0 of 29; licensed latent laws 12
+
+===== seed 111
+  G4 anti-equivalence latent     PASS  seed 111: never-probed pairs: all correct 26 wrong 0 abstain 0 of 26; established without unresolved conflict correct 26 wrong 0 abstain 0 of 26; licensed latent laws 9
+
+===== seed 112
+  G4 anti-equivalence latent     PASS  seed 112: never-probed pairs: all correct 18 wrong 0 abstain 0 of 18; established without unresolved conflict correct 18 wrong 0 abstain 0 of 18; licensed latent laws 7
+
+===== seed 113
+  G4 anti-equivalence latent     PASS  seed 113: never-probed pairs: all correct 30 wrong 0 abstain 0 of 30; established without unresolved conflict correct 30 wrong 0 abstain 0 of 30; licensed latent laws 11
+
+===== seed 114
+  G4 anti-equivalence latent     PASS  seed 114: never-probed pairs: all correct 32 wrong 0 abstain 0 of 32; established without unresolved conflict correct 32 wrong 0 abstain 0 of 32; licensed latent laws 16
+
+===== seed 115
+  G4 anti-equivalence latent     PASS  seed 115: never-probed pairs: all correct 24 wrong 0 abstain 0 of 24; established without unresolved conflict correct 24 wrong 0 abstain 0 of 24; licensed latent laws 9
+
+  learner                        INFO  frozen at tag bitmind-v0.1 (crates hdc-core, bm-relation, bm-memory, bm-agent unchanged)
+
+E-G OVERALL: PASS
+resources: wall 226.1 s, peak working set 671 MB

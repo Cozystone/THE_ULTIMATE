@@ -656,3 +656,24 @@ objects; repetitions and background changes test robustness, not breadth.
 Tests: bystander variation cannot license a general law and a new pair is not answered; a
 conflict is not settled by one pair probed repeatedly under changing bystanders, and is settled by
 three distinct relevant bindings. Both fail on v0.1.
+
+## D051 Latent induction attaches to the target the pair determines (v0.2, 2026-10-07; replaces D038a; fixes K3)
+Evidence: after D049/D050, G4 development seeds 101, 102, 103, 108, 110, 114 abstained on every pair
+(0 wrong). Every failing seed had its inducer on the probed object's after-state value (target
+10003) instead of its change (15003). Link closure merged all 12 objects into one class, and every
+latent law was revoked. D038a chose the lowest-entropy target, which is arbitrary when the true
+effect is balanced (anti-equivalence: change in about half of the probes).
+Choice: a latent pair cause predicts that the outcome is a function of the pair. Among a slot's
+targets the inducer goes to the one whose outcome repeats for a repeated (a, b) pair most often
+beyond chance, i.e. the observed repeat rate minus the sum of squared marginal frequencies.
+* Selection needs >= 10 repeats and significance (excess repeats > 3 standard deviations of
+  Binomial(repeats, chance), integer arithmetic).
+* The decision is re-checked every 20 episodes instead of once at episode 60.
+* If no target is significant, no inducer is enabled.
+
+Why architecture level: it is the definitional prediction of the hypothesis being induced, not a
+property of G4.
+Test: the inducer attaches to the change flag when the pair determines it. With random outcomes
+no inducer is enabled; this failure case failed until the significance test was added.
+Development result (G4 is development data, seeds 101-115): 15/15 seeds, 400 correct, 0 wrong,
+0 abstain (v0.1: 9/15, 25 wrong).

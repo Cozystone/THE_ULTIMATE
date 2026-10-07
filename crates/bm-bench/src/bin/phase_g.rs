@@ -288,6 +288,22 @@ fn g4(seed: u64, out: &mut Out) {
         a.feed(ev);
         fed += 1;
     }
+    if std::env::var("DIAG_G4L").is_ok() {
+        for ind in &a.rel.latent {
+            eprintln!("G4IND target {} channels {:?} classes {:?} obs {} versions ({}, {})", ind.target, ind.channels(), ind.classes(), ind.observations(), ind.block_version, ind.link_version);
+        }
+        let mut cands: Vec<(u32, String)> = a
+            .rel
+            .laws
+            .iter()
+            .filter(|l| l.condition.len() == 1 && l.condition.iter().any(|f| matches!(f, bm_relation::FeatureKind::Same { ch, .. } | bm_relation::FeatureKind::Diff { ch, .. } if *ch >= 3000)))
+            .filter_map(|l| l.ctx(w.context).map(|e| (e.total(), a.rel.summary(l.id, w.context))))
+            .collect();
+        cands.sort_by(|x, y| y.0.cmp(&x.0));
+        for (_, c) in cands.iter().take(8) {
+            eprintln!("G4LAW {c}");
+        }
+    }
     let mut hv: Vec<(usize, usize)> = held.into_iter().collect();
     hv.sort();
     let (mut all, mut feas_clear) = (Score::default(), Score::default());
