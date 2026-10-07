@@ -1,0 +1,52 @@
+
+===== seed 101
+  G1 hidden directories (OS)     PASS  seed 101: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_101: never-probed pairs (7 same folder, 26 different): all correct 33 wrong 0 abstain 0 of 33; established without unresolved conflict correct 33 wrong 0 abstain 0 of 33; unresolved conflicts 0
+  G2 hidden read-only (OS, explore) PASS  seed 101: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 158 of 158; on writable files correct 0 wrong 0 abstain 142 of 142 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 101: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 94 wrong 0 abstain 0 of 94; licensed e.g. ["act1 : diff(r0,r1;c0) => t0", "act1 : order(r0,r1;c1)> => t0", "act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0", "act1 : same(r0,r1;c1) => t0"]
+  G4 anti-equivalence latent     FAIL  seed 101: never-probed pairs: all correct 22 wrong 4 abstain 8 of 34; established without unresolved conflict correct 22 wrong 4 abstain 5 of 31; licensed latent laws 2
+
+===== seed 102
+  G1 hidden directories (OS)     PASS  seed 102: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_102: never-probed pairs (4 same folder, 23 different): all correct 27 wrong 0 abstain 0 of 27; established without unresolved conflict correct 27 wrong 0 abstain 0 of 27; unresolved conflicts 0
+  G2 hidden read-only (OS, explore) PASS  seed 102: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 137 of 137; on writable files correct 0 wrong 0 abstain 163 of 163 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 102: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 79 wrong 0 abstain 0 of 79; licensed e.g. ["act1 : same(r0,r1;c1) => t0", "act1 : diff(r0,r1;c0) => t0", "act1 : order(r0,r1;c1)> => t0", "act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0"]
+  G4 anti-equivalence latent     FAIL  seed 102: never-probed pairs: all correct 21 wrong 0 abstain 6 of 27; established without unresolved conflict correct 21 wrong 0 abstain 4 of 25; licensed latent laws 3
+
+===== seed 103
+  G1 hidden directories (OS)     PASS  seed 103: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_103: never-probed pairs (5 same folder, 15 different): all correct 19 wrong 0 abstain 1 of 20; established without unresolved conflict correct 19 wrong 0 abstain 0 of 19; unresolved conflicts 1
+  G2 hidden read-only (OS, explore) PASS  seed 103: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 168 of 168; on writable files correct 0 wrong 0 abstain 132 of 132 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 103: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 84 wrong 0 abstain 0 of 84; licensed e.g. ["act1 : diff(r0,r1;c0) => t0", "act1 : same(r0,r1;c1) => t0", "act1 : order(r0,r1;c1)> => t0", "act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0"]
+  G4 anti-equivalence latent     FAIL  seed 103: never-probed pairs: all correct 1 wrong 3 abstain 16 of 20; established without unresolved conflict correct 1 wrong 3 abstain 12 of 16; licensed latent laws 0
+
+===== seed 104
+  G1 hidden directories (OS)     PASS  seed 104: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_104: never-probed pairs (1 same folder, 19 different): all correct 16 wrong 0 abstain 4 of 20; established without unresolved conflict correct 16 wrong 0 abstain 0 of 16; unresolved conflicts 4
+  G2 hidden read-only (OS, explore) PASS  seed 104: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 141 of 141; on writable files correct 0 wrong 0 abstain 159 of 159 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 104: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 77 wrong 0 abstain 0 of 77; licensed e.g. ["act1 : order(r0,r1;c1)> => t0", "act1 : diff(r0,r1;c0) => t0", "act1 : same(r0,r1;c1) => t0", "act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0"]
+  G4 anti-equivalence latent     PASS  seed 104: never-probed pairs: all correct 20 wrong 0 abstain 0 of 20; established without unresolved conflict correct 20 wrong 0 abstain 0 of 20; licensed latent laws 15
+
+===== seed 105
+  G1 hidden directories (OS)     PASS  seed 105: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_105: never-probed pairs (7 same folder, 20 different): all correct 23 wrong 1 abstain 3 of 27; established without unresolved conflict correct 23 wrong 1 abstain 0 of 24; unresolved conflicts 3
+  G2 hidden read-only (OS, explore) PASS  seed 105: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 148 of 148; on writable files correct 0 wrong 0 abstain 152 of 152 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 105: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 80 wrong 0 abstain 0 of 80; licensed e.g. ["act1 : diff(r0,r1;c0) => t0", "act1 : order(r0,r1;c1)> => t0", "act1 : same(r0,r1;c1) => t0", "act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0"]
+  G4 anti-equivalence latent     PASS  seed 105: never-probed pairs: all correct 27 wrong 0 abstain 0 of 27; established without unresolved conflict correct 27 wrong 0 abstain 0 of 27; licensed latent laws 8
+
+===== seed 106
+  G1 hidden directories (OS)     PASS  seed 106: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_106: never-probed pairs (4 same folder, 23 different): all correct 26 wrong 0 abstain 1 of 27; established without unresolved conflict correct 26 wrong 0 abstain 0 of 26; unresolved conflicts 1
+  G2 hidden read-only (OS, explore) PASS  seed 106: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 163 of 163; on writable files correct 0 wrong 0 abstain 137 of 137 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 106: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 85 wrong 0 abstain 0 of 85; licensed e.g. ["act1 : order(r0,r1;c1)> => t0", "act1 : diff(r0,r1;c0) => t0", "act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0", "act1 : same(r0,r1;c1) => t0"]
+  G4 anti-equivalence latent     PASS  seed 106: never-probed pairs: all correct 27 wrong 0 abstain 0 of 27; established without unresolved conflict correct 27 wrong 0 abstain 0 of 27; licensed latent laws 8
+
+===== seed 107
+  G1 hidden directories (OS)     PASS  seed 107: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_107: never-probed pairs (3 same folder, 27 different): all correct 30 wrong 0 abstain 0 of 30; established without unresolved conflict correct 30 wrong 0 abstain 0 of 30; unresolved conflicts 0
+  G2 hidden read-only (OS, explore) PASS  seed 107: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 142 of 142; on writable files correct 0 wrong 0 abstain 158 of 158 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 107: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 91 wrong 0 abstain 0 of 91; licensed e.g. ["act1 : order(r0,r1;c1)> => t0", "act1 : diff(r0,r1;c0) => t0", "act1 : same(r0,r1;c1) => t0", "act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0"]
+  G4 anti-equivalence latent     PASS  seed 107: never-probed pairs: all correct 30 wrong 0 abstain 0 of 30; established without unresolved conflict correct 30 wrong 0 abstain 0 of 30; licensed latent laws 6
+
+===== seed 108
+  G1 hidden directories (OS)     PASS  seed 108: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_108: never-probed pairs (4 same folder, 21 different): all correct 22 wrong 0 abstain 3 of 25; established without unresolved conflict correct 22 wrong 0 abstain 0 of 22; unresolved conflicts 3
+  G2 hidden read-only (OS, explore) PASS  seed 108: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 159 of 159; on writable files correct 0 wrong 0 abstain 141 of 141 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 108: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 82 wrong 0 abstain 0 of 82; licensed e.g. ["act1 : diff(r0,r1;c0) => t0", "act1 : order(r0,r1;c1)> => t0", "act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0", "act1 : same(r0,r1;c1) => t0"]
+  G4 anti-equivalence latent     FAIL  seed 108: never-probed pairs: all correct 1 wrong 4 abstain 20 of 25; established without unresolved conflict correct 1 wrong 4 abstain 19 of 24; licensed latent laws 0
+
+  learner                        INFO  frozen at tag bitmind-v0.1 (crates hdc-core, bm-relation, bm-memory, bm-agent unchanged)
+
+E-G OVERALL: FAIL

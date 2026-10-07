@@ -1,0 +1,139 @@
+
+===== seed 101
+  F1 one-shot recall         FAIL  seed 101: events seen once, cue with 30% tokens missing: correct 178 wrong 4 abstain 18 of 200 (89.0%); 50% missing: correct 173 wrong 4 abstain 23 of 200 (86.5%)
+  F2 compositional held-out  PASS  seed 101: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 101: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 101: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 101: ECE raw 3.84% calibrated 0.29% over 2991 answers
+  F6 compression             PASS  seed 101: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 1.9 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 101: episodes to 95% on unseen values in a new room: experienced 20, from scratch 195
+
+===== seed 102
+  F1 one-shot recall         FAIL  seed 102: events seen once, cue with 30% tokens missing: correct 186 wrong 2 abstain 12 of 200 (93.0%); 50% missing: correct 182 wrong 2 abstain 16 of 200 (91.0%)
+  F2 compositional held-out  PASS  seed 102: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 102: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 102: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 102: ECE raw 3.66% calibrated 0.50% over 3057 answers
+  F6 compression             PASS  seed 102: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.0 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 102: episodes to 95% on unseen values in a new room: experienced 25, from scratch 130
+
+===== seed 103
+  F1 one-shot recall         FAIL  seed 103: events seen once, cue with 30% tokens missing: correct 186 wrong 5 abstain 9 of 200 (93.0%); 50% missing: correct 177 wrong 4 abstain 19 of 200 (88.5%)
+  F2 compositional held-out  PASS  seed 103: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 103: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 103: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 103: ECE raw 3.54% calibrated 0.79% over 3133 answers
+  F6 compression             PASS  seed 103: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.0 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 103: episodes to 95% on unseen values in a new room: experienced 25, from scratch 165
+
+===== seed 104
+  F1 one-shot recall         PASS  seed 104: events seen once, cue with 30% tokens missing: correct 200 wrong 0 abstain 0 of 200 (100.0%); 50% missing: correct 196 wrong 0 abstain 4 of 200 (98.0%)
+  F2 compositional held-out  PASS  seed 104: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 104: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 104: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 104: ECE raw 4.09% calibrated 0.55% over 3013 answers
+  F6 compression             PASS  seed 104: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.2 bits: ratio 17.5x
+  F7 transfer speed          PASS  seed 104: episodes to 95% on unseen values in a new room: experienced 30, from scratch 205
+
+===== seed 105
+  F1 one-shot recall         PASS  seed 105: events seen once, cue with 30% tokens missing: correct 200 wrong 0 abstain 0 of 200 (100.0%); 50% missing: correct 198 wrong 0 abstain 2 of 200 (99.0%)
+  F2 compositional held-out  PASS  seed 105: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 105: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 105: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 105: ECE raw 4.33% calibrated 0.14% over 3224 answers
+  F6 compression             PASS  seed 105: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.0 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 105: episodes to 95% on unseen values in a new room: experienced 25, from scratch 160
+
+===== seed 106
+  F1 one-shot recall         FAIL  seed 106: events seen once, cue with 30% tokens missing: correct 186 wrong 1 abstain 13 of 200 (93.0%); 50% missing: correct 184 wrong 2 abstain 14 of 200 (92.0%)
+  F2 compositional held-out  PASS  seed 106: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 106: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 800 wrong 200 abstain 0 of 1000 (80.0%)
+  F4 counterfactual          PASS  seed 106: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 106: ECE raw 3.83% calibrated 0.11% over 3294 answers
+  F6 compression             PASS  seed 106: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.1 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 106: episodes to 95% on unseen values in a new room: experienced 25, from scratch 155
+
+===== seed 107
+  F1 one-shot recall         PASS  seed 107: events seen once, cue with 30% tokens missing: correct 200 wrong 0 abstain 0 of 200 (100.0%); 50% missing: correct 197 wrong 0 abstain 3 of 200 (98.5%)
+  F2 compositional held-out  PASS  seed 107: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 107: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 107: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 107: ECE raw 3.12% calibrated 1.88% over 3175 answers
+  F6 compression             PASS  seed 107: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.0 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 107: episodes to 95% on unseen values in a new room: experienced 20, from scratch 205
+
+===== seed 108
+  F1 one-shot recall         PASS  seed 108: events seen once, cue with 30% tokens missing: correct 200 wrong 0 abstain 0 of 200 (100.0%); 50% missing: correct 197 wrong 0 abstain 3 of 200 (98.5%)
+  F2 compositional held-out  PASS  seed 108: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 108: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 800 wrong 200 abstain 0 of 1000 (80.0%)
+  F4 counterfactual          PASS  seed 108: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 108: ECE raw 3.90% calibrated 1.18% over 3186 answers
+  F6 compression             PASS  seed 108: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.0 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 108: episodes to 95% on unseen values in a new room: experienced 20, from scratch 200
+
+===== seed 109
+  F1 one-shot recall         PASS  seed 109: events seen once, cue with 30% tokens missing: correct 200 wrong 0 abstain 0 of 200 (100.0%); 50% missing: correct 198 wrong 0 abstain 2 of 200 (99.0%)
+  F2 compositional held-out  PASS  seed 109: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 109: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 109: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 109: ECE raw 4.60% calibrated 1.49% over 3344 answers
+  F6 compression             PASS  seed 109: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.0 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 109: episodes to 95% on unseen values in a new room: experienced 30, from scratch 130
+
+===== seed 110
+  F1 one-shot recall         PASS  seed 110: events seen once, cue with 30% tokens missing: correct 200 wrong 0 abstain 0 of 200 (100.0%); 50% missing: correct 196 wrong 0 abstain 4 of 200 (98.0%)
+  F2 compositional held-out  PASS  seed 110: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 110: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 110: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 110: ECE raw 4.88% calibrated 1.21% over 3238 answers
+  F6 compression             PASS  seed 110: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.0 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 110: episodes to 95% on unseen values in a new room: experienced 10, from scratch 190
+
+===== seed 111
+  F1 one-shot recall         PASS  seed 111: events seen once, cue with 30% tokens missing: correct 194 wrong 1 abstain 5 of 200 (97.0%); 50% missing: correct 192 wrong 2 abstain 6 of 200 (96.0%)
+  F2 compositional held-out  PASS  seed 111: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 111: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 111: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 111: ECE raw 4.58% calibrated 0.62% over 3040 answers
+  F6 compression             PASS  seed 111: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.1 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 111: episodes to 95% on unseen values in a new room: experienced 30, from scratch 180
+
+===== seed 112
+  F1 one-shot recall         PASS  seed 112: events seen once, cue with 30% tokens missing: correct 200 wrong 0 abstain 0 of 200 (100.0%); 50% missing: correct 198 wrong 0 abstain 2 of 200 (99.0%)
+  F2 compositional held-out  PASS  seed 112: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 112: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 112: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 112: ECE raw 3.45% calibrated 0.87% over 3283 answers
+  F6 compression             PASS  seed 112: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.1 bits: ratio 17.5x
+  F7 transfer speed          PASS  seed 112: episodes to 95% on unseen values in a new room: experienced 30, from scratch 220
+
+===== seed 113
+  F1 one-shot recall         PASS  seed 113: events seen once, cue with 30% tokens missing: correct 190 wrong 1 abstain 9 of 200 (95.0%); 50% missing: correct 184 wrong 0 abstain 16 of 200 (92.0%)
+  F2 compositional held-out  PASS  seed 113: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 113: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 113: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 113: ECE raw 4.26% calibrated 0.18% over 3272 answers
+  F6 compression             PASS  seed 113: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.1 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 113: episodes to 95% on unseen values in a new room: experienced 15, from scratch 195
+
+===== seed 114
+  F1 one-shot recall         PASS  seed 114: events seen once, cue with 30% tokens missing: correct 200 wrong 0 abstain 0 of 200 (100.0%); 50% missing: correct 197 wrong 0 abstain 3 of 200 (98.5%)
+  F2 compositional held-out  PASS  seed 114: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 114: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 114: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 114: ECE raw 3.79% calibrated 0.75% over 3237 answers
+  F6 compression             PASS  seed 114: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.0 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 114: episodes to 95% on unseen values in a new room: experienced 15, from scratch 160
+
+===== seed 115
+  F1 one-shot recall         PASS  seed 115: events seen once, cue with 30% tokens missing: correct 200 wrong 0 abstain 0 of 200 (100.0%); 50% missing: correct 199 wrong 0 abstain 1 of 200 (99.5%)
+  F2 compositional held-out  PASS  seed 115: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)
+  F3 intervention accuracy   PASS  seed 115: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)
+  F4 counterfactual          PASS  seed 115: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)
+  F5 calibration             PASS  seed 115: ECE raw 3.48% calibrated 0.81% over 3182 answers
+  F6 compression             PASS  seed 115: 1000 outcomes, raw 1000 bits vs model 55 bits (2 licensed laws) + data 2.0 bits: ratio 17.6x
+  F7 transfer speed          PASS  seed 115: episodes to 95% on unseen values in a new room: experienced 35, from scratch 215
+
+  F8 resources               PASS  observe median 195 us (p99 609 us), predict median 99 us (p99 132 us), peak working set of the whole battery 559 MB, energy estimate <= 2.07 mJ per observation (CPU only, no GPU, no network)
+
+E-F OVERALL: FAIL  (wall 585 s)

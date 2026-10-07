@@ -294,6 +294,17 @@ fn g4(seed: u64, out: &mut Out) {
         let (ev, truth) = w.step(i, j);
         let t_change = (w.toks[j].2 != before) as i64;
         let (p, unresolved) = a.predict(&ev, &truth, j, hw::ON);
+        if std::env::var("DIAG_G4").is_ok() && p.is_some() && p != Some(t_change) {
+            let gr = a.g.ground(&ev);
+            let slot = truth.iter().find(|x| x.1 == j).map(|x| x.0).unwrap_or(0);
+            if let (Some(r), Some(ep)) = (scene_role_order(&gr).and_then(|o| o.iter().position(|&s| s == slot)), to_episode_scene(&gr)) {
+                let q = ep.without_outcomes();
+                eprintln!("G4WRONG ({i},{j}) same-polarity {same} predicted {p:?} truth {t_change}");
+                for (l, v) in a.rel.explain(&q, target_id(r, hw::ON) + CHANGE) {
+                    eprintln!("    by {} => {v}", a.rel.summary(l, w.context));
+                }
+            }
+        }
         all.add(p, t_change);
         if !unresolved && established(n, &pos, &neg, i, j, same) {
             feas_clear.add(p, t_change);

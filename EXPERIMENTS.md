@@ -589,3 +589,15 @@ Smoke test (seed 999, harness only): all four gates ran. It exposed a world bug:
 polarity from index parity while marks are 300 + index, so mark differences revealed the hidden
 cause (G4 answered 33/37 with no latent law). Polarity is now a random balanced assignment. No
 criterion was changed. Formal seeds 101-115 follow.
+
+### Result: Phase G, independent replication of the frozen v0.1 learner (seeds 101-115)
+Freeze check passed before the run (learner crates identical to `bitmind-v0.1`).
+| gate | seeds passed | totals over 15 seeds |
+|---|---|---|
+| G1 real OS, hidden shared folders | 15/15 | 377 correct, 1 wrong, 19 abstain of 397 never-probed pairs |
+| G2 real OS, hidden read-only attribute (explore) | 15/15 | 0 correct, 0 wrong, 4500 abstain: never confidently wrong, never learned (expected: no history-dependent latent state in v0.1) |
+| G3 two-relation conjunction, never-seen values | 15/15 | 4500 correct, 0 wrong |
+| G4 anti-equivalence latent | 9/15 | 293 correct, **25 wrong**, 82 abstain of 400 |
+| G5 Phase F battery on seeds 101-115 | F2-F8 15/15; **F1 11/15** | F1 at 30% missing 89-93% on 4 seeds (< 95%), wrong up to 2.5% (> 2%) |
+Overall Phase G: **FAIL** (G4, F1). Diagnosis of G4: known issues K1 and K4 (DECISIONS). F1: not yet
+diagnosed. Per the pre-registered reporting rule nothing in the learner was changed.

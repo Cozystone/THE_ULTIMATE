@@ -599,3 +599,15 @@ D038a attached the inducer to the after-state value of the probed object instead
 under that target the rarer outcome is unrelated to the hidden class, link closure merged all 16
 objects into one class, and nothing was licensed. The engine abstained throughout. v0.2: choose the
 induction target by explained entropy, or run inducers for every candidate target of the slot.
+
+## Known issue K4 (not fixed in v0.1): independence is counted by whole-scene signature
+Evidence: Phase G4 (anti-equivalence latent), 25 wrong answers over 15 seeds. Every wrong answer
+came from a licensed law that names particular objects, e.g. `r1.mark=309 & order(r0,r1;mark)<`
+or `r0.colour=0 & r1.mark=300`, with 50-74 "independent" cases and transfer 47/47-71/71. The
+signature of an episode includes the bystander objects, so a handful of distinct (actor, partner)
+pairs looks like dozens of independent cases, and transfer credit comes from new bystanders, not
+new pairs. Together with K1 (order/delta on nominal labels such as marks and identities) this lets
+lookup knowledge pass as relational knowledge: the ATANOR lookup/relational separation fails here.
+v0.2: count independence and transfer over the entities bound by the law's condition (distinct
+argument fillers), not over whole scenes; treat channels whose values are unique per object as
+nominal (no order/delta).
