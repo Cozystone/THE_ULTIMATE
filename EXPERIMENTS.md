@@ -497,3 +497,17 @@ induction or sleep).
 E1 door part: exact one-sided McNemar test on USE-on-the-key cases (discordant pairs sleep-only vs
 twin-only), p <= 0.001, sleep >= 90% correct on those cases and >= 90% overall. Link part, E2, E3
 unchanged. Fresh seeds 46-60. If this fails, the failure is reported; no further criterion change.
+
+### Result E-E v4 (fresh seeds 46-60): **PASS** on every gate and seed
+E1 McNemar p <= 8.9e-16 on every seed; E2, E3 and the link part pass on all 15 seeds
+(`phase_e_v4_report.txt`).
+
+### Status after all formal runs (2026-10-07)
+| phase | latest formal run | result |
+|---|---|---|
+| R0 falsification | v7, seeds 1-25 | PASS 150/150 |
+| B grounding | v10, seeds 1-25 | PASS 200/200 |
+| C causal model | v5, seeds 31-45 | 14/15 seeds pass all gates; C4b seed 31 86% (0 wrong, 4 collision abstentions) |
+| D active inference | v3, seeds 1-15 | PASS |
+| E self-model, sleep | v4, seeds 46-60 | PASS |
+| F battery | v2, seeds 1-15 | PASS |
