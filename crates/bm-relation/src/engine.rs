@@ -37,11 +37,25 @@ pub struct DeferredValue {
     pub rsits: KeySet,
     /// D057: up to 3 distinct relevant bindings of its cases.
     pub binds: Vec<u64>,
+    /// D057b: situations (episode signatures, bystanders included) of its cases, for the
+    /// particular-law semantics (one relevant binding), as `CtxEvidence::new_case`.
+    pub sigs: KeySet,
     /// D057: pre-registered predictions on unseen relevant situations while deferred.
     pub t_ok: u32,
     pub t_fail: u32,
     /// D057: failed prospective trials (episode, predicted, actual), bounded.
     pub t_failed: Vec<(u64, i64, i64)>,
+    /// D058: case count at this value's last hidden-condition search (doubling schedule).
+    pub refined_at: u32,
+    /// D058: conjunction children created from this value (bounded by `max_children`).
+    pub children: u16,
+}
+
+/// D058: the parent of a hidden-condition search: a law, or a deferred single-feature value
+/// (an examined hypothesis that holds no law) with the episodes it occurred in.
+pub enum RefineParent {
+    Law(usize),
+    Deferred { action: u16, kind: FeatureKind, ids: Vec<u64> },
 }
 
 /// D057: failed prospective trials kept per deferred value.
@@ -412,6 +426,25 @@ impl RelationEngine {
         for (l, t) in impure {
             let before = self.laws.len();
             self.refine_ex(l, ctx, t, true);
+            st.refined_children += (self.laws.len() - before) as u32;
+        }
+        // D058: impure deferred values are searched as well
+        let mut dq: Vec<(u16, u32, FeatureKind)> = Vec::new();
+        for (&(a, t, c), tab) in &self.deferred {
+            if c != ctx {
+                continue;
+            }
+            for (k, d) in &tab.entries {
+                if (d.hist.len() > 1 || d.pooled > 0) && d.total() >= self.policy.refine_min_total {
+                    dq.push((a, t, k.clone()));
+                }
+            }
+        }
+        dq.sort();
+        for (a, t, k) in dq {
+            let ids = self.deferred_ids(a, ctx, &k);
+            let before = self.laws.len();
+            self.refine_core(RefineParent::Deferred { action: a, kind: k, ids }, ctx, t, true);
             st.refined_children += (self.laws.len() - before) as u32;
         }
         // 2. latent induction
@@ -1028,8 +1061,17 @@ impl RelationEngine {
         roles.sort_unstable();
         roles.dedup();
         let (rk, bk) = (ep.situation_key(&roles), ep.binding_key(&roles));
+        let sig = ep.signature();
         let deterministic = e.pooled == 0 && e.hist.len() == 1;
-        if deterministic && e.total() >= GATE_MIN_CASES && e.binds.len() >= 3 && !e.rsits.sat && !e.rsits.contains(&rk) {
+        // D050 semantics: a value whose cases span >= 2 relevant bindings is general (novelty by
+        // relevant situation, independence by bindings); one binding is particular (novelty by
+        // situation of its own binding, independence by situations); D057b adds the latter
+        let novel = if e.binds.len() >= 2 {
+            e.binds.len() >= 3 && !e.rsits.sat && !e.rsits.contains(&rk)
+        } else {
+            e.binds.first() == Some(&bk) && e.sigs.len() >= 3 && !e.sigs.sat && !e.sigs.contains(&sig)
+        };
+        if deterministic && e.total() >= GATE_MIN_CASES && novel {
             let pred = e.hist[0].0;
             if pred == actual {
                 e.t_ok += 1;
@@ -1058,11 +1100,13 @@ impl RelationEngine {
         // D057: novelty bookkeeping only while the value is deterministic
         if e.pooled == 0 && e.hist.len() == 1 {
             e.rsits.put(rk);
+            e.sigs.put(sig);
             if e.binds.len() < 3 && !e.binds.contains(&bk) {
                 e.binds.push(bk);
             }
         } else if !e.rsits.sat {
             e.rsits.compact();
+            e.sigs.compact();
             e.binds = Vec::new();
         }
         if e.total() < GATE_MIN_CASES {
@@ -1121,6 +1165,17 @@ impl RelationEngine {
             e.transfer.fail += fail - kept;
         }
         l
+    }
+
+    /// D058: stored episodes of `kind` with this action in this context (the inverted index).
+    fn deferred_ids(&self, action: u16, ctx: u64, kind: &FeatureKind) -> Vec<u64> {
+        self.inv
+            .get(kind)
+            .map(|v| v.iter().copied().filter(|&id| {
+                let ep = self.store.get(id);
+                ep.context == ctx && ep.action == action
+            }).collect())
+            .unwrap_or_default()
     }
 
     /// D055: how many of a query's features are held only as deferred evidence for `target`
@@ -1341,7 +1396,32 @@ impl RelationEngine {
                 self.laws[l].ctx_mut(ctx, t).add(actual, eid, bk, rk, sig, intervention, t);
             }
 
-            // 5. hidden-condition search on impure singles (D014)
+            // 5. hidden-condition search on impure singles (D014), and D058 on impure deferred
+            // values on the same doubling schedule
+            if self.policy.online_refine {
+                let mut due: Vec<FeatureKind> = Vec::new();
+                if let Some(tab) = self.deferred.get(&(action, target, ctx)) {
+                    for (i, f) in feats.iter().enumerate() {
+                        if single_of[i].is_some() {
+                            continue;
+                        }
+                        if let Some(d) = tab.entries.get(&f.kind) {
+                            let total = d.total();
+                            let impure = d.hist.len() > 1 || d.pooled > 0;
+                            if impure && total >= self.policy.refine_min_total && total >= d.refined_at.saturating_mul(2) {
+                                due.push(f.kind.clone());
+                            }
+                        }
+                    }
+                }
+                for k in due {
+                    let ids = self.deferred_ids(action, ctx, &k);
+                    if let Some(d) = self.deferred.get_mut(&(action, target, ctx)).and_then(|t| t.entries.get_mut(&k)) {
+                        d.refined_at = d.total();
+                    }
+                    self.refine_core(RefineParent::Deferred { action, kind: k, ids }, ctx, target, false);
+                }
+            }
             for &s in &singles {
                 let (impure, total, refined_at) = match self.laws[s].ctx(ctx) {
                     Some(e) => (e.counters() > 0, e.total(), e.refined_at),
@@ -1471,15 +1551,36 @@ impl RelationEngine {
     /// held-out transfer trials (a lookup table fitted on the selection half could not answer
     /// them). Used in sleep, where the world may offer no new situations any more.
     fn refine_ex(&mut self, parent: usize, ctx: u64, target: u32, split: bool) {
-        let all = match self.laws[parent].ctx(ctx) {
-            Some(e) => e.all_ids(),
-            None => return,
+        self.refine_core(RefineParent::Law(parent), ctx, target, split)
+    }
+
+    /// D014/D048 hidden-condition search; D058: the parent may be a deferred value.
+    fn refine_core(&mut self, src: RefineParent, ctx: u64, target: u32, split: bool) {
+        let (all, pcond, action, parent_law, dkind) = match src {
+            RefineParent::Law(p) => match self.laws[p].ctx(ctx) {
+                Some(e) => (e.all_ids(), self.laws[p].condition.clone(), self.laws[p].action, Some(p), None),
+                None => return,
+            },
+            RefineParent::Deferred { action, kind, ids } => (ids, vec![kind.clone()], action, None, Some(kind)),
         };
+        // D058: a child of a deferred value is recorded as refined from the target's base law
+        let parent = match parent_law {
+            Some(p) => p,
+            None => match self.laws.iter().position(|l| l.action == action && l.target == target && l.condition.is_empty()) {
+                Some(b) => b,
+                None => return,
+            },
+        };
+        let mut parent_all_hist: HashMap<i64, u64> = HashMap::new();
+        for &id in &all {
+            if let Some(out) = self.store.get(id).outcome(target) {
+                *parent_all_hist.entry(out).or_insert(0) += 1;
+            }
+        }
+        let parent_all_n: u64 = parent_all_hist.values().sum();
         let held_of = |s: &Self, id: u64| -> bool { split && mix64(s.store.get(id).signature(), 0xD048) & 1 == 1 };
         let ids: Vec<u64> = all.iter().copied().filter(|&id| !held_of(self, id)).collect();
         let held: Vec<u64> = all.iter().copied().filter(|&id| held_of(self, id)).collect();
-        let pcond = self.laws[parent].condition.clone();
-        let action = self.laws[parent].action;
         let mut tally: HashMap<FeatureKind, HashMap<i64, u64>> = HashMap::new();
         let mut parent_hist: HashMap<i64, u64> = HashMap::new();
         for &id in &ids {
@@ -1521,7 +1622,13 @@ impl RelationEngine {
             *c += examined;
             *c
         };
-        let gate = log2_q16(m_r.max(2)) + GATE_MARGIN_BITS * hdc_core::fixed::Q;
+        // D059: creating a child is a proposal. Under the null a prequential likelihood ratio
+        // reaches 2^b with probability <= 2^-b (Ville), so LLR >= log2(candidates examined in
+        // this search) admits at most one expected false proposal per search; the cumulative
+        // multiple-comparison charge and the margin are paid at licensing (D056). M_r is kept
+        // for reporting.
+        let _ = m_r;
+        let gate = log2_q16(examined.max(2));
         let mut scored: Vec<(i64, FeatureKind)> = tally
             .into_iter()
             .filter_map(|(k, h)| {
@@ -1538,13 +1645,16 @@ impl RelationEngine {
             .collect();
         scored.sort_by(|a, b| b.0.cmp(&a.0).then(a.1.cmp(&b.1)));
         let t = self.tick;
+        let mut created_here = 0usize;
+        let prior_children = match &dkind {
+            None => 0,
+            Some(k) => self.deferred.get(&(action, target, ctx)).and_then(|t| t.entries.get(k)).map(|d| d.children as usize).unwrap_or(0),
+        };
         for (_, g) in scored.into_iter().take(self.policy.refine_top) {
-            let active_children = self.laws[parent]
-                .lineage
-                .children
-                .iter()
-                .filter(|&&c| self.laws[c].active_ctx.contains(&ctx))
-                .count();
+            let active_children = match parent_law {
+                Some(_) => self.laws[parent].lineage.children.iter().filter(|&&c| self.laws[c].active_ctx.contains(&ctx)).count(),
+                None => prior_children + created_here,
+            };
             if active_children >= self.policy.max_children {
                 break;
             }
@@ -1565,7 +1675,9 @@ impl RelationEngine {
                     let last = *ids.last().unwrap_or(&0);
                     let c = self.create(action, target, cond, h, Origin::Refined { parent }, last);
                     self.laws[c].active_ctx.push(ctx);
-                    self.laws[parent].lineage.children.push(c);
+                    if parent_law.is_some() {
+                        self.laws[parent].lineage.children.push(c);
+                    }
                     c
                 }
             };
@@ -1602,7 +1714,11 @@ impl RelationEngine {
                 // prequential utility against the parent's final counts (which include this very
                 // episode, so the comparison is biased towards the parent: conservative)
                 let alpha = self.alphabet_size(target);
-                let p_loss = self.laws[parent].ctx(ctx).map(|e| e.loss_q16(out, alpha));
+                let p_loss = match parent_law {
+                    Some(_) => self.laws[parent].ctx(ctx).map(|e| e.loss_q16(out, alpha)),
+                    // D058: a deferred parent's final counts over all its episodes (Laplace)
+                    None => Some(log2_q16(parent_all_n + alpha) - log2_q16(parent_all_hist.get(&out).copied().unwrap_or(0) + 1)),
+                };
                 let c_loss = self.laws[child].ctx(ctx).filter(|e| e.total() > 0).map(|e| e.loss_q16(out, alpha));
                 if let (Some(pl), Some(cl)) = (p_loss, c_loss) {
                     let e = self.laws[child].ctx_mut(ctx, t);
@@ -1627,6 +1743,12 @@ impl RelationEngine {
                 seen_s.insert(sig);
             }
             self.evaluate(child, ctx);
+            created_here += 1;
+        }
+        if let Some(k) = dkind {
+            if let Some(d) = self.deferred.get_mut(&(action, target, ctx)).and_then(|t| t.entries.get_mut(&k)) {
+                d.children = d.children.saturating_add(created_here as u16);
+            }
         }
     }
 

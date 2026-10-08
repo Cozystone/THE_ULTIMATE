@@ -1,0 +1,30 @@
+SEED_START 111
+ENGSTATS ticks 2900 laws 4522 licensed 133 revoked/split 729 provisional 1062 candidate/contested 2190 pruned/retired 408 materialized 1391 deferred-entries 17092 untracked 0 family-max 2561482 family-sum 4631982
+ENGSTATS ticks 3200 laws 7677 licensed 103 revoked/split 2076 provisional 127 candidate/contested 2783 pruned/retired 2588 materialized 2369 deferred-entries 70611 untracked 0 family-max 1701071 family-sum 7724031
+ENGSTATS ticks 1500 laws 45 licensed 4 revoked/split 14 provisional 8 candidate/contested 19 pruned/retired 0 materialized 25 deferred-entries 3042 untracked 0 family-max 10806 family-sum 10806
+ENGSTATS ticks 1400 laws 111 licensed 12 revoked/split 24 provisional 9 candidate/contested 56 pruned/retired 10 materialized 58 deferred-entries 3664 untracked 0 family-max 41525 family-sum 66567
+SEED_END 111 wall 198.8 s working set 8 MB peak 183 MB
+SEED_START 112
+ENGSTATS ticks 2900 laws 1640 licensed 25 revoked/split 296 provisional 301 candidate/contested 810 pruned/retired 208 materialized 911 deferred-entries 17337 untracked 0 family-max 2580321 family-sum 4059781
+ENGSTATS ticks 3210 laws 5847 licensed 87 revoked/split 1554 provisional 170 candidate/contested 2001 pruned/retired 2035 materialized 2084 deferred-entries 67556 untracked 0 family-max 1479089 family-sum 7306076
+ENGSTATS ticks 1500 laws 43 licensed 4 revoked/split 10 provisional 8 candidate/contested 21 pruned/retired 0 materialized 21 deferred-entries 3046 untracked 0 family-max 9864 family-sum 9864
+ENGSTATS ticks 1400 laws 80 licensed 12 revoked/split 13 provisional 11 candidate/contested 33 pruned/retired 11 materialized 46 deferred-entries 3645 untracked 0 family-max 9699 family-sum 22893
+SEED_END 112 wall 181.4 s working set 10 MB peak 183 MB
+SEED_START 113
+ENGSTATS ticks 2900 laws 1144 licensed 15 revoked/split 277 provisional 136 candidate/contested 490 pruned/retired 226 materialized 838 deferred-entries 17364 untracked 0 family-max 3026603 family-sum 3989612
+ENGSTATS ticks 3193 laws 7687 licensed 75 revoked/split 2213 provisional 206 candidate/contested 3488 pruned/retired 1705 materialized 2486 deferred-entries 69294 untracked 0 family-max 1467820 family-sum 10392446
+ENGSTATS ticks 1500 laws 41 licensed 4 revoked/split 11 provisional 7 candidate/contested 19 pruned/retired 0 materialized 21 deferred-entries 3046 untracked 0 family-max 10765 family-sum 10765
+ENGSTATS ticks 1400 laws 60 licensed 13 revoked/split 6 provisional 8 candidate/contested 14 pruned/retired 19 materialized 44 deferred-entries 3735 untracked 0 family-max 13304 family-sum 22649
+SEED_END 113 wall 207.4 s working set 10 MB peak 207 MB
+SEED_START 114
+ENGSTATS ticks 2900 laws 1674 licensed 14 revoked/split 348 provisional 206 candidate/contested 928 pruned/retired 178 materialized 815 deferred-entries 19275 untracked 0 family-max 2737359 family-sum 3724082
+ENGSTATS ticks 3170 laws 9062 licensed 76 revoked/split 2610 provisional 144 candidate/contested 2924 pruned/retired 3308 materialized 3579 deferred-entries 65671 untracked 0 family-max 2016739 family-sum 13078153
+ENGSTATS ticks 1500 laws 50 licensed 4 revoked/split 16 provisional 7 candidate/contested 23 pruned/retired 0 materialized 25 deferred-entries 3042 untracked 0 family-max 11437 family-sum 11437
+ENGSTATS ticks 1400 laws 92 licensed 20 revoked/split 16 provisional 10 candidate/contested 40 pruned/retired 6 materialized 42 deferred-entries 3708 untracked 0 family-max 14528 family-sum 40626
+SEED_END 114 wall 205.1 s working set 28 MB peak 212 MB
+SEED_START 115
+ENGSTATS ticks 2900 laws 1462 licensed 24 revoked/split 225 provisional 219 candidate/contested 760 pruned/retired 234 materialized 888 deferred-entries 18658 untracked 0 family-max 2402734 family-sum 3583494
+ENGSTATS ticks 3207 laws 6809 licensed 84 revoked/split 1856 provisional 103 candidate/contested 2673 pruned/retired 2093 materialized 2295 deferred-entries 65523 untracked 0 family-max 1657585 family-sum 8173079
+ENGSTATS ticks 1500 laws 34 licensed 4 revoked/split 7 provisional 7 candidate/contested 16 pruned/retired 0 materialized 19 deferred-entries 3048 untracked 0 family-max 10531 family-sum 10531
+ENGSTATS ticks 1400 laws 98 licensed 12 revoked/split 12 provisional 7 candidate/contested 53 pruned/retired 14 materialized 39 deferred-entries 3658 untracked 0 family-max 16348 family-sum 24699
+SEED_END 115 wall 180.5 s working set 28 MB peak 212 MB

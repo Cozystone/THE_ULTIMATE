@@ -181,3 +181,65 @@ prediction of a hypothesis that existed, deferred, at that time.
 4. The six K5 unit tests plus a D057 unit test (a deferred law in a closed world that is
    materialized late can still be licensed; a value with a counterexample earns no prospective
    trial).
+
+## Amendment 2 (2026-10-08, after development round 1, before round 2)
+
+Round 1 (`experiments/results/v04dev1`, learner `33b3e23`) failed. Its record is
+`v04dev1/COMPARISON.txt`.
+
+What held in round 1:
+* H1 identity leakage 0 on 15/15 seeds; K5 closes the v0.3 hole.
+* H5 peak 240-352 MB.
+* B and G identical to v0.2.
+
+What failed:
+* C1, C2, C3, E1, F3, H2.
+* Abstentions in C, F and H.
+* H2 wrong answers on 2 seeds (the same numbers as the v0.3 record).
+* C4b seeds 48-49 failed with an environment error: a sandbox directory left by two concurrent
+  diagnostic runs (no marker). The marker was restored, and round 2 runs with nothing else
+  overlapping.
+
+Diagnoses, from spot runs on failing seeds with read-only prints:
+
+**2a. D057b (C1, C2, C3, F3).** D057 excluded particular values, yet the decisive hypotheses in
+the device worlds concern one fixed object (one relevant binding; independence by situations).
+D057b applies the law's own particular semantics to a deferred value with one binding:
+* novelty by situation of its own binding (episode signature, bounded set);
+* >= 3 situations required;
+* trials only while all its cases share one outcome.
+
+Spot check (seeds 46, 48, 13): C1 750/750, C3 200/200, F3 1000/1000.
+
+**2b. D058, hidden-condition search on deferred values (H2, class 2: parent deferred).**
+* H2 is answered in v0.2 by conjunctions refined from single latent values
+  (`r0.c4012=3 & r1.c4012=1`, 120-285 bits). Such a value is impure alone, never passes the
+  D055 materialization gate, and so was never searched.
+* D058: an impure deferred value with >= `refine_min_total` cases is searched like an impure
+  law: online on the same doubling schedule, and in sleep with the D048 split. Its episodes
+  come from the inverted index.
+* Children are bounded by `refine_top` per search and `max_children` per value, and are
+  recorded as refined from the target's base law.
+* Every candidate examined joins |F| (D056).
+
+**2c. D059, refinement proposal bar (E1, class 5: child gated out).**
+* The D055 refinement gate charged log2(M_r) + 4 with M_r cumulative per target. Three
+  equivalent parents (one object seen through three channels) raised it from 9.7 to 13 bits,
+  and the E1 conjunction (27 selection-half cases, entropy 0) scores 8.05 bits.
+* Under K5 the cumulative charge is paid at licensing. Creation is a proposal and needs only
+  LLR >= log2(candidates examined in this search): by Ville's inequality, at most one expected
+  false proposal per search.
+* Two alternatives were tried in spot runs:
+  * a flat 4-bit bar: E1 passes, but H5 seed 201 peaks at 1,301 MB;
+  * log2(examined) + 4: E1 seed 46 fails.
+
+Spot check with D057b + D058 + D059 (Ville bar):
+* E1 seeds 46/57/58 PASS;
+* H2 seeds 201/202/214 PASS with 0 wrong;
+* H1 seeds 201-203: 0 leakage;
+* H5 memory is being measured on seeds 201 and 212 before round 2.
+
+New unit test 9 (D058): a conjunction of two impure deferred values is found and licensed.
+It fails on the v0.3 learner.
+
+Round 2 is the last development round (stop rule).

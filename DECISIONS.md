@@ -938,3 +938,41 @@ On materialization the law receives the tallies and the failed trials. A value's
 counterexample drops its key set (marked saturated), so it earns no further trial; this also
 bounds memory, since noisy values keep no keys. Replay still gives no transfer credit, and
 nothing is credited retroactively.
+
+## D057b Prospective transfer, particular semantics (v0.4, 2026-10-08; PREREG-v0.4 amendment 2a)
+A deferred value whose cases have one relevant binding follows the particular-law rules of
+D050:
+* independence = distinct situations (episode signatures, bystanders included), >= 3;
+* novelty = a situation of its own binding it has never seen.
+
+It keeps a bounded signature set while deterministic, and drops it (saturated) at the first
+counterexample. A value with >= 2 bindings follows the general rules of D057.
+Evidence: C1/C2/C3/F3 under D057 abstained exactly as in v0.3. The decisive device laws concern
+one fixed object and were excluded by D057.
+
+## D058 Hidden-condition search on deferred values (v0.4, 2026-10-08; PREREG-v0.4 amendment 2b)
+An impure deferred value (>= 2 outcomes, >= `refine_min_total` cases) is a refinement parent:
+* online on the doubling schedule of D014 (searched again once its case count has doubled);
+* in sleep with the D048 split.
+
+The parent's episodes are those of the inverted index for its feature (bounded as the index),
+filtered by action and context. Children:
+* are two-feature conjunctions created by the D059 bar;
+* number at most `refine_top` per search and `max_children` per value;
+* have origin `Refined { parent: base law }`;
+* get held-out utility against the value's own final counts (Laplace).
+
+Every candidate scored joins |F|.
+Evidence: H2 answers in v0.2 come from conjunctions of single latent values that are impure
+alone. Under D055 these values never earned a law, so they were never searched.
+
+## D059 Refinement proposal bar (v0.4, 2026-10-08; PREREG-v0.4 amendment 2c; replaces the D055 refinement gate)
+A child is created only if its prequential LLR against the parent >= log2(candidates examined in
+this search). Under the null, a prequential likelihood ratio reaches 2^b with probability
+<= 2^-b (Ville's inequality), so this admits at most one expected false proposal per search.
+The cumulative multiple-comparison charge over all searches, plus the margin, is paid at
+licensing (D056).
+
+The D055 gate (log2(cumulative M_r) + 4) charged that cost twice, and charged it repeatedly
+for equivalent parents. It blocked the E1 sleep conjunction (8.05 bits vs a 9.7-13 bit gate).
+`refine_tested` (M_r) is kept for reporting only.

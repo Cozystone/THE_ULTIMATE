@@ -304,3 +304,29 @@ fn a_deferred_value_with_a_counterexample_earns_no_prospective_trial() {
         }
     }
 }
+
+/// 9. (discriminating, D058) Hidden conjunction of two impure deferred values: the outcome is
+/// A xor B for a channel A of role 0 and a different channel B of role 1. Every single value is
+/// a coin flip (deferred, never materialized), and there is no relational feature across
+/// different channels; the conjunctions are pure. They must be found and licensed.
+#[test]
+fn a_conjunction_of_impure_deferred_values_is_found() {
+    let mut rng = Rng::new(19);
+    let mut e = RelationEngine::new(19);
+    for k in 0..3_000i64 {
+        let (a, b) = (rng.below(2) as i64, rng.below(2) as i64);
+        let roles = vec![
+            Entity::bound(2 * k, &[(P, a), (NUIS, rng.below(8) as i64)]),
+            Entity::bound(2 * k + 1, &[(X, b), (NUIS, rng.below(8) as i64)]),
+        ];
+        e.observe(ep_in("X", roles, a ^ b));
+    }
+    let mut ok = 0;
+    for (a, b) in [(0i64, 0i64), (0, 1), (1, 0), (1, 1)] {
+        let q = ep_in("X", vec![Entity::bound(990_000 + a, &[(P, a), (NUIS, 3)]), Entity::bound(990_010 + b, &[(X, b), (NUIS, 5)])], 0).without_outcomes();
+        let p = e.predict(&q, T).value();
+        assert!(p.is_none() || p == Some(a ^ b), "wrong answer for ({a}, {b}): {p:?}");
+        ok += (p == Some(a ^ b)) as u32;
+    }
+    assert_eq!(ok, 4, "hidden conjunctions not licensed");
+}

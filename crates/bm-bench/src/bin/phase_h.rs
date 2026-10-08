@@ -98,8 +98,18 @@ impl Agent {
                     }
                 } else if *val == truth {
                     c.correct += 1;
+                    if std::env::var("DIAG_ANS").is_ok() {
+                        for &l in laws {
+                            eprintln!("RIGHT (truth {truth}) {}", self.rel.summary(l, q.context));
+                        }
+                    }
                 } else {
                     c.wrong += 1;
+                    if std::env::var("DIAG_WRONG").is_ok() {
+                        for &l in laws {
+                            eprintln!("WRONG (truth {truth}) {}", self.rel.summary(l, q.context));
+                        }
+                    }
                 }
                 Some(*val)
             }
@@ -109,6 +119,13 @@ impl Agent {
             }
             Answer::Abstain(_) => {
                 c.insufficient += 1;
+                if std::env::var("DIAG_ABST").is_ok() {
+                    let v = self.rel.debug_matching(q, t);
+                    eprintln!("ABSTAIN (truth {truth}) {} matching", v.len());
+                    for l in v.iter().filter(|x| !x.contains("REVOKED") && !x.contains("Revoked")).take(4) {
+                        eprintln!("ABSTAIN   {l}");
+                    }
+                }
                 None
             }
         }
@@ -182,6 +199,17 @@ fn h2_rank(seed: u64, relabel: u64) -> (Classes, Classes, Vec<Option<i64>>, u32)
         FeatureKind::Abs { ch, .. } | FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } => *ch >= 3000,
         _ => false,
     })).count() as u32;
+    if std::env::var("DIAG_H2").is_ok() {
+        for l in a.rel.laws.iter().filter(|l| l.condition.len() == 1 && l.condition.iter().any(|f| matches!(f, FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } if *ch >= 3000))) {
+            eprintln!("H2LAT {}", a.rel.summary(l.id, w.context));
+        }
+        for t in a.rel.deferred.keys().filter(|k| k.2 == w.context) {
+            let tab = &a.rel.deferred[t];
+            for (k, d) in tab.entries.iter().filter(|(k, _)| matches!(k, FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } if *ch >= 3000)) {
+                eprintln!("H2DEF t{} {:?} n {} hist {:?} info {:.1} tr {}/{} binds {} sigs {}", t.1, k, d.total(), d.hist, (d.ll_model - d.ll_base) as f64 / 65536.0, d.t_ok, d.t_ok + d.t_fail, d.binds.len(), d.sigs.len());
+            }
+        }
+    }
     let (mut all, mut est) = (Classes::default(), Classes::default());
     let mut answers = Vec::new();
     for &(i, j) in &held {
