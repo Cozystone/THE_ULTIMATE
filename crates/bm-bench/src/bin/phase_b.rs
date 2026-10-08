@@ -444,6 +444,11 @@ fn bridge_case(seed: u64, out: &mut Out) {
         }
     }
     let ctx = w.context;
+    if std::env::var("DIAG_B7").is_ok() {
+        // v0.4 report (read-only): the K5 family the COMBINE target's licences are charged on
+        let fam = rel.family_size(gw::COMBINE, lit0, ctx);
+        eprintln!("B7FAM seed {seed} family {fam} cost_q16 {}", hdc_core::fixed::log2_q16(fam.max(2)) + rel.policy.utility_margin_q16);
+    }
     let lic: Vec<usize> = rel.licensed_in(ctx);
     let colour_rel: Vec<usize> = lic
         .iter()

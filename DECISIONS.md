@@ -976,3 +976,8 @@ licensing (D056).
 The D055 gate (log2(cumulative M_r) + 4) charged that cost twice, and charged it repeatedly
 for equivalent parents. It blocked the E1 sleep conjunction (8.05 bits vs a 9.7-13 bit gate).
 `refine_tested` (M_r) is kept for reporting only.
+
+## D056-D059 status: not adopted as a frozen mechanism (2026-10-08)
+v0.4 development round 2 met every pre-registered condition but one: B7 seed 1 lost a 19-bit
+law to the enlarged family charge (EXPERIMENTS, "v0.4 result"). By the stop rule the
+mechanisms stay as development state on `v0.4-dev`. The frozen learner is still `bitmind-v0.2`.
