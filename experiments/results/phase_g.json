@@ -1,0 +1,5 @@
+{"overall_pass":true,"gates":[
+{"gate":"G3 two-relation conjunction","pass":true,"detail":"seed 101: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 94 wrong 0 abstain 0 of 94; licensed e.g. [\"act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0\", \"act1 : diff(r0,r1;c0) => t0\", \"act1 : order(r0,r1;c1)> => t0\", \"act1 : r1.c1=1 => t0\"]"},
+{"gate":"G4 anti-equivalence latent","pass":true,"detail":"seed 101: never-probed pairs: all correct 34 wrong 0 abstain 0 of 34; established without unresolved conflict correct 34 wrong 0 abstain 0 of 34; licensed latent laws 10"},
+{"gate":"learner","pass":null,"detail":"frozen at tag bitmind-v0.1 (crates hdc-core, bm-relation, bm-memory, bm-agent unchanged)"}
+]}

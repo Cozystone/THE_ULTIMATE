@@ -1,8 +1,3 @@
-{"overall_pass":false,"gates":[
-{"gate":"C1 untrained combinations","pass":true,"detail":"seed 1: 124 unseen (state, action) combinations x 5 devices: correct 620 wrong 0 abstain 0 of 620"},
-{"gate":"C2 intervention vs observation","pass":true,"detail":"seed 1: passive P(L=I) = 428/516; do(TOGGLE indicator) lamp-change: causal model correct 200 wrong 0 abstain 0 of 200; association model lamp=indicator correct 100 wrong 100 abstain 0 of 200; laws licensed from passive WAIT 0"},
-{"gate":"C5 counterfactual","pass":true,"detail":"seed 1: 'had I toggled the switch instead, would the lamp have changed?' correct 200 wrong 0 abstain 0 of 200"},
-{"gate":"C3 hidden condition","pass":true,"detail":"seed 1: phase-1 licensed unconditional laws 1 [\"#2564 act2 : true => t25003 => Some(1) | LICENSED | n=182 counter=0 indep=16 int=182 transfer 13/13 utility 274b (int 274b) origin Generated\"]; withdrawn after Some(13) phase-2 events; power-conditioned licensed laws 1 (refined lineage false); USE with random power: correct 200 wrong 0 abstain 0 of 200"},
-{"gate":"C4a latent cause (micro)","pass":true,"detail":"seed 1: never-probed pairs (5 positive, 34 negative): all correct 39 wrong 0 abstain 0 of 39; oracle-feasible correct 39 wrong 0 abstain 0 of 39; licensed laws over latent channels 8"},
-{"gate":"C4b latent cause (real OS)","pass":false,"detail":"seed 1: real hard links in C:\\Users\\anseo\\AppData\\Local\\Temp\\bitmind_fs_phasec_1: never-probed file pairs (5 same-file, 23 different): all correct 23 wrong 0 abstain 5 of 28; oracle-feasible correct 23 wrong 0 abstain 3 of 26; latent-channel licensed laws 3"}
+{"overall_pass":true,"gates":[
+{"gate":"C4a latent cause (micro)","pass":true,"detail":"seed 46: never-probed pairs (8 positive, 42 negative): all correct 50 wrong 0 abstain 0 of 50; oracle-feasible correct 50 wrong 0 abstain 0 of 50; licensed laws over latent channels 12"}
 ]}

@@ -1,0 +1,10 @@
+{"overall_pass":true,"gates":[
+{"gate":"F1 one-shot recall","pass":true,"detail":"seed 1: events seen once, after sleep consolidation, cue with 30% tokens missing: correct 200 wrong 0 abstain 0 of 200 (100.0%); 50% missing: correct 198 wrong 0 abstain 2 of 200 (99.0%) (without consolidation, v0.1 protocol: 30% correct 200 wrong 0 abstain 0 of 200 (100.0%); 50% correct 198 wrong 0 abstain 2 of 200 (99.0%))"},
+{"gate":"F2 compositional held-out","pass":true,"detail":"seed 1: never-seen colour values (equality) correct 300 wrong 0 abstain 0 of 300 (100.0%); never-seen weights (order) correct 300 wrong 0 abstain 0 of 300 (100.0%)"},
+{"gate":"F3 intervention accuracy","pass":true,"detail":"seed 1: do(toggle x) -> does I / L change: correct 1000 wrong 0 abstain 0 of 1000 (100.0%); association baseline correct 700 wrong 300 abstain 0 of 1000 (70.0%)"},
+{"gate":"F4 counterfactual","pass":true,"detail":"seed 1: 'had I toggled the switch instead': correct 100 wrong 0 abstain 0 of 100 (100.0%)"},
+{"gate":"F5 calibration","pass":true,"detail":"seed 1: ECE raw 4.67% calibrated 2.49% over 3195 answers"},
+{"gate":"F6 compression","pass":true,"detail":"seed 1: 1000 outcomes, raw 1000 bits vs model 35 bits (2 licensed laws) + data 2.2 bits: ratio 26.8x"},
+{"gate":"F7 transfer speed","pass":true,"detail":"seed 1: episodes to 95% on unseen values in a new room: experienced 20, from scratch 170"},
+{"gate":"F8 resources","pass":true,"detail":"observe median 60 us (p99 80 us), predict median 52 us (p99 66 us), peak working set of the whole battery 26 MB, energy estimate <= 0.64 mJ per observation (CPU only, no GPU, no network)"}
+]}
