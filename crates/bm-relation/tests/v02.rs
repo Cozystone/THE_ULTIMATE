@@ -268,11 +268,24 @@ fn latent_hypotheses_compete_and_held_out_pairs_are_never_answered_wrongly() {
 fn key_sets_are_bounded_and_saturation_is_conservative() {
     let mut rng = Rng::new(31);
     let mut e = RelationEngine::new(7);
-    for k in 0..2000i64 {
+    let ctx = context_of("K");
+    // run until the same(colour) law's relevant-situation set is saturated (cap-generic: the cap
+    // was 64 in v0.2 and is 1,024 since v0.3 amendment 6)
+    let saturated = |e: &RelationEngine| {
+        e.laws
+            .iter()
+            .find(|l| l.condition == vec![FeatureKind::Same { r1: 0, r2: 1, ch: COLOUR }])
+            .and_then(|l| l.ctx(ctx))
+            .map(|ev| ev.bins.iter().any(|b| b.rsits.sat))
+            .unwrap_or(false)
+    };
+    let mut k = 0i64;
+    while k < 40_000 && !(k >= 2000 && saturated(&e)) {
         let (ca, cb) = (rng.below(6) as i64, rng.below(6) as i64);
         e.observe(ep("K", vec![ent(ca, 2 * k), ent(cb, 2 * k + 1)], 2, (ca == cb) as i64));
+        k += 1;
     }
-    let ctx = context_of("K");
+    assert!(saturated(&e), "the set never saturated");
     let same = e
         .laws
         .iter()
@@ -285,9 +298,9 @@ fn key_sets_are_bounded_and_saturation_is_conservative() {
     }
     let trials = ev.transfer.ok + ev.transfer.fail;
     let id = same.id;
-    for k in 2000..2200i64 {
+    for j in k..k + 200 {
         let (ca, cb) = (rng.below(6) as i64, rng.below(6) as i64);
-        e.observe(ep("K", vec![ent(ca, 2 * k), ent(cb, 2 * k + 1)], 2, (ca == cb) as i64));
+        e.observe(ep("K", vec![ent(ca, 2 * j), ent(cb, 2 * j + 1)], 2, (ca == cb) as i64));
     }
     let ev = e.laws[id].ctx(ctx).unwrap();
     assert_eq!(ev.transfer.ok + ev.transfer.fail, trials, "a saturated law gets no unprovable novelty credit");

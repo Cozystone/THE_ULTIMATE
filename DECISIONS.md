@@ -853,3 +853,22 @@ unbounded).
 Changed test assumptions: two lifecycle tests assumed a candidate for every feature exists from
 the start; they now accept "never earned capacity" while keeping their claims (no surviving
 spurious relation; one support for repeated copies).
+
+## D055b Integration of the gate with licensing and novelty (v0.3, 2026-10-08; PREREG amendment 6)
+Evidence: regression round 1 (`experiments/results/v03reg/`, build `05a8a2d`). Memory peaked
+<= 317 MB everywhere, but correctness regressed broadly through abstention:
+* R0, B7, C1-C4a, E1-E3, F2, F3, F6, F7, G1, G3, H2;
+* wrong answers stayed rare.
+
+Two interactions with v0.2 mechanisms caused it:
+1. **Utility counted twice.** A materialized law had to earn D012 utility again, live, after
+   already earning the gate. Change: it starts with the gate's prequential information as utility
+   (all cases were predicted before being counted, and the threshold pays the multiple-comparison
+   cost). Refinement children keep D014; transfer stays live.
+2. **Saturation on replay.** Materialization replays many cases, filling the relevant-situation
+   set to the D054 cap of 64. Saturation makes novelty undecidable, so the law never gets a
+   transfer trial (F6: `diff(colour) => 0` with 857 cases, 0 counterexamples, 0 transfer trials).
+   Change: SET_CAP 1,024, affordable now that the law population is in the thousands.
+
+Spot check: R0 seeds 1-5 PASS, F2 300/300, F6 26.8x, C4a seed 46 50/50.
+Changed test: the v0.2 saturation test is now cap-generic (it runs until the set saturates).

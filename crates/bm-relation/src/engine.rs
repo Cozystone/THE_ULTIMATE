@@ -30,6 +30,8 @@ pub struct DeferredValue {
     pub ll_base: i64,
     /// amendment 4: sum over its cases of the prequential log2 p_hypothesis(outcome) (Q16).
     pub ll_model: i64,
+    /// amendment 6: the same information restricted to intervention cases.
+    pub info_int: i64,
 }
 
 /// D055a: how often each input filler (role, channel) equalled a target's outcome (copy model).
@@ -160,6 +162,8 @@ pub struct RelationEngine {
     pub materialized: u64,
     /// D055a: copy-model statistics per (action, target, context).
     pub echo: HashMap<(u16, u32, u64), EchoStats>,
+    /// amendment 6: the gate's prequential information handed to the next materialized law.
+    pending_utility: Option<(i64, i64)>,
 }
 
 /// What one sleep consolidation did.
@@ -240,6 +244,7 @@ impl RelationEngine {
 
     pub fn with_policy(seed: u64, policy: LicensePolicy) -> Self {
         RelationEngine {
+            pending_utility: None,
             echo: HashMap::new(),
             deferred: HashMap::new(),
             inv: HashMap::new(),
@@ -921,7 +926,11 @@ impl RelationEngine {
         let e = table.entries.get_mut(kind).expect("entry");
         // amendment 4: predict this case from the entry's previous cases (Laplace), then count it
         let prev = e.hist.iter().find(|x| x.0 == actual).map(|x| x.1).unwrap_or(0) as u64;
-        e.ll_model += log2_q16(prev + 1) - log2_q16(e.total() as u64 + alpha.max(1));
+        let lm = log2_q16(prev + 1) - log2_q16(e.total() as u64 + alpha.max(1));
+        e.ll_model += lm;
+        if ep.kind == Kind::Intervention {
+            e.info_int += lm - lb;
+        }
         if let Some(x) = e.hist.iter_mut().find(|x| x.0 == actual) {
             x.1 += 1;
         } else if e.hist.len() < OUTCOMES_PER_VALUE {
@@ -934,7 +943,9 @@ impl RelationEngine {
             return false;
         }
         if e.ll_model - e.ll_base >= log2_q16(m.max(2)) + GATE_MARGIN_BITS * hdc_core::fixed::Q {
+            let info = (e.ll_model - e.ll_base, e.info_int);
             table.entries.remove(kind);
+            self.pending_utility = Some(info);
             return true;
         }
         false
@@ -964,6 +975,12 @@ impl RelationEngine {
                 *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
             }
             self.laws[l].ctx_mut(ctx, t).add(out, id, bk, rk, sig, iv, t);
+        }
+        // amendment 6: the gate's prequential information is this law's utility so far
+        if let Some((u, ui)) = self.pending_utility.take() {
+            let e = self.laws[l].ctx_mut(ctx, t);
+            e.utility_q16 += u;
+            e.utility_int_q16 += ui;
         }
         l
     }
