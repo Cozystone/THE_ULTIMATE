@@ -1,7 +1,7 @@
 //! v0.3 K2′ diagnosis (PREREG-v0.3 section 2): attribute retained memory by law lifecycle,
 //! condition type, channel origin and cardinality, and target outcome cardinality, at checkpoints.
 //! Modes: `h5 <seed>` (the Phase H H5 world and agent setup, 20,000 steps) and `os <seed>` (the
-//! real-OS hard-link world of C4b, 10,000 probes). Read-only; changes nothing in the learner.
+//! real-OS hard-link world of C4b, 20,000 probes). Read-only; changes nothing in the learner.
 
 use bm_memory::*;
 use bm_relation::RelationEngine;
@@ -81,8 +81,8 @@ fn os(seed: u64) {
     let mut a = Agent { g: Grounder::new(seed), rel };
     let mut rng = hdc_core::Rng::new(seed ^ 0x05);
     let n = w.files.len();
-    let checkpoints = [1000u32, 5000, 10000];
-    for step in 1..=10000u32 {
+    let checkpoints = [1000u32, 5000, 10000, 20000];
+    for step in 1..=20000u32 {
         let p = rng.sample_distinct(n, 2);
         let Ok((ev, _)) = w.step(Some((osw::PROBE, vec![p[0], p[1]]))) else { break };
         a.feed(ev);

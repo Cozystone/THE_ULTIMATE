@@ -12,6 +12,81 @@ use std::collections::HashMap;
 /// D041a: independent shared situations needed before a conflict between licensed laws is settled.
 pub const MIN_SHARED_INDEPENDENT: u32 = 3;
 
+/// D055: bits a deferred hypothesis must carry beyond log2(M) to be materialized.
+pub const GATE_MARGIN_BITS: i64 = 4;
+/// D055: minimum cases before a deferred value is tested.
+pub const GATE_MIN_CASES: u32 = 3;
+/// D055: values tracked per feature family and target; further values cannot earn capacity.
+pub const VALUES_PER_FAMILY: u32 = 4096;
+/// D055: outcomes kept per value table entry; further outcomes are pooled.
+pub const OUTCOMES_PER_VALUE: usize = 8;
+
+/// D055: outcome counts of one deferred feature value for one target.
+#[derive(Clone, Debug, Default)]
+pub struct DeferredValue {
+    pub hist: Vec<(i64, u32)>,
+    pub pooled: u32,
+    /// D055a: sum over its cases of log2 p_baseline(outcome) (Q16, <= 0).
+    pub ll_base: i64,
+    /// amendment 4: sum over its cases of the prequential log2 p_hypothesis(outcome) (Q16).
+    pub ll_model: i64,
+}
+
+/// D055a: how often each input filler (role, channel) equalled a target's outcome (copy model).
+#[derive(Clone, Debug, Default)]
+pub struct EchoStats {
+    pub hits: HashMap<(u8, u16), u32>,
+    pub total: u32,
+}
+
+impl DeferredValue {
+    pub fn total(&self) -> u32 {
+        self.hist.iter().map(|x| x.1).sum::<u32>() + self.pooled
+    }
+}
+
+/// D055: deferred evidence for one (action, target, context): outcome counts per feature value
+/// that has not earned a law, the number of values ever tested (M, multiple-comparison count) and
+/// per-family value counts (bounded).
+#[derive(Clone, Debug, Default)]
+pub struct ValueTable {
+    pub tested: u64,
+    pub entries: HashMap<FeatureKind, DeferredValue>,
+    pub family_values: HashMap<u64, u32>,
+    pub untracked: u64,
+}
+
+/// D055: a feature family = the feature kind with its value removed.
+fn family_of(k: &FeatureKind) -> u64 {
+    use hdc_core::rng::mix64;
+    match *k {
+        FeatureKind::Abs { role, ch, .. } => mix64(mix64(1, role as u64), ch as u64),
+        FeatureKind::Same { r1, r2, ch } | FeatureKind::Diff { r1, r2, ch } => mix64(mix64(2, (r1 as u64) << 8 | r2 as u64), ch as u64),
+        FeatureKind::Order { r1, r2, ch, .. } => mix64(mix64(3, (r1 as u64) << 8 | r2 as u64), ch as u64),
+        FeatureKind::Delta { r1, r2, ch, .. } => mix64(mix64(4, (r1 as u64) << 8 | r2 as u64), ch as u64),
+    }
+}
+
+/// D055: information in bits (Q16) that `hist` carries against a baseline with counts `base`
+/// (Laplace-smoothed over an alphabet of `alpha` outcomes): sum h_o * log2((h_o / n) / p_o).
+/// Pooled outcomes are ignored (an underestimate, i.e. conservative).
+pub fn llr_q16(hist: &[(i64, u32)], base: &[(i64, u64)], alpha: u64) -> i64 {
+    let n: u64 = hist.iter().map(|x| x.1 as u64).sum();
+    if n == 0 {
+        return 0;
+    }
+    let big_n: u64 = base.iter().map(|x| x.1).sum();
+    let mut l = 0i64;
+    for &(o, h) in hist {
+        if h == 0 {
+            continue;
+        }
+        let c = base.iter().find(|x| x.0 == o).map(|x| x.1).unwrap_or(0);
+        l += h as i64 * (log2_q16(h as u64) - log2_q16(n) - log2_q16(c + 1) + log2_q16(big_n + alpha.max(1)));
+    }
+    l
+}
+
 /// Why the engine refused to answer. Silence is preferred to confident wrongness.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Abstain {
@@ -74,6 +149,17 @@ pub struct RelationEngine {
     pub vetoed: std::collections::BTreeSet<u16>,
     /// value -> the single binding it was seen with (None once seen with two bindings).
     ord_seen: HashMap<u16, HashMap<i64, Option<u64>>>,
+    /// D055: deferred evidence per (action, target, context).
+    pub deferred: HashMap<(u16, u32, u64), ValueTable>,
+    /// D055: feature -> episodes in which it occurred (replay source when a hypothesis is
+    /// materialized), capped per feature.
+    inv: HashMap<FeatureKind, Vec<u64>>,
+    /// D055: refinement candidates examined per (target, context) (multiple-comparison count).
+    refine_tested: HashMap<(u32, u64), u64>,
+    /// D055: hypotheses materialized from deferred evidence (for reporting).
+    pub materialized: u64,
+    /// D055a: copy-model statistics per (action, target, context).
+    pub echo: HashMap<(u16, u32, u64), EchoStats>,
 }
 
 /// What one sleep consolidation did.
@@ -154,6 +240,11 @@ impl RelationEngine {
 
     pub fn with_policy(seed: u64, policy: LicensePolicy) -> Self {
         RelationEngine {
+            echo: HashMap::new(),
+            deferred: HashMap::new(),
+            inv: HashMap::new(),
+            refine_tested: HashMap::new(),
+            materialized: 0,
             ordinal: std::collections::BTreeSet::new(),
             vetoed: std::collections::BTreeSet::new(),
             ord_seen: HashMap::new(),
@@ -620,6 +711,7 @@ impl RelationEngine {
             add(format!("cond {ctype}"), bytes);
             let oc = self.alphabet_size(l.target).saturating_sub(1) as usize;
             add(format!("target outcomes {}", class(oc)), bytes);
+            add(format!("target id {}", l.target), bytes);
         }
         let mut v: Vec<(String, u64, u64)> = acc.into_iter().map(|(k, (n, b))| (k, n, b)).collect();
         let feat_entries: u64 = self.feat_kinds.iter().map(|v| (v.capacity() * std::mem::size_of::<FeatureKind>()) as u64).sum();
@@ -764,6 +856,129 @@ impl RelationEngine {
         }
     }
 
+    /// D055a: log2 (Q16) of the baseline probability of outcome `o` in episode `ep` for `target`:
+    /// a mixture of the best copy source (an input filler that usually equals the outcome, >= 20
+    /// cases, at its measured rate q) and the Laplace-smoothed distribution `dist`.
+    fn baseline_log2(&self, action: u16, target: u32, ctx: u64, ep: &Episode, o: i64, dist: &[(i64, u64)], alpha: u64) -> i64 {
+        use hdc_core::fixed::Q;
+        let big_n: u64 = dist.iter().map(|x| x.1).sum::<u64>() + alpha.max(1);
+        let c = dist.iter().find(|x| x.0 == o).map(|x| x.1).unwrap_or(0) + 1;
+        // amendment 5: copying an input is a chance model only for high-cardinality outcomes
+        let high_card = alpha > 65;
+        let (q, echo_val) = match self.echo.get(&(action, target, ctx)) {
+            Some(st) if st.total >= 20 && high_card => {
+                let best = st.hits.iter().max_by(|a, b| a.1.cmp(b.1).then(b.0.cmp(a.0)));
+                match best {
+                    Some((&(r, ch), &h)) => (h as u64 * Q as u64 / st.total as u64, ep.roles.get(r as usize).and_then(|e| e.get(ch))),
+                    None => (0, None),
+                }
+            }
+            _ => (0, None),
+        };
+        let qq = q as u128;
+        let num = qq * big_n as u128 * (echo_val == Some(o)) as u128 + (Q as u128 - qq) * c as u128;
+        let den = Q as u128 * big_n as u128;
+        let mix = log2_q16(num.max(1) as u64) - log2_q16(den as u64);
+        let plain = log2_q16(c) - log2_q16(big_n);
+        // amendment 3: the better chance model per case (the gate can only become stricter)
+        mix.max(plain)
+    }
+
+    /// D055a: update the copy-model statistics with one case (after it was scored).
+    fn echo_update(&mut self, action: u16, target: u32, ctx: u64, ep: &Episode, actual: i64) {
+        let st = self.echo.entry((action, target, ctx)).or_default();
+        st.total += 1;
+        for (r, e) in ep.roles.iter().enumerate() {
+            for f in &e.fillers {
+                if f.val == actual {
+                    *st.hits.entry((r as u8, f.ch)).or_insert(0) += 1;
+                }
+            }
+        }
+    }
+
+    /// D055/D055a: record one case of a feature value without a law; true if the value has now
+    /// earned a hypothesis: LLR = sum h log2(h/n) - sum_cases log2 p_baseline >= log2(M) + margin,
+    /// with >= GATE_MIN_CASES cases.
+    #[allow(clippy::too_many_arguments)]
+    fn defer_and_test(&mut self, action: u16, target: u32, ctx: u64, base: usize, kind: &FeatureKind, actual: i64, ep: &Episode) -> bool {
+        let base_counts: Vec<(i64, u64)> = self.laws[base].ctx(ctx).map(|e| e.bins.iter().map(|b| (b.val, b.count as u64)).collect()).unwrap_or_default();
+        let alpha = self.alphabet_size(target);
+        let lb = self.baseline_log2(action, target, ctx, ep, actual, &base_counts, alpha);
+        let table = self.deferred.entry((action, target, ctx)).or_default();
+        if !table.entries.contains_key(kind) {
+            let fam = family_of(kind);
+            let fv = table.family_values.entry(fam).or_insert(0);
+            if *fv >= VALUES_PER_FAMILY {
+                table.untracked += 1;
+                return false;
+            }
+            *fv += 1;
+            table.tested += 1;
+            table.entries.insert(kind.clone(), DeferredValue::default());
+        }
+        let m = table.tested;
+        let e = table.entries.get_mut(kind).expect("entry");
+        // amendment 4: predict this case from the entry's previous cases (Laplace), then count it
+        let prev = e.hist.iter().find(|x| x.0 == actual).map(|x| x.1).unwrap_or(0) as u64;
+        e.ll_model += log2_q16(prev + 1) - log2_q16(e.total() as u64 + alpha.max(1));
+        if let Some(x) = e.hist.iter_mut().find(|x| x.0 == actual) {
+            x.1 += 1;
+        } else if e.hist.len() < OUTCOMES_PER_VALUE {
+            e.hist.push((actual, 1));
+        } else {
+            e.pooled += 1;
+        }
+        e.ll_base += lb;
+        if e.total() < GATE_MIN_CASES {
+            return false;
+        }
+        if e.ll_model - e.ll_base >= log2_q16(m.max(2)) + GATE_MARGIN_BITS * hdc_core::fixed::Q {
+            table.entries.remove(kind);
+            return true;
+        }
+        false
+    }
+
+    /// D055: create the law for `kind` and initialize it from the stored episodes in which the
+    /// feature occurred (excluding `exclude`, which is counted by the caller). As in D014, replay
+    /// gives counts, keys and counterexamples, never transfer credit or utility.
+    #[allow(clippy::too_many_arguments)]
+    fn materialize(&mut self, action: u16, target: u32, ctx: u64, fp: u64, hv: &H, kind: FeatureKind, exclude: u64) -> usize {
+        let l = self.get_or_create_cached(action, target, fp, hv, vec![kind.clone()], exclude);
+        self.materialized += 1;
+        let ids = self.inv.get(&kind).cloned().unwrap_or_default();
+        let t = self.tick;
+        for id in ids {
+            if id == exclude {
+                continue;
+            }
+            let ep = self.store.get(id);
+            if ep.context != ctx || ep.action != action {
+                continue;
+            }
+            let Some(out) = ep.outcome(target) else { continue };
+            let (sig, iv) = (ep.signature(), ep.kind == Kind::Intervention);
+            let (bk, rk) = (self.bkey(l, ep), self.rkey(l, ep));
+            if self.laws[l].ctx(ctx).map(|e| e.total() == 0).unwrap_or(true) {
+                *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
+            }
+            self.laws[l].ctx_mut(ctx, t).add(out, id, bk, rk, sig, iv, t);
+        }
+        l
+    }
+
+    /// D055: how many of a query's features are held only as deferred evidence for `target`
+    /// (an abstention on them is "deferred: insufficient evidence").
+    pub fn deferred_features(&mut self, ep: &Episode, target: u32) -> u32 {
+        let mut aug = ep.clone();
+        self.augment(&mut aug);
+        let ord = self.allowed_ordinal();
+        let feats = self.cb.features(&aug, &ord);
+        let Some(table) = self.deferred.get(&(aug.action, target, aug.context)) else { return 0 };
+        feats.iter().filter(|f| table.entries.contains_key(&f.kind)).count() as u32
+    }
+
     fn transfer_eligible(&self, law: usize, ctx: u64, ep: &Episode, sig: u64) -> bool {
         let l = &self.laws[law];
         let own = match l.ctx(ctx) {
@@ -805,20 +1020,42 @@ impl RelationEngine {
         let eid = self.store.append(ep);
         let epc = self.store.get(eid).clone();
         self.feat_kinds.push(feats.iter().map(|f| f.kind.clone()).collect());
+        for f in &feats {
+            let v = self.inv.entry(f.kind.clone()).or_default();
+            if v.len() < 4096 {
+                v.push(eid);
+            }
+        }
 
         let cc = self.cond_cache(action, &feats);
         for (target, actual) in outcomes {
             let before = self.laws.len();
             let base = self.get_or_create_cached(action, target, cc.base_fp, &cc.base_hv, Vec::new(), eid);
-            let mut singles = Vec::with_capacity(feats.len());
+            // D055: a single-feature law exists only if its value has earned it; otherwise the
+            // case goes to the deferred value table, and the law is materialized (by replay) when
+            // the value's outcome counts pass the gate
+            let mut single_of: Vec<Option<usize>> = Vec::with_capacity(feats.len());
+            let mut fresh: Vec<usize> = Vec::new();
             for (i, f) in feats.iter().enumerate() {
-                singles.push(self.get_or_create_cached(action, target, cc.single_fp[i], &cc.single_hv[i], vec![f.kind.clone()], eid));
+                if let Some(&l) = self.index.get(&key_fp(cc.single_fp[i], target)) {
+                    single_of.push(Some(l));
+                    continue;
+                }
+                if self.defer_and_test(action, target, ctx, base, &f.kind, actual, &epc) {
+                    let l = self.materialize(action, target, ctx, cc.single_fp[i], &cc.single_hv[i], f.kind.clone(), eid);
+                    fresh.push(l);
+                    single_of.push(Some(l));
+                } else {
+                    single_of.push(None);
+                }
             }
+            let singles: Vec<usize> = single_of.iter().flatten().copied().collect();
+            self.echo_update(action, target, ctx, &epc, actual);
             let mut pairs: Vec<(usize, usize, usize)> = Vec::new();
             for &(i, j, fp) in &cc.pair_fp {
                 if let Some(&l) = self.index.get(&key_fp(fp, target)) {
                     if self.laws[l].active_in(ctx) && !self.laws[l].pruned {
-                        pairs.push((l, singles[i], singles[j]));
+                        pairs.push((l, single_of[i].unwrap_or(base), single_of[j].unwrap_or(base)));
                     }
                 }
             }
@@ -827,6 +1064,10 @@ impl RelationEngine {
             // 1. pre-registration (outcome not yet read)
             let mut prereg: Vec<(usize, i64, bool)> = Vec::new();
             for &l in std::iter::once(&base).chain(singles.iter()).chain(pairs.iter().map(|p| &p.0)) {
+                // D055: a law born from this very outcome makes no prediction on it
+                if fresh.contains(&l) {
+                    continue;
+                }
                 if self.transfer_eligible(l, ctx, &epc, sig) {
                     if let Some((v, borrowed)) = self.prediction(l, ctx) {
                         prereg.push((l, v, borrowed));
@@ -977,6 +1218,22 @@ impl RelationEngine {
         let hi = 3000 + 1000 * self.latent.len() as u16;
         let live: std::collections::HashSet<u16> = self.latent.iter().flat_map(|i| i.live_channels()).collect();
         let dead = |ch: u16| ch >= 3000 && ch < hi && !live.contains(&ch);
+        // D055: deferred evidence and replay index of features on retired latent channels can
+        // never be used again (those features never recur)
+        for table in self.deferred.values_mut() {
+            table.entries.retain(|k, _| {
+                let ch = match *k {
+                    FeatureKind::Abs { ch, .. } | FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } | FeatureKind::Order { ch, .. } | FeatureKind::Delta { ch, .. } => ch,
+                };
+                !dead(ch)
+            });
+        }
+        self.inv.retain(|k, _| {
+            let ch = match *k {
+                FeatureKind::Abs { ch, .. } | FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } | FeatureKind::Order { ch, .. } | FeatureKind::Delta { ch, .. } => ch,
+            };
+            !dead(ch)
+        });
         let mut n = 0;
         for l in 0..self.laws.len() {
             if self.laws[l].pruned {
@@ -1071,21 +1328,49 @@ impl RelationEngine {
         for &id in &ids {
             let Some(out) = self.store.get(id).outcome(target) else { continue };
             *parent_hist.entry(out).or_insert(0) += 1;
+        }
+        // D055a: per-case baseline (copy model + parent distribution) accumulated per candidate
+        let parent_dist: Vec<(i64, u64)> = parent_hist.iter().map(|(&o, &c)| (o, c)).collect();
+        let alpha_r = self.alphabet_size(target);
+        let mut ll_base: HashMap<FeatureKind, i64> = HashMap::new();
+        let mut ll_model: HashMap<FeatureKind, i64> = HashMap::new();
+        let mut sorted_ids = ids.clone();
+        sorted_ids.sort_unstable();
+        for &id in &sorted_ids {
+            let ep = self.store.get(id);
+            let Some(out) = ep.outcome(target) else { continue };
+            let lb = self.baseline_log2(action, target, ctx, ep, out, &parent_dist, alpha_r);
             for k in &self.feat_kinds[id as usize] {
                 if !pcond.contains(k) {
-                    *tally.entry(k.clone()).or_default().entry(out).or_insert(0) += 1;
+                    let h = tally.entry(k.clone()).or_default();
+                    // amendment 4: prequential score of the candidate before counting this case
+                    let n: u64 = h.values().sum();
+                    let prev = h.get(&out).copied().unwrap_or(0);
+                    *ll_model.entry(k.clone()).or_insert(0) += log2_q16(prev + 1) - log2_q16(n + alpha_r.max(1));
+                    *h.entry(out).or_insert(0) += 1;
+                    *ll_base.entry(k.clone()).or_insert(0) += lb;
                 }
             }
         }
         let ph: Vec<u64> = parent_hist.values().copied().collect();
         let h_parent = hdc_core::fixed::entropy_q16(&ph);
+        // D055: every candidate feature examined counts toward the multiple-comparison budget of
+        // this target; a child must carry LLR >= log2(M_r) + margin bits against its parent
+        let examined = tally.len() as u64;
+        let m_r = {
+            let c = self.refine_tested.entry((target, ctx)).or_insert(0);
+            *c += examined;
+            *c
+        };
+        let gate = log2_q16(m_r.max(2)) + GATE_MARGIN_BITS * hdc_core::fixed::Q;
         let mut scored: Vec<(i64, FeatureKind)> = tally
             .into_iter()
             .filter_map(|(k, h)| {
                 let counts: Vec<u64> = h.values().copied().collect();
                 let n: u64 = counts.iter().sum();
                 let hk = hdc_core::fixed::entropy_q16(&counts);
-                if n >= 2 && hk < h_parent {
+                let llr = ll_model.get(&k).copied().unwrap_or(0) - ll_base.get(&k).copied().unwrap_or(0);
+                if n >= GATE_MIN_CASES as u64 && hk < h_parent && llr >= gate {
                     Some(((h_parent - hk) * n as i64, k))
                 } else {
                     None

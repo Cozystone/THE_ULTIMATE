@@ -795,3 +795,61 @@ power device. `USE: r0=power => door unchanged` has 118 cases, 0 counterexamples
 28/0, but saves only 6 bits over the base rate, below its selection cost (D012: log2 #hypotheses +
 margin); D051a's extra inducers raised that count. The multiple-comparison penalty works as
 designed on a true but low-information law. Reported as a failure, not tuned.
+
+## D055 Evidence-gated hypothesis materialization (v0.3, 2026-10-08; fixes K2′)
+Evidence: `experiments/results/v03_k2_diagnosis.txt`.
+* H5: 1.3-1.7M laws at 20,000 steps, mostly conjunctions over versioned latent features.
+* Real-OS: per-value laws on targets with > 64 outcome values.
+Every single feature created a law for every target at first sight; refinement added up to 8
+children per impure parent; nothing asked whether a feature carried information.
+
+Choice (PREREG-v0.3 amendment 1, estimator corrected by amendments 2-5 before the regression):
+* A single-feature law is materialized only when its value's outcome counts carry
+  LLR >= log2(M) + 4 bits over >= 3 cases. M = values tested for that target and context.
+  Until then the value lives in a bounded table: <= 4,096 values per family, <= 8 outcomes per
+  value.
+* The hypothesis side is scored prequentially: each case is predicted from the value's previous
+  cases with Laplace smoothing over the alphabet (MDL; plug-in likelihood overfits large
+  alphabets).
+* The baseline side, per case, takes the better of two chance models: the smoothed base
+  distribution, and, for targets with > 64 outcome values only, a copy model (the input filler
+  that most often equals the outcome).
+* Refinement children pass the same gate against the parent's distribution; M counts every
+  candidate examined.
+* A materialized law is initialized by replaying the stored episodes that contain its feature.
+  It gets counts, keys and counterexamples, never transfer or utility (D014). A law born on an
+  episode makes no transfer prediction on it.
+* Tables and replay index of retired latent versions are dropped. Materialized laws and
+  counterevidence are never deleted. An abstention on deferred features is attributable
+  (`deferred_features`).
+
+Corrections found in development, each recorded before use:
+* **Copy model (amendment 2):** persistence explains post = pre on hash targets.
+* **Better chance model per case (amendment 3):** a poor copy source made every hypothesis look
+  informative.
+* **Prequential hypothesis side (amendment 4):** plug-in scoring found ~20 bits of illusory
+  information in three distinct hash values.
+* **Copy only for > 64 outcomes (amendment 5):** on binary targets copying is a real relation
+  (key AND power) and must not be the null.
+
+Development effect at 20,000 steps:
+
+| case | v0.2 working set | v0.3 working set | laws |
+|---|---|---|---|
+| H5 seed 201 | 5.3 GB | 248 MB | 5,007 |
+| H5 seed 212 | 6.7 GB | 315 MB | 7,814 |
+| real-OS seed 58 | >= 4.1 GB (at 10k) | 442 MB | 14,403 |
+
+Tests:
+* 256-value nuisance family not materialized;
+* sparse signal (one of 256 values) learned, coin-flip values abstained;
+* relabelling invariance;
+* counterexamples survive deferral;
+* bounded growth under novelty;
+* equality continuity.
+
+The first two fail on v0.2 for the right reason (the nuisance family existed, growth was
+unbounded).
+Changed test assumptions: two lifecycle tests assumed a candidate for every feature exists from
+the start; they now accept "never earned capacity" while keeping their claims (no surviving
+spurious relation; one support for repeated copies).
