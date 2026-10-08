@@ -65,6 +65,9 @@ impl Default for Preferences {
 
 #[derive(Clone, Debug, Default)]
 pub struct Score {
+    /// D060: bits of conflict-resolving evidence (one per disagreeing licensed pair the option
+    /// would give a new independent shared unit).
+    pub conflict_evidence: i64,
     pub risk: i64,
     pub ambiguity: i64,
     pub compute: i64,
@@ -143,6 +146,17 @@ pub fn score(rel: &mut RelationEngine, c: &Candidate, prefs: &Preferences) -> Sc
                 }
             }
         }
+        // D060: a live conflict between licensed laws is an open question even though each side
+        // is "known"; an intervention on which they disagree, with a relevant binding the
+        // conflict has not seen, supplies one independent shared unit (D041a)
+        if let (OptionKind::Act { .. }, bm_relation::Kind::Intervention) = (&c.kind, ep.kind) {
+            let mut bits = 0i64;
+            for &t in &c.targets {
+                bits += rel.conflict_probe(ep, t).informative_pairs() as i64 * Q;
+            }
+            s.conflict_evidence = bits;
+            ig += bits;
+        }
         s.info_gain = (ig * c.reliability_q16 / Q) * prefs.info_weight_q16 / Q;
         s.ambiguity = amb;
         if let (Some((gt, gv)), OptionKind::Act { .. }) = (prefs.goal, &c.kind) {
@@ -155,6 +169,65 @@ pub fn score(rel: &mut RelationEngine, c: &Candidate, prefs: &Preferences) -> Sc
     }
     s.total = s.risk + s.ambiguity + s.compute - s.info_gain - s.pref_recovery;
     s
+}
+
+/// D060: one evidence-seeking decision and its consequence (provenance record).
+#[derive(Clone, Debug)]
+pub struct ProbeRecord {
+    pub option: usize,
+    pub target: u32,
+    /// Disagreeing pairs at decision time: (value a, value b, units before, new unit).
+    pub predicted: Vec<(i64, i64, u32, bool)>,
+    pub unit: u64,
+    /// Filled after the outcome: the observed value and the pairs' units after.
+    pub observed: Option<i64>,
+    pub units_after: Vec<u32>,
+}
+
+/// D060: choose the candidate that gives the most live licensed-law conflicts a new independent
+/// shared unit (ties: lower cost, then the smaller relevant-binding key, never the list position).
+/// None when no candidate is informative: the agent then has no evidence-seeking action and keeps
+/// abstaining on the conflicted queries.
+pub fn choose_probe(rel: &mut RelationEngine, cands: &[Candidate]) -> Option<ProbeRecord> {
+    let mut best: Option<(usize, i64, ProbeRecord)> = None;
+    for (i, c) in cands.iter().enumerate() {
+        let (OptionKind::Act { .. }, Some(ep)) = (&c.kind, &c.episode) else { continue };
+        if ep.kind != bm_relation::Kind::Intervention {
+            continue;
+        }
+        for &t in &c.targets {
+            let cp = rel.conflict_probe(ep, t);
+            let k = cp.informative_pairs();
+            if k == 0 {
+                continue;
+            }
+            let unit = cp.pairs.iter().find(|p| p.new_unit).map(|p| p.unit).unwrap_or(0);
+            let rec = ProbeRecord {
+                option: i,
+                target: t,
+                predicted: cp.pairs.iter().map(|p| (p.val_a, p.val_b, p.units_before, p.new_unit)).collect(),
+                unit,
+                observed: None,
+                units_after: Vec::new(),
+            };
+            let better = match &best {
+                None => true,
+                Some((bi, bk, br)) => {
+                    (k as i64) > *bk || ((k as i64) == *bk && (c.cost_q16 < cands[*bi].cost_q16 || (c.cost_q16 == cands[*bi].cost_q16 && unit < br.unit)))
+                }
+            };
+            if better {
+                best = Some((i, k as i64, rec));
+            }
+        }
+    }
+    best.map(|b| b.2)
+}
+
+/// D060: complete a probe record after the outcome was observed (the episode as stored).
+pub fn record_outcome(rel: &mut RelationEngine, rec: &mut ProbeRecord, probe: &bm_relation::Episode, observed: Option<i64>) {
+    rec.observed = observed;
+    rec.units_after = rel.conflict_probe(probe, rec.target).pairs.iter().map(|p| p.units_before).collect();
 }
 
 /// Choose the option with the lowest score (ties: lower cost, then earlier candidate).

@@ -46,6 +46,7 @@ pub struct ObserveReport {
     pub new_laws: u32,
 }
 
+#[derive(Clone)]
 pub struct RelationEngine {
     pub cb: Codebook,
     pub policy: LicensePolicy,
@@ -96,6 +97,38 @@ pub struct Uncertainty {
     /// Independent supports of consistent unlicensed hypotheses for which this query would be a
     /// new combination (D043d).
     pub licence_k: Vec<u32>,
+}
+
+/// D060: one pair of disagreeing licensed value groups at a candidate probe.
+#[derive(Clone, Debug)]
+pub struct ProbePair {
+    pub val_a: i64,
+    pub val_b: i64,
+    pub laws_a: Vec<usize>,
+    pub laws_b: Vec<usize>,
+    /// Independent shared units of the pair before the probe (D041a/D050, no query exception).
+    pub units_before: u32,
+    /// The probe's relevant binding (union of both groups' relevant roles).
+    pub unit: u64,
+    /// The binding is not yet among the pair's shared units.
+    pub new_unit: bool,
+}
+
+/// D060: what a candidate probe could tell about live conflicts among licensed laws.
+#[derive(Clone, Debug, Default)]
+pub struct ConflictProbe {
+    pub pairs: Vec<ProbePair>,
+}
+
+impl ConflictProbe {
+    /// Pairs the probe can advance: they disagree here, are still below the D041 threshold, and
+    /// the probe's relevant binding would be a new independent shared unit.
+    pub fn informative_pairs(&self) -> usize {
+        self.pairs.iter().filter(|p| p.new_unit && p.units_before < MIN_SHARED_INDEPENDENT).count()
+    }
+    pub fn disagrees(&self) -> bool {
+        !self.pairs.is_empty()
+    }
 }
 
 /// One edge of the licensed causal model: under `action` and `condition`, `target` takes `value`.
@@ -1524,6 +1557,16 @@ impl RelationEngine {
     /// Record of two value groups on the cases where both applied: (independent shared
     /// situations, situations where group a's value happened, situations where group b's did).
     fn shared_record(&self, groups: &[(i64, Vec<usize>, i64)], a: usize, b: usize, ctx: u64, target: u32, query: &Episode) -> (u32, u32, u32) {
+        let (u, ra, rb, _) = self.shared_units(groups, a, b, ctx, target, query, true);
+        (u, ra, rb)
+    }
+
+    /// D041a/D050 shared units of two value groups. With `query_exception`, the query's own
+    /// binding contributes distinct situations (settlement for that query); without it, every
+    /// unit is a relevant binding (D060 probe novelty: repeats and bystander changes count once).
+    /// Returns (units, units where a's value happened, units where b's did, the unit set).
+    #[allow(clippy::too_many_arguments)]
+    fn shared_units(&self, groups: &[(i64, Vec<usize>, i64)], a: usize, b: usize, ctx: u64, target: u32, query: &Episode, query_exception: bool) -> (u32, u32, u32, std::collections::HashSet<u64>) {
         // D041b: per-law episode lists are capped (EP_CAP); when a list is truncated, shared cases
         // are found by testing each law's condition against the stored features of every episode
         // in the context, so late evidence is never invisible
@@ -1561,7 +1604,7 @@ impl RelationEngine {
         for e in shared {
             let ep = self.store.get(e);
             let bk = ep.binding_key(&roles);
-            let unit = if bk == qk { hdc_core::rng::mix64(ep.signature(), 0xD050) } else { bk };
+            let unit = if bk == qk && query_exception { hdc_core::rng::mix64(ep.signature(), 0xD050) } else { bk };
             units.insert(unit);
             match ep.outcome(target) {
                 Some(o) if o == groups[a].0 => {
@@ -1573,7 +1616,47 @@ impl RelationEngine {
                 _ => {}
             }
         }
-        (units.len() as u32, sa.len() as u32, sb.len() as u32)
+        (units.len() as u32, sa.len() as u32, sb.len() as u32, units)
+    }
+
+    /// D060: evaluate a candidate probe (a previewed episode without outcomes) for `target`:
+    /// the pairs of applicable licensed value groups that predict different outcomes for it, each
+    /// with its shared units so far and whether the probe's relevant binding would be a new unit.
+    /// Read-only with respect to evidence; uses only the agent's own laws and records.
+    pub fn conflict_probe(&mut self, probe: &Episode, target: u32) -> ConflictProbe {
+        let ctx = probe.context;
+        let mut aug = probe.clone();
+        self.augment(&mut aug);
+        let m = self.matching(&aug, target);
+        let mut by_val: Vec<(i64, Vec<usize>, i64)> = Vec::new();
+        for l in m.into_iter().filter(|&l| self.laws[l].applicable(ctx) && self.binds(l, ctx, &aug)) {
+            let Some(v) = self.laws[l].ctx(ctx).and_then(|e| e.majority()).map(|m| m.0) else { continue };
+            match by_val.iter_mut().find(|x| x.0 == v) {
+                Some(x) => x.1.push(l),
+                None => by_val.push((v, vec![l], 0)),
+            }
+        }
+        let mut out = ConflictProbe::default();
+        for a in 0..by_val.len() {
+            for b in (a + 1)..by_val.len() {
+                let (units_before, _, _, set) = self.shared_units(&by_val, a, b, ctx, target, &aug, false);
+                let mut roles: Vec<u8> = by_val[a].1.iter().chain(by_val[b].1.iter()).flat_map(|&l| self.laws[l].cond_roles()).collect();
+                roles.extend(aug.arg_roles());
+                roles.sort_unstable();
+                roles.dedup();
+                let unit = aug.binding_key(&roles);
+                out.pairs.push(ProbePair {
+                    val_a: by_val[a].0,
+                    val_b: by_val[b].0,
+                    laws_a: by_val[a].1.clone(),
+                    laws_b: by_val[b].1.clone(),
+                    units_before,
+                    unit,
+                    new_unit: !set.contains(&unit),
+                });
+            }
+        }
+        out
     }
 
     /// Diagnostic and evaluation view of a conflict for a query: for every pair of disagreeing

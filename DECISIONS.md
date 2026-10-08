@@ -981,3 +981,41 @@ for equivalent parents. It blocked the E1 sleep conjunction (8.05 bits vs a 9.7-
 v0.4 development round 2 met every pre-registered condition but one: B7 seed 1 lost a 19-bit
 law to the enlarged family charge (EXPERIMENTS, "v0.4 result"). By the stop rule the
 mechanisms stay as development state on `v0.4-dev`. The frozen learner is still `bitmind-v0.2`.
+
+## D060 Evidence-seeking for conflicts between licensed laws (capability-h4, 2026-10-08)
+Evidence (`experiments/results/cw_smoke/SMOKE_NOTES.md`): on the CW development world the v0.2
+agent chose 0 diagnostic actions in 300 per seed, although its own licensed laws disagreed on
+offered candidates. D043 treats a query covered by any licensed law as known
+(`uncertainty().licensed`), so a live conflict carried no epistemic value.
+
+Choice. Two components:
+
+1. **`RelationEngine::conflict_probe(probe, target)`** (read-only with respect to evidence). For a
+   candidate action's preview (pre-action scene, no outcome), it returns every pair of
+   applicable licensed value groups that predict different outcomes. For each pair it gives:
+   * the pair's independent shared units so far (D041a/D050, with no query exception);
+   * the probe's relevant binding (the union of both groups' relevant roles);
+   * whether that binding is new.
+
+   A pair is informative when its units are below MIN_SHARED_INDEPENDENT (3) and the binding is
+   new. Repeats and bystander-only variation keep the same binding, so they are not
+   informative.
+2. **`bm_agent`.**
+   * The action score adds one bit of information gain per informative pair, for interventions
+     only.
+   * `choose_probe` returns the candidate with most informative pairs, or None when there is no
+     informative candidate. Ties go to lower cost, then the smaller binding key, never to list
+     position.
+   * `ProbeRecord` / `record_outcome` keep the provenance: predicted disagreement, unit,
+     observed value, units after.
+
+Unchanged:
+* `predict`, D041/D041a/D041b/D050 settlement and MIN_SHARED_INDEPENDENT;
+* licensing and evidence counting.
+
+Acting never creates an answer: an answer still needs a single licensed value group, or a D041
+settlement on >= 3 independent shared units.
+No world names, no oracle, no hidden state: only the agent's own laws and the previewed scene.
+`#[derive(Clone)]` on `RelationEngine` (also `Codebook`, `Grounder`) lets harnesses copy a
+state; it changes no behaviour.
+Tests: `crates/bm-agent/tests/conflict.rs` (7; the API does not exist on `bitmind-v0.2`).

@@ -12,7 +12,7 @@ pub mod features;
 pub mod latent;
 pub mod law;
 
-pub use engine::{noise_allowance, Abstain, Answer, CausalEdge, ObserveReport, RelationEngine, SleepStats, Uncertainty};
+pub use engine::{noise_allowance, Abstain, Answer, CausalEdge, ConflictProbe, ObserveReport, ProbePair, RelationEngine, SleepStats, Uncertainty};
 pub use latent::LatentInducer;
 pub use episode::{context_of, Entity, Episode, EpisodeStore, Filler, Kind};
 pub use features::{Codebook, Feature, FeatureKind, H};

@@ -9,6 +9,6 @@ pub mod lang;
 pub mod policy;
 pub mod selfmodel;
 
-pub use policy::{choose, score, Candidate, OptionKind, Preferences, Score, INF};
+pub use policy::{choose, choose_probe, record_outcome, score, Candidate, OptionKind, Preferences, ProbeRecord, Score, INF};
 pub use selfmodel::{realize, Calibration, Conflict, Introspection, Resources, SelfModel};
 pub use lang::Lexicon;
