@@ -138,3 +138,46 @@ Commit, all tests, constitution check, tag `bitmind-v0.4`, freeze guard. Then wr
 
 No learner-crate change after the first formal K run; a freeze guard runs before and after. Every
 outcome class is reported.
+
+## Amendment 1 (2026-10-08, after the section-2 diagnosis, before any learner change)
+
+Evidence: `experiments/results/v04_c3_e3_diagnosis.txt`.
+
+**1a. E3 measurement.**
+* The E3 twin is corrected: it replays the same store, runs the same sleep, and tests its own
+  sleep-created laws. Previously it tested law indices of another engine and had never slept.
+* Under the corrected measurement the v0.2 learner fails E3 on 15/15 seeds (active 30, twin 30):
+  every option, WAIT included, matches some of ~1,500 unlicensed sleep hypotheses.
+* E3 is therefore moved to the list of v0.2 baseline failures (with E1 seed 54 and H2 seeds
+  210-211). It is still run and reported for every seed, but it is not a must-pass gate.
+* This is a change to a criterion fixed in section 4. It is made before any v0.4 learner change
+  and on a re-measured baseline, and it is stated in the final report.
+* E3 will not be "repaired" by restoring hypothesis over-generation.
+
+**1b. D057, prospective transfer for deferred hypotheses (the C3 repair, class 6).**
+A deferred value keeps the pre-registered transfer record that its law would keep:
+* a bounded relevant-situation key set (`SET_CAP`, saturating conservatively);
+* up to 3 distinct relevant-binding keys;
+* ok / fail counters;
+* the failed trials (episode ids, bounded).
+
+A case of the value is a prospective trial only if all of these hold:
+* the value has >= `GATE_MIN_CASES` cases;
+* no counterexample so far (all its cases share one outcome; stricter than a law's
+  within-noise test);
+* >= 2 distinct relevant bindings (general-law semantics; particular values earn no trial);
+* the case's relevant situation (action arguments plus the feature's roles, as D050a) is
+  provably unseen for the value.
+
+The prediction (the value's single outcome) is fixed before the outcome is counted. On
+materialization the law's transfer record receives these tallies and failed trials. Replay
+still gives no transfer credit (D014). Nothing is credited retroactively: every trial was a
+prediction of a hypothesis that existed, deferred, at that time.
+
+**1c. Order of implementation.**
+1. D055 as recorded in v0.3 (`28fac94`).
+2. D056 (K5 family counter).
+3. D057.
+4. The six K5 unit tests plus a D057 unit test (a deferred law in a closed world that is
+   materialized late can still be licensed; a value with a counterexample earns no prospective
+   trial).
