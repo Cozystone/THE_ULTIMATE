@@ -224,6 +224,7 @@ pub struct GroundStats {
     pub retired: u32,
 }
 
+#[derive(Clone)]
 pub struct Grounder {
     im: ItemMemory<256>,
     pub chans: BTreeMap<u16, ChannelStats>,

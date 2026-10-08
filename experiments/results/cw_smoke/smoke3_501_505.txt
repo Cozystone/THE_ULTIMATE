@@ -1,0 +1,78 @@
+
+===== seed 501
+  world: 24 objects, region pairs 26 (queries 13, evidence 13), region truth flips false, measured noise tolerance 1/100; stage 1: conflict abstentions 12 of 13 queries; other ["answered 0 (truth 0)"]
+    conflict law (predicts 0): #1579 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=219 counter=0 indep=61 int=219 transfer 62/62 utility 119b (int 119b) origin Generated
+    conflict law (predicts 1): #3205 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=465 counter=0 indep=64 int=465 transfer 61/61 utility 364b (int 364b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+    relabelled stage 1: conflict abstentions 12 (original 12), other ["answered 0 (truth 0)"]
+    licensed laws naming a mark or identity: 0
+  Agent     saved 12: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 12; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 51, min units reached 0, answers at steps 0-0; 9.4 s
+  Reference saved 12: settled-correct 12 (active 12), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 5 (3 distinct pairs), diagnostic choices 6, steps with no informative candidate 44, min units reached 3, answers at steps 50-50; 6.1 s
+  Random    saved 12: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 12; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; 4.9 s
+  Wait      saved 12: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 12; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; 4.2 s
+  Repeat    saved 12: settled-correct 0 (active 0), dissolved-correct 12 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 20 (1 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 1, answers at steps 20-20; 2.5 s
+    repeat ablation, conflict evidence after: []
+
+===== seed 502
+  world: 22 objects, region pairs 24 (queries 12, evidence 12), region truth flips false, measured noise tolerance 1/100; stage 1: conflict abstentions 12 of 12 queries; other []
+    conflict law (predicts 0): #4944 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=363 counter=0 indep=64 int=363 transfer 62/62 utility 182b (int 182b) origin Generated
+    conflict law (predicts 1): #1544 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=397 counter=0 indep=64 int=397 transfer 62/62 utility 343b (int 343b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+    relabelled stage 1: conflict abstentions 12 (original 12), other []
+    licensed laws naming a mark or identity: 2
+  Agent     saved 12: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 12; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 52, min units reached 0, answers at steps 0-0; 9.6 s
+  Reference saved 12: settled-correct 12 (active 12), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 3, steps with no informative candidate 7, min units reached 3, answers at steps 10-10; 1.9 s
+  Random    saved 12: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 12; region probes 2 (2 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 2, answers at steps 0-0; 4.8 s
+  Wait      saved 12: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 12; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; 4.5 s
+  Repeat    saved 12: settled-correct 0 (active 0), dissolved-correct 12 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 20 (1 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 1, answers at steps 20-20; 2.1 s
+    repeat ablation, conflict evidence after: []
+
+===== seed 503
+  world: 25 objects, region pairs 51 (queries 26, evidence 25), region truth flips true, measured noise tolerance 1/100; stage 1: conflict abstentions 26 of 26 queries; other []
+    conflict law (predicts 0): #765 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=390 counter=0 indep=64 int=390 transfer 62/62 utility 226b (int 226b) origin Generated
+    conflict law (predicts 1): #1060 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=375 counter=0 indep=64 int=375 transfer 62/62 utility 405b (int 405b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+    relabelled stage 1: conflict abstentions 26 (original 26), other []
+    licensed laws naming a mark or identity: 0
+  Agent     saved 26: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 26; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 42, min units reached 0, answers at steps 0-0; 10.4 s
+  Reference saved 26: settled-correct 26 (active 26), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 3, steps with no informative candidate 17, min units reached 3, answers at steps 20-20; 3.3 s
+  Random    saved 26: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 26; region probes 2 (2 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 2, answers at steps 0-0; 5.6 s
+  Wait      saved 26: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 26; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; 5.3 s
+  Repeat    saved 26: settled-correct 0 (active 0), dissolved-correct 26 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 20 (1 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 1, answers at steps 20-20; 3.0 s
+    repeat ablation, conflict evidence after: []
+
+===== seed 504
+  world: 24 objects, region pairs 37 (queries 19, evidence 18), region truth flips true, measured noise tolerance 1/100; stage 1: conflict abstentions 19 of 19 queries; other []
+    conflict law (predicts 0): #2539 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=448 counter=0 indep=64 int=448 transfer 62/62 utility 262b (int 262b) origin Generated
+    conflict law (predicts 1): #1066 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=346 counter=0 indep=64 int=346 transfer 62/62 utility 412b (int 412b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+    relabelled stage 1: conflict abstentions 19 (original 19), other []
+    licensed laws naming a mark or identity: 0
+  Agent     saved 19: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 19; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 47, min units reached 0, answers at steps 0-0; 16.9 s
+  Reference saved 19: settled-correct 19 (active 19), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 6 (5 distinct pairs), diagnostic choices 6, steps with no informative candidate 14, min units reached 5, answers at steps 20-20; 5.0 s
+  Random    saved 19: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 19; region probes 1 (1 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 1, answers at steps 0-0; 9.1 s
+  Wait      saved 19: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 19; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; 8.3 s
+  Repeat    saved 19: settled-correct 0 (active 0), dissolved-correct 19 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 20 (1 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 1, answers at steps 20-20; 4.0 s
+    repeat ablation, conflict evidence after: []
+
+===== seed 505
+  world: 26 objects, region pairs 32 (queries 16, evidence 16), region truth flips true, measured noise tolerance 1/100; stage 1: conflict abstentions 16 of 16 queries; other []
+    conflict law (predicts 0): #2191 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=295 counter=0 indep=64 int=295 transfer 62/62 utility 162b (int 162b) origin Generated
+    conflict law (predicts 1): #3551 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=337 counter=0 indep=64 int=337 transfer 62/62 utility 264b (int 264b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+    relabelled stage 1: conflict abstentions 16 (original 16), other []
+    licensed laws naming a mark or identity: 0
+  Agent     saved 16: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 16; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 51, min units reached 2, answers at steps 0-0; 17.0 s
+  Reference saved 16: settled-correct 16 (active 16), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 4 (4 distinct pairs), diagnostic choices 4, steps with no informative candidate 6, min units reached 4, answers at steps 10-10; 3.2 s
+  Random    saved 16: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 16; region probes 1 (1 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 1, answers at steps 0-0; 8.3 s
+  Wait      saved 16: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 16; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; 7.9 s
+  Repeat    saved 16: settled-correct 0 (active 0), dissolved-correct 16 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 20 (1 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 1, answers at steps 20-20; 4.6 s
+    repeat ablation, conflict evidence after: []
+
+===== totals
+  Agent     saved 85 settled-correct 0 dissolved-correct 0 wrong 0 unsettled answers 0 unresolved 85 region probes 0 diagnostic choices 0
+  Reference saved 85 settled-correct 85 dissolved-correct 0 wrong 0 unsettled answers 0 unresolved 0 region probes 21 diagnostic choices 22
+  Random    saved 85 settled-correct 0 dissolved-correct 0 wrong 0 unsettled answers 0 unresolved 85 region probes 6 diagnostic choices 0
+  Wait      saved 85 settled-correct 0 dissolved-correct 0 wrong 0 unsettled answers 0 unresolved 85 region probes 0 diagnostic choices 0
+  Repeat    saved 85 settled-correct 0 dissolved-correct 85 wrong 0 unsettled answers 0 unresolved 0 region probes 100 diagnostic choices 0
+resources: wall 1502.0 s, peak working set 3673 MB

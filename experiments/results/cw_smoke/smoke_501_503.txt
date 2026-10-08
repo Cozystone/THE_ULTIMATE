@@ -1,0 +1,64 @@
+
+===== seed 501
+  world: 16 objects, region pairs 13 (queries 7, evidence 6), region truth flips false, measured noise tolerance 3/100; stage 1: conflict abstentions 7 of 7 queries; other []
+    conflict law (predicts 0): #784 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=503 counter=22 indep=64 int=481 transfer 52/56 utility 320b (int 320b) origin Generated
+    conflict law (predicts 0): #10171 act7 : r0.c3=2195 => t15005 => Some(0) | LICENSED | n=129 counter=3 indep=14 int=126 transfer 62/64 utility 86b (int 86b) origin Generated
+    conflict law (predicts 0): #10172 act7 : r0.c1000=13 => t15005 => Some(0) | LICENSED | n=129 counter=3 indep=14 int=126 transfer 62/64 utility 86b (int 86b) origin Generated
+    conflict law (predicts 0): #197999 act7 : r0.c5030=13 => t15005 => Some(0) | LICENSED | n=110 counter=3 indep=14 int=107 transfer 61/63 utility 67b (int 67b) origin Generated
+    conflict law (predicts 1): #3415 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=382 counter=16 indep=46 int=366 transfer 62/62 utility 313b (int 313b) origin Generated
+    conflict law (predicts 0): #17947 act7 : r0.c0=2 & r0.c4=6 => t15005 => Some(0) | LICENSED | n=129 counter=3 indep=14 int=126 transfer 62/64 utility 58b (int 58b) origin Refined { parent: 7938 }
+    conflict law (predicts 0): #284754 act7 : r0.c4=6 & r0.c6009=1 => t15005 => Some(0) | LICENSED | n=62 counter=0 indep=7 int=62 transfer 43/43 utility 22b (int 22b) origin Refined { parent: 7938 }
+    conflict law (predicts 0): #284753 act7 : r0.c4=6 & same(r0,r1;c0) => t15005 => Some(0) | LICENSED | n=71 counter=1 indep=8 int=70 transfer 49/50 utility 23b (int 23b) origin Refined { parent: 7938 }
+    conflict law (predicts 0): #31286 act7 : r1.c2=2 & same(r0,r1;c2) => t15005 => Some(0) | LICENSED | n=154 counter=5 indep=20 int=149 transfer 58/59 utility 78b (int 78b) origin Refined { parent: 278 }
+    conflict evidence at stage 1: [(0, 1, 1, 1, 0)]
+    relabelled stage 1: conflict abstentions 7 (original 7), other []
+    licensed laws naming a mark or identity: 37
+  Agent     saved 7: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 7; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 112, min units reached 1; 161.4 s
+  Reference saved 7: settled-correct 7 (active 7), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 4, steps with no informative candidate 6, min units reached 4; 5.8 s
+  Random    saved 7: settled-correct 7 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 2 (2 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 3; 6.4 s
+  Wait      saved 7: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 7; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 1; 65.6 s
+  Repeat    saved 7: settled-correct 5 (active 0), dissolved-correct 2 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 20 (1 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 11; 5.6 s
+    repeat ablation, conflict evidence after: []
+
+===== seed 502
+  world: 14 objects, region pairs 12 (queries 6, evidence 6), region truth flips false, measured noise tolerance 3/100; stage 1: conflict abstentions 0 of 6 queries; other ["answered 0 (truth 0)", "answered 0 (truth 0)", "answered 0 (truth 0)", "answered 0 (truth 0)", "answered 0 (truth 0)", "answered 0 (truth 0)"]
+    relabelled stage 1: conflict abstentions 0 (original 0), other ["answered 0 (truth 0)", "answered 0 (truth 0)", "answered 0 (truth 0)", "answered 0 (truth 0)", "answered 0 (truth 0)", "answered 0 (truth 0)"]
+    licensed laws naming a mark or identity: 26
+  Agent     saved 0: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0; 1.5 s
+  Reference saved 0: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0; 1.4 s
+  Random    saved 0: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0; 1.4 s
+  Wait      saved 0: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0; 1.3 s
+  Repeat    saved 0: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0; 1.4 s
+
+===== seed 503
+  world: 17 objects, region pairs 14 (queries 7, evidence 7), region truth flips true, measured noise tolerance 3/100; stage 1: conflict abstentions 6 of 7 queries; other ["answered 0 (truth 1)"]
+    conflict law (predicts 0): #2006 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=248 counter=4 indep=36 int=244 transfer 62/63 utility 226b (int 226b) origin Generated
+    conflict law (predicts 0): #2007 act7 : r0.c3=3967 => t15005 => Some(0) | LICENSED | n=81 counter=1 indep=11 int=80 transfer 62/63 utility 56b (int 56b) origin Generated
+    conflict law (predicts 0): #2008 act7 : r0.c4=4 => t15005 => Some(0) | LICENSED | n=81 counter=1 indep=11 int=80 transfer 62/63 utility 37b (int 37b) origin Generated
+    conflict law (predicts 0): #2010 act7 : r0.c1000=4 => t15005 => Some(0) | LICENSED | n=81 counter=1 indep=11 int=80 transfer 62/63 utility 37b (int 37b) origin Generated
+    conflict law (predicts 0): #256552 act7 : r0.c3036=4 => t15005 => Some(0) | LICENSED | n=64 counter=1 indep=11 int=63 transfer 59/60 utility 22b (int 22b) origin Generated
+    conflict law (predicts 0): #210475 act7 : r0.c3032=4 => t15005 => Some(0) | LICENSED | n=66 counter=1 indep=11 int=65 transfer 61/62 utility 24b (int 24b) origin Generated
+    conflict law (predicts 0): #210474 act7 : r0.c3034=4 => t15005 => Some(0) | LICENSED | n=66 counter=1 indep=11 int=65 transfer 61/62 utility 24b (int 24b) origin Generated
+    conflict law (predicts 0): #256556 act7 : r0.c5042=4 => t15005 => Some(0) | LICENSED | n=64 counter=1 indep=11 int=63 transfer 59/60 utility 22b (int 22b) origin Generated
+    conflict law (predicts 0): #210480 act7 : r0.c5038=4 => t15005 => Some(0) | LICENSED | n=66 counter=1 indep=11 int=65 transfer 61/62 utility 24b (int 24b) origin Generated
+    conflict law (predicts 0): #210479 act7 : r0.c5040=4 => t15005 => Some(0) | LICENSED | n=66 counter=1 indep=11 int=65 transfer 61/62 utility 24b (int 24b) origin Generated
+    conflict law (predicts 0): #654713 act7 : r0.c6040=0 => t15005 => Some(0) | LICENSED | n=85 counter=1 indep=23 int=84 transfer 62/63 utility 47b (int 47b) origin Generated
+    conflict law (predicts 1): #17406 act7 : r0.c1=0 & r1.c1=0 => t15005 => Some(1) | LICENSED | n=80 counter=2 indep=12 int=78 transfer 62/64 utility 35b (int 35b) origin Refined { parent: 259 }
+    conflict law (predicts 0): #25673 act7 : r1.c6=4 & order(r0,r1;c4)< => t15005 => Some(0) | LICENSED | n=208 counter=13 indep=30 int=195 transfer 60/63 utility 26b (int 26b) origin Refined { parent: 5398 }
+    conflict evidence at stage 1: [(0, 1, 1, 0, 1)]
+    relabelled stage 1: conflict abstentions 2 (original 6), other ["answered 0 (truth 1)", "answered 0 (truth 1)", "answered 0 (truth 1)", "answered 0 (truth 1)", "answered 0 (truth 1)"]
+    licensed laws naming a mark or identity: 39
+  Agent     saved 6: settled-correct 1 (active 0), dissolved-correct 0 (active 0), wrong 1, unsettled answers 0, unresolved 4; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 74, min units reached 13; 171.8 s
+  Reference saved 6: settled-correct 4 (active 4), dissolved-correct 2 (active 2), wrong 0, unsettled answers 0, unresolved 0; region probes 32 (7 distinct pairs), diagnostic choices 63, steps with no informative candidate 137, min units reached 3; 80.4 s
+  Random    saved 6: settled-correct 4 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 2; region probes 7 (4 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 3; 75.0 s
+  Wait      saved 6: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 6; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 1; 76.6 s
+  Repeat    saved 6: settled-correct 2 (active 0), dissolved-correct 1 (active 0), wrong 0, unsettled answers 0, unresolved 3; region probes 300 (1 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 6; 88.0 s
+    repeat ablation, conflict evidence after: [(1, 0, 6, 6, 0)]
+
+===== totals
+  Agent     saved 13 settled-correct 1 dissolved-correct 0 wrong 1 unsettled answers 0 unresolved 11 region probes 0 diagnostic choices 0
+  Reference saved 13 settled-correct 11 dissolved-correct 2 wrong 0 unsettled answers 0 unresolved 0 region probes 35 diagnostic choices 67
+  Random    saved 13 settled-correct 11 dissolved-correct 0 wrong 0 unsettled answers 0 unresolved 2 region probes 9 diagnostic choices 0
+  Wait      saved 13 settled-correct 0 dissolved-correct 0 wrong 0 unsettled answers 0 unresolved 13 region probes 0 diagnostic choices 0
+  Repeat    saved 13 settled-correct 7 dissolved-correct 3 wrong 0 unsettled answers 0 unresolved 3 region probes 320 diagnostic choices 0
+resources: wall 2923.6 s, peak working set 6809 MB

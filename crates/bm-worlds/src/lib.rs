@@ -5,5 +5,6 @@ pub mod devices;
 pub mod ground;
 pub mod heldout;
 pub mod heldout2;
+pub mod conflict_dev;
 pub mod os;
 pub mod r0;

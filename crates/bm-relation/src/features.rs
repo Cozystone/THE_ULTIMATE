@@ -58,6 +58,7 @@ pub struct Feature {
 }
 
 /// Deterministic codebook over the item memory.
+#[derive(Clone)]
 pub struct Codebook {
     im: ItemMemory<W>,
     cache: HashMap<String, H>,

@@ -1,0 +1,16 @@
+
+===== seed 501
+  world: 16 objects, region pairs 13 (queries 7, evidence 6), region truth flips false, measured noise tolerance 3/100; stage 1: conflict abstentions 7 of 7 queries; other []
+    conflict law (predicts 0): #784 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=503 counter=22 indep=64 int=481 transfer 52/56 utility 320b (int 320b) origin Generated
+    conflict law (predicts 0): #10171 act7 : r0.c3=2195 => t15005 => Some(0) | LICENSED | n=129 counter=3 indep=14 int=126 transfer 62/64 utility 86b (int 86b) origin Generated
+    conflict law (predicts 0): #10172 act7 : r0.c1000=13 => t15005 => Some(0) | LICENSED | n=129 counter=3 indep=14 int=126 transfer 62/64 utility 86b (int 86b) origin Generated
+    conflict law (predicts 0): #197999 act7 : r0.c5030=13 => t15005 => Some(0) | LICENSED | n=110 counter=3 indep=14 int=107 transfer 61/63 utility 67b (int 67b) origin Generated
+    conflict law (predicts 1): #3415 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=382 counter=16 indep=46 int=366 transfer 62/62 utility 313b (int 313b) origin Generated
+    conflict law (predicts 0): #17947 act7 : r0.c0=2 & r0.c4=6 => t15005 => Some(0) | LICENSED | n=129 counter=3 indep=14 int=126 transfer 62/64 utility 58b (int 58b) origin Refined { parent: 7938 }
+    conflict law (predicts 0): #284754 act7 : r0.c4=6 & r0.c6009=1 => t15005 => Some(0) | LICENSED | n=62 counter=0 indep=7 int=62 transfer 43/43 utility 22b (int 22b) origin Refined { parent: 7938 }
+    conflict law (predicts 0): #284753 act7 : r0.c4=6 & same(r0,r1;c0) => t15005 => Some(0) | LICENSED | n=71 counter=1 indep=8 int=70 transfer 49/50 utility 23b (int 23b) origin Refined { parent: 7938 }
+    conflict law (predicts 0): #31286 act7 : r1.c2=2 & same(r0,r1;c2) => t15005 => Some(0) | LICENSED | n=154 counter=5 indep=20 int=149 transfer 58/59 utility 78b (int 78b) origin Refined { parent: 278 }
+    conflict evidence at stage 1: [(0, 1, 1, 1, 0)]
+    relabelled stage 1: conflict abstentions 7 (original 7), other []
+    licensed laws naming a mark or identity: 37
+  Agent     saved 7: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 7; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 112, min units reached 1; 540.8 s

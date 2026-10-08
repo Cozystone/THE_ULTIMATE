@@ -1,0 +1,12 @@
+SEED_START 501
+CWSTEP seed 501 step 0 chose 0 [] region false
+CWSTEP seed 501 step 1 chose 0 [] region false
+CWSTEP seed 501 step 2 chose 0 [] region false
+SEED_END 501 wall 995.0 s working set 29 MB peak 6360 MB
+SEED_START 502
+SEED_END 502 wall 602.6 s working set 35 MB peak 6360 MB
+SEED_START 503
+CWSTEP seed 503 step 0 chose 0 [] region false
+CWSTEP seed 503 step 1 chose 0 [] region false
+CWSTEP seed 503 step 2 chose 0 [] region false
+SEED_END 503 wall 1324.5 s working set 40 MB peak 6809 MB
