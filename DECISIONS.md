@@ -890,3 +890,51 @@ online-refinement path were not re-validated under it. These are separate diagno
 D055/D055b meet the memory budget (191-347 MB at 20,000 steps, from 3.5-6.9 GB) but fail the v0.3
 non-negotiable regressions (EXPERIMENTS, "v0.3 result"). The mechanism stays on `main` as
 development state; the frozen learner is still `bitmind-v0.2`.
+
+## D055 re-introduced on v0.4-dev (2026-10-08)
+v0.4 starts from the `bitmind-v0.2` learner. D055/D055b (gate, prequential scoring, chance
+model, copy model above 64 outcomes, materialization by replay without transfer credit, gate
+information as initial utility, SET_CAP 1,024) are ported deliberately from the v0.3 record
+(`28fac94`), with the same constants (PREREG-v0.4 section 3). This is a choice, not inheritance:
+D056 and D057 below change how they are licensed.
+
+## D056 K5: the licence cost is charged on the effective hypothesis family (v0.4, 2026-10-08)
+D012 licenses a law only if utility >= log2(n_cand) + margin. n_cand is now |F(action, target,
+context)|, a monotone u64 counter of every hypothesis examined for that target in that
+context. It replaces `per_target_ctx` (materialized laws holding evidence, decremented on
+pruning). Increments:
+* every distinct value entering the D055 table: +1;
+* every case of a value beyond the per-family bound (untracked): +1, an upper bound on distinct
+  untracked values;
+* every refinement candidate scored in a hidden-condition search, online or in sleep:
+  +1 per candidate per search;
+* every law given its first evidence in the context by any other path: +1.
+
+A materialized value and a refined child are counted once, as the value or candidate they were.
+Nothing decrements |F|: not pruning, retirement, dead latent versions, compaction or sleep.
+Memory: one u64 per (action, target, context).
+Rationale: a licence certifies that the law survived a search over F; the search, not the
+storage, sets the multiple-comparison charge. `per_target_ctx` is kept for reporting only.
+The D055 gates keep their own counts (M, M_r) as pre-registered.
+
+## D057 Prospective transfer for deferred hypotheses (v0.4, 2026-10-08; PREREG-v0.4 amendment 1b)
+Evidence: `experiments/results/v04_c3_e3_diagnosis.txt`. C3 under D055 fails on 15/15 seeds
+because the decisive law is materialized by replay after every relevant situation has been
+seen; it can never earn a transfer trial (transfer 0/0, utility 66-95 bits, 0 counterexamples).
+
+A deferred value now keeps the trial record its law would keep:
+* a bounded relevant-situation key set (D050a: action arguments plus the feature's roles);
+* up to 3 relevant bindings;
+* ok / fail counters;
+* up to 16 failed trials.
+
+A case is a trial only if all of these hold before the outcome is counted:
+* the value has >= 3 cases, all with one outcome;
+* it has 3 distinct bindings (the general-law test `independent() >= 3`, stricter than the
+  amendment's ">= 2");
+* the relevant situation is provably unseen.
+
+On materialization the law receives the tallies and the failed trials. A value's first
+counterexample drops its key set (marked saturated), so it earns no further trial; this also
+bounds memory, since noisy values keep no keys. Replay still gives no transfer credit, and
+nothing is credited retroactively.

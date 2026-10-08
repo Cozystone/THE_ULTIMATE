@@ -32,7 +32,20 @@ pub struct DeferredValue {
     pub ll_model: i64,
     /// amendment 6: the same information restricted to intervention cases.
     pub info_int: i64,
+    /// D057: relevant situations of this value's cases (prospective transfer novelty); dropped
+    /// (saturated) at the first counterexample, after which the value earns no trial.
+    pub rsits: KeySet,
+    /// D057: up to 3 distinct relevant bindings of its cases.
+    pub binds: Vec<u64>,
+    /// D057: pre-registered predictions on unseen relevant situations while deferred.
+    pub t_ok: u32,
+    pub t_fail: u32,
+    /// D057: failed prospective trials (episode, predicted, actual), bounded.
+    pub t_failed: Vec<(u64, i64, i64)>,
 }
+
+/// D057: failed prospective trials kept per deferred value.
+pub const DEFERRED_FAILED_CAP: usize = 16;
 
 /// D055a: how often each input filler (role, channel) equalled a target's outcome (copy model).
 #[derive(Clone, Debug, Default)]
@@ -66,6 +79,14 @@ fn family_of(k: &FeatureKind) -> u64 {
         FeatureKind::Same { r1, r2, ch } | FeatureKind::Diff { r1, r2, ch } => mix64(mix64(2, (r1 as u64) << 8 | r2 as u64), ch as u64),
         FeatureKind::Order { r1, r2, ch, .. } => mix64(mix64(3, (r1 as u64) << 8 | r2 as u64), ch as u64),
         FeatureKind::Delta { r1, r2, ch, .. } => mix64(mix64(4, (r1 as u64) << 8 | r2 as u64), ch as u64),
+    }
+}
+
+/// D057: the roles a feature mentions (as `Law::cond_roles` for a one-feature condition).
+fn feature_roles(k: &FeatureKind) -> Vec<u8> {
+    match *k {
+        FeatureKind::Abs { role, .. } => vec![role],
+        FeatureKind::Same { r1, r2, .. } | FeatureKind::Diff { r1, r2, .. } | FeatureKind::Order { r1, r2, .. } | FeatureKind::Delta { r1, r2, .. } => vec![r1, r2],
     }
 }
 
@@ -164,6 +185,12 @@ pub struct RelationEngine {
     pub echo: HashMap<(u16, u32, u64), EchoStats>,
     /// amendment 6: the gate's prequential information handed to the next materialized law.
     pending_utility: Option<(i64, i64)>,
+    /// D057: the prospective transfer record handed to the next materialized law.
+    pending_transfer: Option<(u32, u32, Vec<(u64, i64, i64)>)>,
+    /// D056 (K5): effective hypothesis family size per (action, target, context): every
+    /// candidate ever examined there (deferred, materialized, untracked, refinement candidate,
+    /// or law given evidence). Monotone; never decremented by pruning, retirement or sleep.
+    pub family: HashMap<(u16, u32, u64), u64>,
 }
 
 /// What one sleep consolidation did.
@@ -245,6 +272,8 @@ impl RelationEngine {
     pub fn with_policy(seed: u64, policy: LicensePolicy) -> Self {
         RelationEngine {
             pending_utility: None,
+            pending_transfer: None,
+            family: HashMap::new(),
             echo: HashMap::new(),
             deferred: HashMap::new(),
             inv: HashMap::new(),
@@ -648,6 +677,12 @@ impl RelationEngine {
     }
 
     /// K2 measurement (read-only): estimated retained bytes per structure, largest first.
+    /// D056 (K5): effective hypothesis family size for (action, target, context): the
+    /// multiple-comparison count every licence about that target in that context is charged.
+    pub fn family_size(&self, action: u16, target: u32, ctx: u64) -> u64 {
+        self.family.get(&(action, target, ctx)).copied().unwrap_or(0)
+    }
+
     /// Diagnostic (read-only, v0.4 C3/E3 provenance):
     /// laws as in v0.4-dev, plus the deferred value entries on channel `ch` and the counters M.
     pub fn diag_target(&self, action: u16, target: u32, ctx: u64, ch: Option<u16>) -> Vec<String> {
@@ -936,7 +971,7 @@ impl RelationEngine {
     /// earned a hypothesis: LLR = sum h log2(h/n) - sum_cases log2 p_baseline >= log2(M) + margin,
     /// with >= GATE_MIN_CASES cases.
     #[allow(clippy::too_many_arguments)]
-    fn defer_and_test(&mut self, action: u16, target: u32, ctx: u64, base: usize, kind: &FeatureKind, actual: i64, ep: &Episode) -> bool {
+    fn defer_and_test(&mut self, action: u16, target: u32, ctx: u64, base: usize, kind: &FeatureKind, actual: i64, ep: &Episode, eid: u64) -> bool {
         let base_counts: Vec<(i64, u64)> = self.laws[base].ctx(ctx).map(|e| e.bins.iter().map(|b| (b.val, b.count as u64)).collect()).unwrap_or_default();
         let alpha = self.alphabet_size(target);
         let lb = self.baseline_log2(action, target, ctx, ep, actual, &base_counts, alpha);
@@ -946,14 +981,35 @@ impl RelationEngine {
             let fv = table.family_values.entry(fam).or_insert(0);
             if *fv >= VALUES_PER_FAMILY {
                 table.untracked += 1;
+                // D056: an untracked case is counted as an examined value (an upper bound)
+                *self.family.entry((action, target, ctx)).or_insert(0) += 1;
                 return false;
             }
             *fv += 1;
             table.tested += 1;
+            *self.family.entry((action, target, ctx)).or_insert(0) += 1;
             table.entries.insert(kind.clone(), DeferredValue::default());
         }
         let m = table.tested;
         let e = table.entries.get_mut(kind).expect("entry");
+        // D057: a prospective transfer trial (prediction fixed from the previous cases only)
+        let mut roles = ep.arg_roles();
+        roles.extend(feature_roles(kind));
+        roles.sort_unstable();
+        roles.dedup();
+        let (rk, bk) = (ep.situation_key(&roles), ep.binding_key(&roles));
+        let deterministic = e.pooled == 0 && e.hist.len() == 1;
+        if deterministic && e.total() >= GATE_MIN_CASES && e.binds.len() >= 3 && !e.rsits.sat && !e.rsits.contains(&rk) {
+            let pred = e.hist[0].0;
+            if pred == actual {
+                e.t_ok += 1;
+            } else {
+                e.t_fail += 1;
+                if e.t_failed.len() < DEFERRED_FAILED_CAP {
+                    e.t_failed.push((eid, pred, actual));
+                }
+            }
+        }
         // amendment 4: predict this case from the entry's previous cases (Laplace), then count it
         let prev = e.hist.iter().find(|x| x.0 == actual).map(|x| x.1).unwrap_or(0) as u64;
         let lm = log2_q16(prev + 1) - log2_q16(e.total() as u64 + alpha.max(1));
@@ -969,13 +1025,25 @@ impl RelationEngine {
             e.pooled += 1;
         }
         e.ll_base += lb;
+        // D057: novelty bookkeeping only while the value is deterministic
+        if e.pooled == 0 && e.hist.len() == 1 {
+            e.rsits.put(rk);
+            if e.binds.len() < 3 && !e.binds.contains(&bk) {
+                e.binds.push(bk);
+            }
+        } else if !e.rsits.sat {
+            e.rsits.compact();
+            e.binds = Vec::new();
+        }
         if e.total() < GATE_MIN_CASES {
             return false;
         }
         if e.ll_model - e.ll_base >= log2_q16(m.max(2)) + GATE_MARGIN_BITS * hdc_core::fixed::Q {
             let info = (e.ll_model - e.ll_base, e.info_int);
+            let tr = (e.t_ok, e.t_fail, std::mem::take(&mut e.t_failed));
             table.entries.remove(kind);
             self.pending_utility = Some(info);
+            self.pending_transfer = Some(tr);
             return true;
         }
         false
@@ -1011,6 +1079,16 @@ impl RelationEngine {
             let e = self.laws[l].ctx_mut(ctx, t);
             e.utility_q16 += u;
             e.utility_int_q16 += ui;
+        }
+        // D057: prospective trials made while deferred (pre-registered then, not credited now)
+        if let Some((ok, fail, failed)) = self.pending_transfer.take() {
+            let e = self.laws[l].ctx_mut(ctx, t);
+            e.transfer.ok += ok;
+            let kept = failed.len() as u32;
+            for (episode, predicted, actual) in failed {
+                e.transfer.record(episode, predicted, actual);
+            }
+            e.transfer.fail += fail - kept;
         }
         l
     }
@@ -1088,7 +1166,7 @@ impl RelationEngine {
                     single_of.push(Some(l));
                     continue;
                 }
-                if self.defer_and_test(action, target, ctx, base, &f.kind, actual, &epc) {
+                if self.defer_and_test(action, target, ctx, base, &f.kind, actual, &epc, eid) {
                     let l = self.materialize(action, target, ctx, cc.single_fp[i], &cc.single_hv[i], f.kind.clone(), eid);
                     fresh.push(l);
                     single_of.push(Some(l));
@@ -1226,6 +1304,8 @@ impl RelationEngine {
             for &l in &touched {
                 if self.laws[l].ctx(ctx).map(|e| e.total() == 0).unwrap_or(true) {
                     *self.per_target_ctx.entry((target, ctx)).or_insert(0) += 1;
+                    // D056: a law examined here for the first time
+                    *self.family.entry((action, target, ctx)).or_insert(0) += 1;
                 }
                 let (bk, rk) = (self.bkey(l, &epc), self.rkey(l, &epc));
                 self.laws[l].ctx_mut(ctx, t).add(actual, eid, bk, rk, sig, intervention, t);
@@ -1404,6 +1484,8 @@ impl RelationEngine {
         // D055: every candidate feature examined counts toward the multiple-comparison budget of
         // this target; a child must carry LLR >= log2(M_r) + margin bits against its parent
         let examined = tally.len() as u64;
+        // D056: every refinement candidate examined joins the target's family
+        *self.family.entry((action, target, ctx)).or_insert(0) += examined;
         let m_r = {
             let c = self.refine_tested.entry((target, ctx)).or_insert(0);
             *c += examined;
@@ -1542,7 +1624,8 @@ impl RelationEngine {
     /// Recompute the lifecycle status of one law in one context.
     pub fn evaluate(&mut self, l: usize, ctx: u64) {
         let p = self.policy_for(self.laws[l].target);
-        let n_cand = *self.per_target_ctx.get(&(self.laws[l].target, ctx)).unwrap_or(&1) as u64;
+        // D056 (K5): the licence is a selection from every hypothesis examined for this target
+        let n_cand = self.family.get(&(self.laws[l].action, self.laws[l].target, ctx)).copied().unwrap_or(1);
         let thresh = log2_q16(n_cand.max(2)) + p.utility_margin_q16;
         let elsewhere_val = self.licensed_value_elsewhere(l, ctx);
         let child_licensed = self.laws[l]
