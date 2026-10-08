@@ -349,6 +349,7 @@ fn main() {
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
     let run = |k: &str| only.as_deref().map(|o| o.split(',').any(|x| x == k)).unwrap_or(true);
     for &seed in &seeds {
+        let _seed_guard = bm_bench::SeedGuard::new(seed);
         let _ = writeln!(out.report, "\n===== seed {seed}");
         if run("1") {
             g1(seed, &mut out);

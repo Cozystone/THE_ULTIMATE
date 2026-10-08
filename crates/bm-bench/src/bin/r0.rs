@@ -400,6 +400,7 @@ fn main() {
         }
     };
     for &seed in &seeds {
+        let _seed_guard = bm_bench::SeedGuard::new(seed);
         let p = standard(R0Kind::Equality, seed, Pool::Test, &[0, 1], &mut report, &mut json);
         note("C1 equality, held-out values", p, &mut all);
         let p = standard(R0Kind::Order, seed, Pool::Test, &[-1, 0, 1], &mut report, &mut json);

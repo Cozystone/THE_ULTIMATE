@@ -512,6 +512,7 @@ fn main() {
     let seeds: Vec<u64> = std::env::args().nth(1).map(|s| s.split(',').filter_map(|x| x.parse().ok()).collect()).unwrap_or(vec![1, 2, 3]);
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
     for &seed in &seeds {
+        let _seed_guard = bm_bench::SeedGuard::new(seed);
         let _ = writeln!(out.report, "\n===== seed {seed}");
         let (mut g, mut w) = main_world(seed, &mut out);
         novelty(seed, &mut g, &mut w, &mut out);

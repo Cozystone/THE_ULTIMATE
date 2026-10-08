@@ -352,6 +352,7 @@ fn main() {
     let mut act_steps = Vec::new();
     let mut rnd_steps = Vec::new();
     for &seed in &seeds {
+        let _seed_guard = bm_bench::SeedGuard::new(seed);
         let _ = writeln!(out.report, "\n===== seed {seed}");
         let (sa, aa) = steps_to_learn(seed, true);
         let (sr, ar) = steps_to_learn(seed, false);

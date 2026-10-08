@@ -428,6 +428,7 @@ fn main() {
     let h5_steps: u32 = std::env::var("H5_STEPS").ok().and_then(|x| x.parse().ok()).unwrap_or(20_000);
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
     for &seed in &seeds {
+        let _seed_guard = bm_bench::SeedGuard::new(seed);
         let _ = writeln!(out.report, "\n===== seed {seed}");
         let relabel = seed ^ 0x3E1A;
         if run("1") || run("3") {

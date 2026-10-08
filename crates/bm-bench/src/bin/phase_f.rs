@@ -373,6 +373,7 @@ fn main() {
     let t_all = Instant::now();
     let mut lat = Vec::new();
     for &seed in &seeds {
+        let _seed_guard = bm_bench::SeedGuard::new(seed);
         let _ = writeln!(out.report, "\n===== seed {seed}");
         let (r30, r50) = f1(seed);
         let (n30, n50) = f1_with(seed, false);

@@ -39,3 +39,33 @@ pub fn working_set_mb() -> Option<f64> {
         .ok()?;
     String::from_utf8_lossy(&out.stdout).trim().parse::<f64>().ok().map(|b| b / 1048576.0)
 }
+
+/// v0.4 development report: with BM_STATS set, prints one line per seed when dropped (at the end
+/// of the seed's loop iteration, after the seed's engines): wall time, current and peak working set.
+pub struct SeedGuard {
+    seed: u64,
+    start: std::time::Instant,
+}
+
+impl SeedGuard {
+    pub fn new(seed: u64) -> Self {
+        if std::env::var_os("BM_STATS").is_some() {
+            eprintln!("SEED_START {seed}");
+        }
+        SeedGuard { seed, start: std::time::Instant::now() }
+    }
+}
+
+impl Drop for SeedGuard {
+    fn drop(&mut self) {
+        if std::env::var_os("BM_STATS").is_some() {
+            eprintln!(
+                "SEED_END {} wall {:.1} s working set {} MB peak {} MB",
+                self.seed,
+                self.start.elapsed().as_secs_f64(),
+                working_set_mb().map(|m| format!("{m:.0}")).unwrap_or_else(|| "n/a".into()),
+                peak_working_set_mb().map(|m| format!("{m:.0}")).unwrap_or_else(|| "n/a".into())
+            );
+        }
+    }
+}

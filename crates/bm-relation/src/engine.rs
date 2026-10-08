@@ -677,6 +677,36 @@ impl RelationEngine {
     }
 
     /// K2 measurement (read-only): estimated retained bytes per structure, largest first.
+    /// v0.4 development report (read-only): one line of lifecycle counts for this engine.
+    pub fn stats_line(&self) -> String {
+        let (mut lic, mut rev, mut prov, mut cand, mut pruned) = (0u64, 0u64, 0u64, 0u64, 0u64);
+        for l in &self.laws {
+            if l.pruned {
+                pruned += 1;
+                continue;
+            }
+            if l.ctx.iter().any(|e| e.status == Status::Licensed) {
+                lic += 1;
+            } else if l.ctx.iter().any(|e| e.status.terminal()) {
+                rev += 1;
+            } else if l.ctx.iter().any(|e| e.status == Status::Provisional) {
+                prov += 1;
+            } else {
+                cand += 1;
+            }
+        }
+        let fam_max = self.family.values().copied().max().unwrap_or(0);
+        let fam_sum: u64 = self.family.values().sum();
+        let deferred: u64 = self.deferred.values().map(|t| t.entries.len() as u64).sum();
+        let untracked: u64 = self.deferred.values().map(|t| t.untracked).sum();
+        format!(
+            "ENGSTATS ticks {} laws {} licensed {lic} revoked/split {rev} provisional {prov} candidate/contested {cand} pruned/retired {pruned} materialized {} deferred-entries {deferred} untracked {untracked} family-max {fam_max} family-sum {fam_sum}",
+            self.tick,
+            self.laws.len(),
+            self.materialized
+        )
+    }
+
     /// D056 (K5): effective hypothesis family size for (action, target, context): the
     /// multiple-comparison count every licence about that target in that context is charged.
     pub fn family_size(&self, action: u16, target: u32, ctx: u64) -> u64 {
@@ -2050,6 +2080,16 @@ impl RelationEngine {
                 e.utility_int_q16 >> 16,
                 law.lineage.origin
             ),
+        }
+    }
+}
+
+impl Drop for RelationEngine {
+    /// v0.4 development report: with BM_STATS set, every engine prints its lifecycle counts when
+    /// it is dropped (read-only; no effect on learning).
+    fn drop(&mut self) {
+        if std::env::var_os("BM_STATS").is_some() {
+            eprintln!("{}", self.stats_line());
         }
     }
 }
