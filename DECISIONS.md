@@ -872,3 +872,21 @@ Two interactions with v0.2 mechanisms caused it:
 
 Spot check: R0 seeds 1-5 PASS, F2 300/300, F6 26.8x, C4a seed 46 50/50.
 Changed test: the v0.2 saturation test is now cap-generic (it runs until the set saturates).
+
+## Known issue K5 (from v0.3): the multiple-comparison cost must count every hypothesis examined
+Evidence: v0.3 round 2, H1 leakage. The leaked answers come from licensed laws naming one object:
+`r1.mark=6574 => unchanged` has 11 independent supports, transfer 43/43 and **15 bits** of utility.
+D012 charges a licence log2(#hypotheses for the target) + margin, counting only materialized laws.
+In v0.2 that count was in the hundreds of thousands (~22 bits), so such weak object-specific laws
+never paid their cost. D055 cut the materialized population to thousands while the values it
+examined and deferred were not counted, so the charge fell to ~14 bits.
+Diagnosis: the selection cost must include every hypothesis examined (materialized laws plus
+deferred values tested plus refinement candidates). Without it, gating trades memory for false
+licences. C3 (hidden condition) and E3 (verification of sleep-born hypotheses) also collapsed:
+refinement now passes the same gate against the parent, and the D048 sleep path and the
+online-refinement path were not re-validated under it. These are separate diagnoses, still open.
+
+## D055 status: not adopted as a frozen mechanism
+D055/D055b meet the memory budget (191-347 MB at 20,000 steps, from 3.5-6.9 GB) but fail the v0.3
+non-negotiable regressions (EXPERIMENTS, "v0.3 result"). The mechanism stays on `main` as
+development state; the frozen learner is still `bitmind-v0.2`.

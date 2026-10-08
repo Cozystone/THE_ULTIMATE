@@ -91,6 +91,11 @@ impl Agent {
                 });
                 if new_objects && names_identity {
                     c.leakage += 1;
+                    if std::env::var("DIAG_LEAK").is_ok() {
+                        for &l in laws {
+                            eprintln!("LEAK {}", self.rel.summary(l, q.context));
+                        }
+                    }
                 } else if *val == truth {
                     c.correct += 1;
                 } else {

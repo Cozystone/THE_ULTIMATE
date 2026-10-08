@@ -265,3 +265,8 @@ materially, the memory/correctness tradeoff is reported and v0.3 is not frozen a
 after many cases, the replay fills its relevant-situation set to the D054 cap of 64, the set
 saturates, and novelty becomes undecidable forever. The cap was set when v0.2 carried millions of
 laws; under D055 there are thousands. Change: SET_CAP = 1,024.
+
+## Closing note (2026-10-08): stop rule invoked
+Regression round 2 lost correctness materially (EXPERIMENTS, "v0.3 result"): identity leakage 153,
+new wrong answers, C3 0/15, E3 0/15, H1 2/15, H2 0/15, while every memory target was met. Per
+amendment 6 and section 6, v0.3 is not frozen and the J-series is not run.
