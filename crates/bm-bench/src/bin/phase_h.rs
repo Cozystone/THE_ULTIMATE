@@ -273,7 +273,53 @@ fn h4(seed: u64) -> H4 {
     // stage 2: life goes on; the agent previews candidates and probes one on which its licensed
     // laws disagree (never a saved query pair). Saved queries are re-judged every 50 probes.
     let mut done = vec![false; saved.len()];
+    // capability-h4 development mode (H4_AGENT): the agent chooses among offered candidates with
+    // its own action score (D060); no harness search, no oracle fallback
+    let agent_mode = std::env::var("H4_AGENT").is_ok();
+    let prefs = bm_agent::Preferences::default();
     while st.probes < 4000 && done.iter().any(|d| !d) {
+        if agent_mode {
+            let mut offers: Vec<(usize, usize)> = Vec::new();
+            while offers.len() < 8 {
+                let p = w.rng().sample_distinct(n, 2);
+                if !queries.contains(&(p[0], p[1])) && !offers.contains(&(p[0], p[1])) {
+                    offers.push((p[0], p[1]));
+                }
+            }
+            let mut cands = Vec::new();
+            let mut idx = Vec::new();
+            for (k, &(i, j)) in offers.iter().enumerate() {
+                let (pv, tr) = w.preview(h2::TOUCH, vec![i, j]);
+                if let Some((q, t)) = a.query(&pv, &tr, j) {
+                    cands.push(bm_agent::Candidate { kind: bm_agent::OptionKind::Act { action: h2::TOUCH, args: vec![i, j] }, episode: Some(q), targets: vec![t], tier: 1, cost_q16: hdc_core::fixed::Q / 4, reliability_q16: hdc_core::fixed::Q });
+                    idx.push(k);
+                }
+            }
+            let (pw, _) = w.preview(h2::WAIT, vec![0]);
+            let wep = to_episode_scene(&a.g.ground(&pw)).map(|e| e.without_outcomes());
+            cands.push(bm_agent::Candidate { kind: bm_agent::OptionKind::Wait, episode: wep, targets: vec![], tier: 0, cost_q16: hdc_core::fixed::Q / 4, reliability_q16: hdc_core::fixed::Q });
+            let pick = bm_agent::choose(&mut a.rel, &cands, &prefs).map(|x| x.0).unwrap_or(cands.len() - 1);
+            let (act, args) = if pick < idx.len() {
+                let (i, j) = offers[idx[pick]];
+                let (Some(ep), Some(&t)) = (&cands[pick].episode, cands[pick].targets.first()) else { unreachable!() };
+                if a.rel.conflict_probe(ep, t).informative_pairs() > 0 {
+                    st.sought += 1;
+                }
+                if evidence.contains(&(i, j)) {
+                    probed_region.insert((i, j));
+                }
+                (h2::TOUCH, vec![i, j])
+            } else {
+                (h2::WAIT, vec![w.rng().below(n as u64) as usize])
+            };
+            let (ev, _) = w.step(act, args);
+            a.feed(ev);
+            st.probes += 1;
+            if st.probes % 50 == 0 {
+                rejudge(&mut a, &saved, &mut done, &mut st, &probed_region);
+            }
+            continue;
+        }
         let mut choice = None;
         for _ in 0..20 {
             let p = w.rng().sample_distinct(n, 2);
@@ -312,32 +358,37 @@ fn h4(seed: u64) -> H4 {
         a.feed(ev);
         st.probes += 1;
         if st.probes % 50 == 0 {
-            for (k, (q, t, tv)) in saved.iter().enumerate() {
-                if done[k] {
-                    continue;
-                }
-                let ce = a.rel.conflict_evidence(q, *t);
-                let settled = ce.is_empty() || ce.iter().all(|c| c.2 >= bm_relation::engine::MIN_SHARED_INDEPENDENT);
-                if let Some(v) = a.rel.predict(q, *t).value() {
-                    done[k] = true;
-                    if !settled {
-                        st.unsettled_answers += 1;
-                    } else if ce.is_empty() {
-                        st.other_answers += 1;
-                        st.other_evidence.push(probed_region.len());
-                        if v != *tv {
-                            st.settled_wrong += 1;
-                        }
-                    } else if v == *tv {
-                        st.settled_ok += 1;
-                    } else {
-                        st.settled_wrong += 1;
-                    }
-                }
-            }
+            rejudge(&mut a, &saved, &mut done, &mut st, &probed_region);
         }
     }
     st
+}
+
+/// Re-judge saved H4 queries: D041 settlement, dissolution ("other"), or an unsettled answer.
+fn rejudge(a: &mut Agent, saved: &[(bm_relation::Episode, u32, i64)], done: &mut [bool], st: &mut H4, probed_region: &HashSet<(usize, usize)>) {
+    for (k, (q, t, tv)) in saved.iter().enumerate() {
+        if done[k] {
+            continue;
+        }
+        let ce = a.rel.conflict_evidence(q, *t);
+        let settled = ce.is_empty() || ce.iter().all(|c| c.2 >= bm_relation::engine::MIN_SHARED_INDEPENDENT);
+        if let Some(v) = a.rel.predict(q, *t).value() {
+            done[k] = true;
+            if !settled {
+                st.unsettled_answers += 1;
+            } else if ce.is_empty() {
+                st.other_answers += 1;
+                st.other_evidence.push(probed_region.len());
+                if v != *tv {
+                    st.settled_wrong += 1;
+                }
+            } else if v == *tv {
+                st.settled_ok += 1;
+            } else {
+                st.settled_wrong += 1;
+            }
+        }
+    }
 }
 
 // ------------------------------------------------------------------------ H5 long horizon
@@ -428,6 +479,7 @@ fn main() {
     let h5_steps: u32 = std::env::var("H5_STEPS").ok().and_then(|x| x.parse().ok()).unwrap_or(20_000);
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
     for &seed in &seeds {
+        let _seed_guard = bm_bench::SeedGuard::new(seed);
         let _ = writeln!(out.report, "\n===== seed {seed}");
         let relabel = seed ^ 0x3E1A;
         if run("1") || run("3") {

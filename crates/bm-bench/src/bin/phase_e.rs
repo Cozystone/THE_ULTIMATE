@@ -382,6 +382,7 @@ fn main() {
     let seeds: Vec<u64> = std::env::args().nth(1).map(|s| s.split(',').filter_map(|x| x.parse().ok()).collect()).unwrap_or(vec![1, 2, 3]);
     let mut out = Out { report: String::new(), json: Vec::new(), all: true };
     for &seed in &seeds {
+        let _seed_guard = bm_bench::SeedGuard::new(seed);
         let _ = writeln!(out.report, "\n===== seed {seed}");
         let (s_ok, s_n, t_ok, t_n, desc, (k_s, k_t, k_n, disc_b, disc_c)) = e1_door(seed);
         let p_mcnemar = binom_tail(disc_b, disc_b + disc_c);
