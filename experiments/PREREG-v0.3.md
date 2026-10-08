@@ -202,3 +202,25 @@ and every hypothesis looks informative.
 Change: per case the baseline uses the larger of p_dist(o) and p_mix(o) for the actual outcome. The
 resulting LLR is a lower bound on the information against either chance model; it can only make
 materialization stricter than D055 or D055a. Threshold, margin and minimum cases unchanged.
+
+## Amendment 4: the hypothesis side of the gate is scored prequentially (2026-10-08, before the regression of record)
+Development measurement (`experiments/results/v03dev/*_b.txt`, amendment 3):
+
+| case | working set | laws |
+|---|---|---|
+| H5 seed 201, 20,000 steps | 185 MB | 1,790 |
+| real-OS seed 58, 10,000 probes | 1.95 GB, still rising | 96,283 |
+
+In the real-OS case, 74,087 laws (1.05 GB) predict target 3, the probed file's own post-probe
+content class: a hash of a fresh random marker, unpredictable by construction.
+
+Cause: the hypothesis side used plug-in likelihood (sum h log2(h/n)), which overfits large
+alphabets. Three cases with three different values of a 256-value outcome score log2(1/3) each
+against ~log2(1/356) under the baseline: ~20 bits of information that does not exist.
+
+Change: the hypothesis side is scored prequentially (MDL). Each case is predicted from the
+hypothesis's previous cases only, with Laplace smoothing over the target alphabet,
+p = (count_o + 1) / (n + |A|), before being counted. LLR = sum over cases log2 p_hypothesis
+- sum over cases log2 p_baseline. Single features accumulate both sums case by case; refinement
+candidates are scored by a sequential pass over the parent's episodes in store order. Threshold,
+margin, minimum cases and baseline (amendments 2 and 3) are unchanged.
