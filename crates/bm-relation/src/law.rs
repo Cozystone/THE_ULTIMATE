@@ -89,8 +89,9 @@ impl Default for LicensePolicy {
 }
 
 const EP_CAP: usize = 4096;
-/// D054 (K2 stage 2): key sets per bin stop growing here. 64 exceeds every gate threshold.
-pub const SET_CAP: usize = 64;
+/// D054 (K2 stage 2): key sets per bin stop growing here (v0.3 amendment 6: 1,024, so that a law
+/// materialized by replay keeps its replayed situations decidable).
+pub const SET_CAP: usize = 1024;
 const TRIAL_CAP: usize = 256;
 
 /// D054c: a bounded set of 64-bit keys as a sorted vector with exact capacity (binary search).
