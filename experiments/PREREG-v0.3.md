@@ -224,3 +224,14 @@ p = (count_o + 1) / (n + |A|), before being counted. LLR = sum over cases log2 p
 - sum over cases log2 p_baseline. Single features accumulate both sums case by case; refinement
 candidates are scored by a sequential pass over the parent's episodes in store order. Threshold,
 margin, minimum cases and baseline (amendments 2 and 3) are unchanged.
+
+## Amendment 5: the copy model is a chance baseline only for high-cardinality outcomes (2026-10-08, before the regression of record)
+Evidence: with amendments 2-4 the unit test "sleep licenses a hidden conjunction" failed. In the
+key AND power world, the law "key = 1" was never materialized: for key cases the outcome equals the
+power state, so "copy the power filler" already predicts it. On a binary target, equality between an
+input value and the outcome is not a chance coincidence but a real relation, here the very
+dependency the world has, and using it as the null hypothesis steals credit from genuine laws.
+Change: the copy model enters the baseline only for targets whose outcome alphabet has > 64 values
+(the high-cardinality class fixed in section 2). There a value match is improbable by coincidence
+and persistence is a fair null; it is the K2′-o case amendment 2 was written for. Targets with
+<= 64 outcome values use the plain smoothed distribution (as in D055). Everything else is unchanged.
