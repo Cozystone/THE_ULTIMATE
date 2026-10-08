@@ -795,3 +795,98 @@ power device. `USE: r0=power => door unchanged` has 118 cases, 0 counterexamples
 28/0, but saves only 6 bits over the base rate, below its selection cost (D012: log2 #hypotheses +
 margin); D051a's extra inducers raised that count. The multiple-comparison penalty works as
 designed on a true but low-information law. Reported as a failure, not tuned.
+
+## D055 Evidence-gated hypothesis materialization (v0.3, 2026-10-08; fixes K2′)
+Evidence: `experiments/results/v03_k2_diagnosis.txt`.
+* H5: 1.3-1.7M laws at 20,000 steps, mostly conjunctions over versioned latent features.
+* Real-OS: per-value laws on targets with > 64 outcome values.
+Every single feature created a law for every target at first sight; refinement added up to 8
+children per impure parent; nothing asked whether a feature carried information.
+
+Choice (PREREG-v0.3 amendment 1, estimator corrected by amendments 2-5 before the regression):
+* A single-feature law is materialized only when its value's outcome counts carry
+  LLR >= log2(M) + 4 bits over >= 3 cases. M = values tested for that target and context.
+  Until then the value lives in a bounded table: <= 4,096 values per family, <= 8 outcomes per
+  value.
+* The hypothesis side is scored prequentially: each case is predicted from the value's previous
+  cases with Laplace smoothing over the alphabet (MDL; plug-in likelihood overfits large
+  alphabets).
+* The baseline side, per case, takes the better of two chance models: the smoothed base
+  distribution, and, for targets with > 64 outcome values only, a copy model (the input filler
+  that most often equals the outcome).
+* Refinement children pass the same gate against the parent's distribution; M counts every
+  candidate examined.
+* A materialized law is initialized by replaying the stored episodes that contain its feature.
+  It gets counts, keys and counterexamples, never transfer or utility (D014). A law born on an
+  episode makes no transfer prediction on it.
+* Tables and replay index of retired latent versions are dropped. Materialized laws and
+  counterevidence are never deleted. An abstention on deferred features is attributable
+  (`deferred_features`).
+
+Corrections found in development, each recorded before use:
+* **Copy model (amendment 2):** persistence explains post = pre on hash targets.
+* **Better chance model per case (amendment 3):** a poor copy source made every hypothesis look
+  informative.
+* **Prequential hypothesis side (amendment 4):** plug-in scoring found ~20 bits of illusory
+  information in three distinct hash values.
+* **Copy only for > 64 outcomes (amendment 5):** on binary targets copying is a real relation
+  (key AND power) and must not be the null.
+
+Development effect at 20,000 steps:
+
+| case | v0.2 working set | v0.3 working set | laws |
+|---|---|---|---|
+| H5 seed 201 | 5.3 GB | 248 MB | 5,007 |
+| H5 seed 212 | 6.7 GB | 315 MB | 7,814 |
+| real-OS seed 58 | >= 4.1 GB (at 10k) | 442 MB | 14,403 |
+
+Tests:
+* 256-value nuisance family not materialized;
+* sparse signal (one of 256 values) learned, coin-flip values abstained;
+* relabelling invariance;
+* counterexamples survive deferral;
+* bounded growth under novelty;
+* equality continuity.
+
+The first two fail on v0.2 for the right reason (the nuisance family existed, growth was
+unbounded).
+Changed test assumptions: two lifecycle tests assumed a candidate for every feature exists from
+the start; they now accept "never earned capacity" while keeping their claims (no surviving
+spurious relation; one support for repeated copies).
+
+## D055b Integration of the gate with licensing and novelty (v0.3, 2026-10-08; PREREG amendment 6)
+Evidence: regression round 1 (`experiments/results/v03reg/`, build `05a8a2d`). Memory peaked
+<= 317 MB everywhere, but correctness regressed broadly through abstention:
+* R0, B7, C1-C4a, E1-E3, F2, F3, F6, F7, G1, G3, H2;
+* wrong answers stayed rare.
+
+Two interactions with v0.2 mechanisms caused it:
+1. **Utility counted twice.** A materialized law had to earn D012 utility again, live, after
+   already earning the gate. Change: it starts with the gate's prequential information as utility
+   (all cases were predicted before being counted, and the threshold pays the multiple-comparison
+   cost). Refinement children keep D014; transfer stays live.
+2. **Saturation on replay.** Materialization replays many cases, filling the relevant-situation
+   set to the D054 cap of 64. Saturation makes novelty undecidable, so the law never gets a
+   transfer trial (F6: `diff(colour) => 0` with 857 cases, 0 counterexamples, 0 transfer trials).
+   Change: SET_CAP 1,024, affordable now that the law population is in the thousands.
+
+Spot check: R0 seeds 1-5 PASS, F2 300/300, F6 26.8x, C4a seed 46 50/50.
+Changed test: the v0.2 saturation test is now cap-generic (it runs until the set saturates).
+
+## Known issue K5 (from v0.3): the multiple-comparison cost must count every hypothesis examined
+Evidence: v0.3 round 2, H1 leakage. The leaked answers come from licensed laws naming one object:
+`r1.mark=6574 => unchanged` has 11 independent supports, transfer 43/43 and **15 bits** of utility.
+D012 charges a licence log2(#hypotheses for the target) + margin, counting only materialized laws.
+In v0.2 that count was in the hundreds of thousands (~22 bits), so such weak object-specific laws
+never paid their cost. D055 cut the materialized population to thousands while the values it
+examined and deferred were not counted, so the charge fell to ~14 bits.
+Diagnosis: the selection cost must include every hypothesis examined (materialized laws plus
+deferred values tested plus refinement candidates). Without it, gating trades memory for false
+licences. C3 (hidden condition) and E3 (verification of sleep-born hypotheses) also collapsed:
+refinement now passes the same gate against the parent, and the D048 sleep path and the
+online-refinement path were not re-validated under it. These are separate diagnoses, still open.
+
+## D055 status: not adopted as a frozen mechanism
+D055/D055b meet the memory budget (191-347 MB at 20,000 steps, from 3.5-6.9 GB) but fail the v0.3
+non-negotiable regressions (EXPERIMENTS, "v0.3 result"). The mechanism stays on `main` as
+development state; the frozen learner is still `bitmind-v0.2`.

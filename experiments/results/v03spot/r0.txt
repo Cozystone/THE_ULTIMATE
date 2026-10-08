@@ -1,0 +1,397 @@
+
+[Equality] seed 1  laws generated 3  licensed 1 (relational 1)
+  Equality
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.505        0.510            147                0
+    class (level codes)    0.705        0.497            151                0
+    memorized lookup       1.000        0.667            100                0
+    RELATIONAL             0.150        0.500              0              150
+    oracle                 1.000        1.000              0                0
+    #1 act1 : same(r0,r1;c0) => t0 => Some(1) | LICENSED | n=120 counter=0 indep=64 int=120 transfer 59/59 utility 315b (int 315b) origin Generated
+    same(colour) law: #1 act1 : same(r0,r1;c0) => t0 => Some(1) | LICENSED | n=120 counter=0 indep=64 int=120 transfer 59/59 utility 315b (int 315b) origin Generated
+    false-licence audit: 0 false of 1 licensed (308 law applications checked)
+    criterion: v3: rel held-out >= 0.95 with 0 wrong, every baseline >= 20% wrong, licensed relational law with >= 3 pre-registered transfer successes (max 59); v2 bound (baselines <= 0.65) would give FAIL  => FAIL
+
+[Order] seed 1  laws generated 75  licensed 15 (relational 15)
+  Order
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.670        0.391            274                0
+    class (level codes)    0.625        0.331            301                0
+    memorized lookup       1.000        0.402            269                0
+    RELATIONAL             1.000        1.000              0                0
+    oracle                 1.000        1.000              0                0
+    #1 act1 : order(r0,r1;c1)> => t0 => Some(1) | LICENSED | n=350 counter=0 indep=64 int=350 transfer 52/52 utility 401b (int 401b) origin Generated
+    #2 act1 : order(r0,r1;c1)< => t0 => Some(-1) | LICENSED | n=356 counter=0 indep=64 int=356 transfer 48/48 utility 390b (int 390b) origin Generated
+    #3 act1 : same(r0,r1;c1) => t0 => Some(0) | LICENSED | n=94 counter=0 indep=64 int=94 transfer 60/60 utility 291b (int 291b) origin Generated
+    #8 act1 : delta(r0,r1;c1)=-2 => t0 => Some(1) | LICENSED | n=74 counter=0 indep=56 int=74 transfer 41/41 utility 11b (int 11b) origin Generated
+    #12 act1 : delta(r0,r1;c1)=+2 => t0 => Some(-1) | LICENSED | n=77 counter=0 indep=53 int=77 transfer 37/37 utility 11b (int 11b) origin Generated
+    #16 act1 : delta(r0,r1;c1)=+5 => t0 => Some(-1) | LICENSED | n=42 counter=0 indep=32 int=42 transfer 15/15 utility 11b (int 11b) origin Generated
+    #17 act1 : delta(r0,r1;c1)=+1 => t0 => Some(-1) | LICENSED | n=73 counter=0 indep=55 int=73 transfer 35/35 utility 11b (int 11b) origin Generated
+    #18 act1 : delta(r0,r1;c1)=-1 => t0 => Some(1) | LICENSED | n=64 counter=0 indep=47 int=64 transfer 31/31 utility 11b (int 11b) origin Generated
+    #19 act1 : delta(r0,r1;c1)=+3 => t0 => Some(-1) | LICENSED | n=52 counter=0 indep=40 int=52 transfer 24/24 utility 11b (int 11b) origin Generated
+    #25 act1 : delta(r0,r1;c1)=-4 => t0 => Some(1) | LICENSED | n=43 counter=0 indep=36 int=43 transfer 19/19 utility 12b (int 12b) origin Generated
+    #26 act1 : delta(r0,r1;c1)=-5 => t0 => Some(1) | LICENSED | n=50 counter=0 indep=38 int=50 transfer 23/23 utility 11b (int 11b) origin Generated
+    #27 act1 : delta(r0,r1;c1)=+6 => t0 => Some(-1) | LICENSED | n=40 counter=0 indep=32 int=40 transfer 13/13 utility 11b (int 11b) origin Generated
+    false-licence audit: 0 false of 15 licensed (3184 law applications checked)
+    criterion: v3: rel held-out >= 0.95 with 0 wrong, every baseline >= 20% wrong, licensed relational law with >= 3 pre-registered transfer successes (max 60); v2 bound (baselines <= 0.48) would give PASS  => PASS
+
+[NoRelation] seed 1  laws generated 1  licensed 0 (relational 0)
+  NoRelation
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.695        0.540            138                0
+    class (level codes)    0.570        0.550            135                0
+    memorized lookup       1.000        0.513            146                0
+    RELATIONAL             0.000        0.000              0              300
+    oracle                 1.000        1.000              0                0
+    false-licence audit: 0 false of 0 licensed (0 law applications checked)
+    criterion: zero licensed laws (got 0), relational abstains >= 90% (got 1.000)  => PASS
+
+[AbsClass] seed 1  laws generated 27  licensed 9 (relational 0)
+  AbsClass
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.880        0.940             18                0
+    class (level codes)    0.690        0.717             85                0
+    memorized lookup       1.000        1.000              0                0
+    RELATIONAL             1.000        1.000              0                0
+    oracle                 1.000        1.000              0                0
+    #1 act1 : r0.c0=3 => t0 => Some(1) | LICENSED | n=151 counter=0 indep=64 int=151 transfer 57/57 utility 323b (int 323b) origin Generated
+    #2 act1 : r0.c0=2 => t0 => Some(0) | LICENSED | n=212 counter=0 indep=64 int=212 transfer 22/22 utility 64b (int 64b) origin Generated
+    #10 act1 : r0.c0=0 => t0 => Some(0) | LICENSED | n=118 counter=0 indep=64 int=118 transfer 14/14 utility 30b (int 30b) origin Generated
+    #11 act1 : r0.c0=5 => t0 => Some(0) | LICENSED | n=100 counter=0 indep=64 int=100 transfer 22/22 utility 21b (int 21b) origin Generated
+    #12 act1 : r0.c1=9 => t0 => Some(0) | LICENSED | n=107 counter=0 indep=64 int=107 transfer 19/19 utility 18b (int 18b) origin Generated
+    #13 act1 : r0.c0=1 => t0 => Some(0) | LICENSED | n=134 counter=0 indep=64 int=134 transfer 17/17 utility 35b (int 35b) origin Generated
+    #21 act1 : r0.c1=8 => t0 => Some(0) | LICENSED | n=89 counter=0 indep=64 int=89 transfer 12/12 utility 11b (int 11b) origin Generated
+    #22 act1 : r0.c0=4 => t0 => Some(0) | LICENSED | n=85 counter=0 indep=64 int=85 transfer 12/12 utility 18b (int 18b) origin Generated
+    #26 act1 : r0.c2=0 => t0 => Some(0) | LICENSED | n=64 counter=0 indep=46 int=64 transfer 5/5 utility 11b (int 11b) origin Generated
+    false-licence audit: 0 false of 9 licensed (1840 law applications checked)
+    criterion: v2: r0.colour=3 licensed (true); unconditional same(colour) not licensed (true); false licences 0 (got 0); v1 criterion no-relational-licence would give PASS (0 relational)  => PASS
+
+[Confound] seed 1
+    after 800 passive observations: licensed 0; same(colour) status Some("CANDIDATE")
+      #1 act1 : same(r0,r1;c0) => t0 => Some(1) | CANDIDATE | n=413 counter=0 indep=64 int=0 transfer 58/58 utility 419b (int 0b) origin Generated
+    after 800 interventions:      licensed 0; same(colour) status Some("REVOKED")
+      #1 act1 : same(r0,r1;c0) => t0 => Some(1) | REVOKED | n=553 counter=85 indep=51 int=55 transfer 58/58 utility 222b (int -198b) origin Generated
+    criterion: nothing licensed from observation; confound exposed by intervention => PASS
+
+[NegativeTransfer] seed 1  (licensed in room-A: 1)
+    room-B stream of 400 episodes, answers given before each outcome:
+    learner                         correct  wrong  abstain  first-correct-at
+    lived, scoped licences (BITMIND)     340      0       60      34
+    lived, scope ignored (ATANOR-like)   301     69       30
+    naive (no prior experience)           39      0      361     213
+    learning-cost ratio lived/naive = 0.16
+    criterion: scoped lived agent never confidently wrong, ablation is, cost ratio <= 1.2 => PASS
+
+[Equality] seed 2  laws generated 3  licensed 1 (relational 1)
+  Equality
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.470        0.557            133                0
+    class (level codes)    0.285        0.500            150                0
+    memorized lookup       1.000        0.647            106                0
+    RELATIONAL             0.120        0.500              0              150
+    oracle                 1.000        1.000              0                0
+    #1 act1 : same(r0,r1;c0) => t0 => Some(1) | LICENSED | n=125 counter=0 indep=64 int=125 transfer 60/60 utility 339b (int 339b) origin Generated
+    same(colour) law: #1 act1 : same(r0,r1;c0) => t0 => Some(1) | LICENSED | n=125 counter=0 indep=64 int=125 transfer 60/60 utility 339b (int 339b) origin Generated
+    false-licence audit: 0 false of 1 licensed (253 law applications checked)
+    criterion: v3: rel held-out >= 0.95 with 0 wrong, every baseline >= 20% wrong, licensed relational law with >= 3 pre-registered transfer successes (max 60); v2 bound (baselines <= 0.65) would give PASS  => FAIL
+
+[Order] seed 2  laws generated 70  licensed 15 (relational 15)
+  Order
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.575        0.398            271                0
+    class (level codes)    0.635        0.278            325                0
+    memorized lookup       1.000        0.396            272                0
+    RELATIONAL             1.000        1.000              0                0
+    oracle                 1.000        1.000              0                0
+    #1 act1 : order(r0,r1;c1)< => t0 => Some(-1) | LICENSED | n=349 counter=0 indep=64 int=349 transfer 57/57 utility 420b (int 420b) origin Generated
+    #2 act1 : same(r0,r1;c1) => t0 => Some(0) | LICENSED | n=77 counter=0 indep=60 int=77 transfer 56/56 utility 243b (int 243b) origin Generated
+    #3 act1 : order(r0,r1;c1)> => t0 => Some(1) | LICENSED | n=374 counter=0 indep=64 int=374 transfer 39/39 utility 385b (int 385b) origin Generated
+    #11 act1 : delta(r0,r1;c1)=+6 => t0 => Some(-1) | LICENSED | n=41 counter=0 indep=30 int=41 transfer 18/18 utility 11b (int 11b) origin Generated
+    #12 act1 : delta(r0,r1;c1)=+1 => t0 => Some(-1) | LICENSED | n=64 counter=0 indep=51 int=64 transfer 37/37 utility 11b (int 11b) origin Generated
+    #14 act1 : delta(r0,r1;c1)=-1 => t0 => Some(1) | LICENSED | n=68 counter=0 indep=51 int=68 transfer 33/33 utility 11b (int 11b) origin Generated
+    #16 act1 : delta(r0,r1;c1)=-2 => t0 => Some(1) | LICENSED | n=66 counter=0 indep=51 int=66 transfer 33/33 utility 11b (int 11b) origin Generated
+    #17 act1 : delta(r0,r1;c1)=+2 => t0 => Some(-1) | LICENSED | n=67 counter=0 indep=54 int=67 transfer 37/37 utility 11b (int 11b) origin Generated
+    #18 act1 : delta(r0,r1;c1)=+3 => t0 => Some(-1) | LICENSED | n=53 counter=0 indep=45 int=53 transfer 30/30 utility 11b (int 11b) origin Generated
+    #22 act1 : delta(r0,r1;c1)=-3 => t0 => Some(1) | LICENSED | n=55 counter=0 indep=42 int=55 transfer 24/24 utility 11b (int 11b) origin Generated
+    #23 act1 : delta(r0,r1;c1)=-6 => t0 => Some(1) | LICENSED | n=41 counter=0 indep=33 int=41 transfer 14/14 utility 11b (int 11b) origin Generated
+    #24 act1 : delta(r0,r1;c1)=-4 => t0 => Some(1) | LICENSED | n=44 counter=0 indep=36 int=44 transfer 16/16 utility 11b (int 11b) origin Generated
+    false-licence audit: 0 false of 15 licensed (3173 law applications checked)
+    criterion: v3: rel held-out >= 0.95 with 0 wrong, every baseline >= 20% wrong, licensed relational law with >= 3 pre-registered transfer successes (max 57); v2 bound (baselines <= 0.48) would give PASS  => PASS
+
+[NoRelation] seed 2  laws generated 1  licensed 0 (relational 0)
+  NoRelation
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.610        0.490            153                0
+    class (level codes)    0.530        0.467            160                0
+    memorized lookup       1.000        0.530            141                0
+    RELATIONAL             0.000        0.000              0              300
+    oracle                 1.000        1.000              0                0
+    false-licence audit: 0 false of 0 licensed (0 law applications checked)
+    criterion: zero licensed laws (got 0), relational abstains >= 90% (got 1.000)  => PASS
+
+[AbsClass] seed 2  laws generated 25  licensed 2 (relational 0)
+  AbsClass
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.980        1.000              0                0
+    class (level codes)    0.555        0.600            120                0
+    memorized lookup       1.000        1.000              0                0
+    RELATIONAL             0.285        0.543              0              137
+    oracle                 1.000        1.000              0                0
+    #1 act1 : r0.c0=3 => t0 => Some(1) | LICENSED | n=160 counter=0 indep=64 int=160 transfer 59/59 utility 394b (int 394b) origin Generated
+    #19 act1 : r0.c0=2 => t0 => Some(0) | LICENSED | n=82 counter=0 indep=63 int=82 transfer 5/5 utility 14b (int 14b) origin Generated
+    false-licence audit: 0 false of 2 licensed (407 law applications checked)
+    criterion: v2: r0.colour=3 licensed (true); unconditional same(colour) not licensed (true); false licences 0 (got 0); v1 criterion no-relational-licence would give PASS (0 relational)  => PASS
+
+[Confound] seed 2
+    after 800 passive observations: licensed 0; same(colour) status Some("CANDIDATE")
+      #2 act1 : same(r0,r1;c0) => t0 => Some(1) | CANDIDATE | n=406 counter=0 indep=64 int=0 transfer 47/47 utility 384b (int 0b) origin Generated
+    after 800 interventions:      licensed 0; same(colour) status Some("REVOKED")
+      #2 act1 : same(r0,r1;c0) => t0 => Some(1) | REVOKED | n=539 counter=78 indep=50 int=55 transfer 47/47 utility 198b (int -186b) origin Generated
+    criterion: nothing licensed from observation; confound exposed by intervention => PASS
+
+[NegativeTransfer] seed 2  (licensed in room-A: 1)
+    room-B stream of 400 episodes, answers given before each outcome:
+    learner                         correct  wrong  abstain  first-correct-at
+    lived, scoped licences (BITMIND)     323      0       77      51
+    lived, scope ignored (ATANOR-like)   290     63       47
+    naive (no prior experience)           33      0      367     206
+    learning-cost ratio lived/naive = 0.25
+    criterion: scoped lived agent never confidently wrong, ablation is, cost ratio <= 1.2 => PASS
+
+[Equality] seed 3  laws generated 3  licensed 2 (relational 2)
+  Equality
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.410        0.507            148                0
+    class (level codes)    0.590        0.453            164                0
+    memorized lookup       1.000        0.667            100                0
+    RELATIONAL             1.000        1.000              0                0
+    oracle                 1.000        1.000              0                0
+    #1 act1 : same(r0,r1;c0) => t0 => Some(1) | LICENSED | n=139 counter=0 indep=64 int=139 transfer 58/58 utility 351b (int 351b) origin Generated
+    #2 act1 : diff(r0,r1;c0) => t0 => Some(0) | LICENSED | n=661 counter=0 indep=64 int=661 transfer 18/18 utility 166b (int 166b) origin Generated
+    same(colour) law: #1 act1 : same(r0,r1;c0) => t0 => Some(1) | LICENSED | n=139 counter=0 indep=64 int=139 transfer 58/58 utility 351b (int 351b) origin Generated
+    false-licence audit: 0 false of 2 licensed (2000 law applications checked)
+    criterion: v3: rel held-out >= 0.95 with 0 wrong, every baseline >= 20% wrong, licensed relational law with >= 3 pre-registered transfer successes (max 58); v2 bound (baselines <= 0.65) would give FAIL  => PASS
+
+[Order] seed 3  laws generated 74  licensed 12 (relational 12)
+  Order
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.570        0.402            269                0
+    class (level codes)    0.560        0.329            302                0
+    memorized lookup       1.000        0.400            270                0
+    RELATIONAL             1.000        1.000              0                0
+    oracle                 1.000        1.000              0                0
+    #1 act1 : order(r0,r1;c1)> => t0 => Some(1) | LICENSED | n=347 counter=0 indep=64 int=347 transfer 55/55 utility 419b (int 419b) origin Generated
+    #2 act1 : order(r0,r1;c1)< => t0 => Some(-1) | LICENSED | n=368 counter=0 indep=64 int=368 transfer 47/47 utility 401b (int 401b) origin Generated
+    #3 act1 : same(r0,r1;c1) => t0 => Some(0) | LICENSED | n=85 counter=0 indep=64 int=85 transfer 58/58 utility 243b (int 243b) origin Generated
+    #7 act1 : delta(r0,r1;c1)=-2 => t0 => Some(1) | LICENSED | n=86 counter=0 indep=64 int=86 transfer 52/52 utility 11b (int 11b) origin Generated
+    #8 act1 : delta(r0,r1;c1)=+2 => t0 => Some(-1) | LICENSED | n=82 counter=0 indep=64 int=82 transfer 46/46 utility 11b (int 11b) origin Generated
+    #9 act1 : delta(r0,r1;c1)=+1 => t0 => Some(-1) | LICENSED | n=100 counter=0 indep=64 int=100 transfer 49/49 utility 12b (int 12b) origin Generated
+    #10 act1 : delta(r0,r1;c1)=-1 => t0 => Some(1) | LICENSED | n=91 counter=0 indep=64 int=91 transfer 48/48 utility 11b (int 11b) origin Generated
+    #11 act1 : delta(r0,r1;c1)=+3 => t0 => Some(-1) | LICENSED | n=63 counter=0 indep=51 int=63 transfer 34/34 utility 12b (int 12b) origin Generated
+    #15 act1 : delta(r0,r1;c1)=-5 => t0 => Some(1) | LICENSED | n=38 counter=0 indep=27 int=38 transfer 13/13 utility 12b (int 12b) origin Generated
+    #21 act1 : delta(r0,r1;c1)=-4 => t0 => Some(1) | LICENSED | n=54 counter=0 indep=43 int=54 transfer 26/26 utility 12b (int 12b) origin Generated
+    #22 act1 : delta(r0,r1;c1)=-3 => t0 => Some(1) | LICENSED | n=49 counter=0 indep=41 int=49 transfer 26/26 utility 11b (int 11b) origin Generated
+    #23 act1 : delta(r0,r1;c1)=+4 => t0 => Some(-1) | LICENSED | n=52 counter=0 indep=38 int=52 transfer 20/20 utility 11b (int 11b) origin Generated
+    false-licence audit: 0 false of 12 licensed (3082 law applications checked)
+    criterion: v3: rel held-out >= 0.95 with 0 wrong, every baseline >= 20% wrong, licensed relational law with >= 3 pre-registered transfer successes (max 58); v2 bound (baselines <= 0.48) would give PASS  => PASS
+
+[NoRelation] seed 3  laws generated 1  licensed 0 (relational 0)
+  NoRelation
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.685        0.510            147                0
+    class (level codes)    0.520        0.493            152                0
+    memorized lookup       1.000        0.503            149                0
+    RELATIONAL             0.000        0.000              0              300
+    oracle                 1.000        1.000              0                0
+    false-licence audit: 0 false of 0 licensed (0 law applications checked)
+    criterion: zero licensed laws (got 0), relational abstains >= 90% (got 1.000)  => PASS
+
+[AbsClass] seed 3  laws generated 24  licensed 1 (relational 0)
+  AbsClass
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.890        0.953             14                0
+    class (level codes)    0.560        0.723             83                0
+    memorized lookup       1.000        1.000              0                0
+    RELATIONAL             0.120        0.500              0              150
+    oracle                 1.000        1.000              0                0
+    #1 act1 : r0.c0=3 => t0 => Some(1) | LICENSED | n=93 counter=0 indep=64 int=93 transfer 59/59 utility 286b (int 286b) origin Generated
+    false-licence audit: 0 false of 1 licensed (158 law applications checked)
+    criterion: v2: r0.colour=3 licensed (true); unconditional same(colour) not licensed (true); false licences 0 (got 0); v1 criterion no-relational-licence would give PASS (0 relational)  => PASS
+
+[Confound] seed 3
+    after 800 passive observations: licensed 0; same(colour) status Some("CANDIDATE")
+      #1 act1 : same(r0,r1;c0) => t0 => Some(1) | CANDIDATE | n=402 counter=0 indep=64 int=0 transfer 53/53 utility 373b (int 0b) origin Generated
+    after 800 interventions:      licensed 0; same(colour) status Some("REVOKED")
+      #1 act1 : same(r0,r1;c0) => t0 => Some(1) | REVOKED | n=534 counter=67 indep=56 int=65 transfer 53/53 utility 218b (int -156b) origin Generated
+    criterion: nothing licensed from observation; confound exposed by intervention => PASS
+
+[NegativeTransfer] seed 3  (licensed in room-A: 2)
+    room-B stream of 400 episodes, answers given before each outcome:
+    learner                         correct  wrong  abstain  first-correct-at
+    lived, scoped licences (BITMIND)     340      0       60      35
+    lived, scope ignored (ATANOR-like)     0    400        0
+    naive (no prior experience)          317      0       83      62
+    learning-cost ratio lived/naive = 0.56
+    criterion: scoped lived agent never confidently wrong, ablation is, cost ratio <= 1.2 => PASS
+
+[Equality] seed 4  laws generated 3  licensed 1 (relational 1)
+  Equality
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.465        0.543            137                0
+    class (level codes)    0.400        0.470            159                0
+    memorized lookup       1.000        0.607            118                0
+    RELATIONAL             0.110        0.500              0              150
+    oracle                 1.000        1.000              0                0
+    #1 act1 : same(r0,r1;c0) => t0 => Some(1) | LICENSED | n=109 counter=0 indep=64 int=109 transfer 60/60 utility 309b (int 309b) origin Generated
+    same(colour) law: #1 act1 : same(r0,r1;c0) => t0 => Some(1) | LICENSED | n=109 counter=0 indep=64 int=109 transfer 60/60 utility 309b (int 309b) origin Generated
+    false-licence audit: 0 false of 1 licensed (255 law applications checked)
+    criterion: v3: rel held-out >= 0.95 with 0 wrong, every baseline >= 20% wrong, licensed relational law with >= 3 pre-registered transfer successes (max 60); v2 bound (baselines <= 0.65) would give PASS  => FAIL
+
+[Order] seed 4  laws generated 71  licensed 14 (relational 14)
+  Order
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.745        0.447            249                0
+    class (level codes)    0.650        0.333            300                0
+    memorized lookup       1.000        0.391            274                0
+    RELATIONAL             1.000        1.000              0                0
+    oracle                 1.000        1.000              0                0
+    #1 act1 : order(r0,r1;c1)< => t0 => Some(-1) | LICENSED | n=373 counter=0 indep=64 int=373 transfer 54/54 utility 412b (int 412b) origin Generated
+    #2 act1 : order(r0,r1;c1)> => t0 => Some(1) | LICENSED | n=355 counter=0 indep=64 int=355 transfer 48/48 utility 395b (int 395b) origin Generated
+    #3 act1 : same(r0,r1;c1) => t0 => Some(0) | LICENSED | n=72 counter=0 indep=60 int=72 transfer 54/54 utility 229b (int 229b) origin Generated
+    #10 act1 : delta(r0,r1;c1)=+2 => t0 => Some(-1) | LICENSED | n=66 counter=0 indep=50 int=66 transfer 35/35 utility 11b (int 11b) origin Generated
+    #12 act1 : delta(r0,r1;c1)=-3 => t0 => Some(1) | LICENSED | n=42 counter=0 indep=36 int=42 transfer 18/18 utility 11b (int 11b) origin Generated
+    #14 act1 : delta(r0,r1;c1)=+4 => t0 => Some(-1) | LICENSED | n=58 counter=0 indep=47 int=58 transfer 32/32 utility 11b (int 11b) origin Generated
+    #15 act1 : delta(r0,r1;c1)=-4 => t0 => Some(1) | LICENSED | n=59 counter=0 indep=42 int=59 transfer 26/26 utility 11b (int 11b) origin Generated
+    #16 act1 : delta(r0,r1;c1)=+1 => t0 => Some(-1) | LICENSED | n=56 counter=0 indep=43 int=56 transfer 28/28 utility 11b (int 11b) origin Generated
+    #17 act1 : delta(r0,r1;c1)=-1 => t0 => Some(1) | LICENSED | n=68 counter=0 indep=53 int=68 transfer 36/36 utility 11b (int 11b) origin Generated
+    #18 act1 : delta(r0,r1;c1)=-2 => t0 => Some(1) | LICENSED | n=46 counter=0 indep=35 int=46 transfer 19/19 utility 12b (int 12b) origin Generated
+    #19 act1 : delta(r0,r1;c1)=+5 => t0 => Some(-1) | LICENSED | n=40 counter=0 indep=31 int=40 transfer 14/14 utility 11b (int 11b) origin Generated
+    #25 act1 : delta(r0,r1;c1)=+8 => t0 => Some(-1) | LICENSED | n=38 counter=0 indep=25 int=38 transfer 9/9 utility 12b (int 12b) origin Generated
+    false-licence audit: 0 false of 14 licensed (3200 law applications checked)
+    criterion: v3: rel held-out >= 0.95 with 0 wrong, every baseline >= 20% wrong, licensed relational law with >= 3 pre-registered transfer successes (max 54); v2 bound (baselines <= 0.48) would give PASS  => PASS
+
+[NoRelation] seed 4  laws generated 1  licensed 0 (relational 0)
+  NoRelation
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.645        0.523            143                0
+    class (level codes)    0.525        0.500            150                0
+    memorized lookup       1.000        0.480            156                0
+    RELATIONAL             0.000        0.000              0              300
+    oracle                 1.000        1.000              0                0
+    false-licence audit: 0 false of 0 licensed (0 law applications checked)
+    criterion: zero licensed laws (got 0), relational abstains >= 90% (got 1.000)  => PASS
+
+[AbsClass] seed 4  laws generated 20  licensed 1 (relational 0)
+  AbsClass
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.885        0.930             21                0
+    class (level codes)    0.430        0.717             85                0
+    memorized lookup       1.000        1.000              0                0
+    RELATIONAL             0.140        0.500              0              150
+    oracle                 1.000        1.000              0                0
+    #1 act1 : r0.c0=3 => t0 => Some(1) | LICENSED | n=118 counter=0 indep=64 int=118 transfer 60/60 utility 330b (int 330b) origin Generated
+    false-licence audit: 0 false of 1 licensed (224 law applications checked)
+    criterion: v2: r0.colour=3 licensed (true); unconditional same(colour) not licensed (true); false licences 0 (got 0); v1 criterion no-relational-licence would give PASS (0 relational)  => PASS
+
+[Confound] seed 4
+    after 800 passive observations: licensed 0; same(colour) status Some("CANDIDATE")
+      #2 act1 : same(r0,r1;c0) => t0 => Some(1) | CANDIDATE | n=391 counter=0 indep=64 int=0 transfer 45/45 utility 377b (int 0b) origin Generated
+    after 800 interventions:      licensed 0; same(colour) status Some("REVOKED")
+      #2 act1 : same(r0,r1;c0) => t0 => Some(1) | REVOKED | n=509 counter=62 indep=48 int=56 transfer 45/45 utility 227b (int -151b) origin Generated
+    criterion: nothing licensed from observation; confound exposed by intervention => PASS
+
+[NegativeTransfer] seed 4  (licensed in room-A: 1)
+    room-B stream of 400 episodes, answers given before each outcome:
+    learner                         correct  wrong  abstain  first-correct-at
+    lived, scoped licences (BITMIND)     317      0       83      58
+    lived, scope ignored (ATANOR-like)   294     53       53
+    naive (no prior experience)           23      0      377     238
+    learning-cost ratio lived/naive = 0.24
+    criterion: scoped lived agent never confidently wrong, ablation is, cost ratio <= 1.2 => PASS
+
+[Equality] seed 5  laws generated 3  licensed 2 (relational 2)
+  Equality
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.470        0.560            132                0
+    class (level codes)    0.445        0.507            148                0
+    memorized lookup       1.000        0.630            111                0
+    RELATIONAL             1.000        1.000              0                0
+    oracle                 1.000        1.000              0                0
+    #1 act1 : diff(r0,r1;c0) => t0 => Some(0) | LICENSED | n=679 counter=0 indep=64 int=679 transfer 38/38 utility 188b (int 188b) origin Generated
+    #2 act1 : same(r0,r1;c0) => t0 => Some(1) | LICENSED | n=121 counter=0 indep=64 int=121 transfer 56/56 utility 287b (int 287b) origin Generated
+    same(colour) law: #2 act1 : same(r0,r1;c0) => t0 => Some(1) | LICENSED | n=121 counter=0 indep=64 int=121 transfer 56/56 utility 287b (int 287b) origin Generated
+    false-licence audit: 0 false of 2 licensed (2000 law applications checked)
+    criterion: v3: rel held-out >= 0.95 with 0 wrong, every baseline >= 20% wrong, licensed relational law with >= 3 pre-registered transfer successes (max 56); v2 bound (baselines <= 0.65) would give PASS  => PASS
+
+[Order] seed 5  laws generated 72  licensed 15 (relational 15)
+  Order
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.645        0.424            259                0
+    class (level codes)    0.645        0.336            299                0
+    memorized lookup       1.000        0.380            279                0
+    RELATIONAL             1.000        1.000              0                0
+    oracle                 1.000        1.000              0                0
+    #1 act1 : order(r0,r1;c1)> => t0 => Some(1) | LICENSED | n=355 counter=0 indep=64 int=355 transfer 55/55 utility 396b (int 396b) origin Generated
+    #2 act1 : order(r0,r1;c1)< => t0 => Some(-1) | LICENSED | n=353 counter=0 indep=64 int=353 transfer 52/52 utility 408b (int 408b) origin Generated
+    #6 act1 : same(r0,r1;c1) => t0 => Some(0) | LICENSED | n=92 counter=0 indep=64 int=92 transfer 57/57 utility 274b (int 274b) origin Generated
+    #10 act1 : delta(r0,r1;c1)=+3 => t0 => Some(-1) | LICENSED | n=74 counter=0 indep=59 int=74 transfer 43/43 utility 11b (int 11b) origin Generated
+    #11 act1 : delta(r0,r1;c1)=-1 => t0 => Some(1) | LICENSED | n=50 counter=0 indep=40 int=50 transfer 25/25 utility 11b (int 11b) origin Generated
+    #12 act1 : delta(r0,r1;c1)=-2 => t0 => Some(1) | LICENSED | n=72 counter=0 indep=56 int=72 transfer 40/40 utility 11b (int 11b) origin Generated
+    #13 act1 : delta(r0,r1;c1)=+1 => t0 => Some(-1) | LICENSED | n=72 counter=0 indep=58 int=72 transfer 42/42 utility 11b (int 11b) origin Generated
+    #20 act1 : delta(r0,r1;c1)=+2 => t0 => Some(-1) | LICENSED | n=58 counter=0 indep=44 int=58 transfer 28/28 utility 11b (int 11b) origin Generated
+    #23 act1 : delta(r0,r1;c1)=+4 => t0 => Some(-1) | LICENSED | n=46 counter=0 indep=37 int=46 transfer 21/21 utility 11b (int 11b) origin Generated
+    #25 act1 : delta(r0,r1;c1)=-3 => t0 => Some(1) | LICENSED | n=71 counter=0 indep=58 int=71 transfer 40/40 utility 11b (int 11b) origin Generated
+    #27 act1 : delta(r0,r1;c1)=-5 => t0 => Some(1) | LICENSED | n=41 counter=0 indep=34 int=41 transfer 16/16 utility 11b (int 11b) origin Generated
+    #29 act1 : delta(r0,r1;c1)=-6 => t0 => Some(1) | LICENSED | n=33 counter=0 indep=27 int=33 transfer 12/12 utility 12b (int 12b) origin Generated
+    false-licence audit: 0 false of 15 licensed (3206 law applications checked)
+    criterion: v3: rel held-out >= 0.95 with 0 wrong, every baseline >= 20% wrong, licensed relational law with >= 3 pre-registered transfer successes (max 57); v2 bound (baselines <= 0.48) would give PASS  => PASS
+
+[NoRelation] seed 5  laws generated 1  licensed 0 (relational 0)
+  NoRelation
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.630        0.503            149                0
+    class (level codes)    0.525        0.497            151                0
+    memorized lookup       1.000        0.560            132                0
+    RELATIONAL             0.000        0.000              0              300
+    oracle                 1.000        1.000              0                0
+    false-licence audit: 0 false of 0 licensed (0 law applications checked)
+    criterion: zero licensed laws (got 0), relational abstains >= 90% (got 1.000)  => PASS
+
+[AbsClass] seed 5  laws generated 20  licensed 1 (relational 0)
+  AbsClass
+    learner              seen-acc  held-out acc  held-out wrong  held-out abstain
+    class (random codes)   0.895        0.910             27                0
+    class (level codes)    0.555        0.703             89                0
+    memorized lookup       1.000        1.000              0                0
+    RELATIONAL             0.190        0.500              0              150
+    oracle                 1.000        1.000              0                0
+    #1 act1 : r0.c0=3 => t0 => Some(1) | LICENSED | n=127 counter=0 indep=64 int=127 transfer 59/59 utility 334b (int 334b) origin Generated
+    false-licence audit: 0 false of 1 licensed (212 law applications checked)
+    criterion: v2: r0.colour=3 licensed (true); unconditional same(colour) not licensed (true); false licences 0 (got 0); v1 criterion no-relational-licence would give PASS (0 relational)  => PASS
+
+[Confound] seed 5
+    after 800 passive observations: licensed 0; same(colour) status Some("CANDIDATE")
+      #2 act1 : same(r0,r1;c0) => t0 => Some(1) | CANDIDATE | n=400 counter=0 indep=64 int=0 transfer 49/49 utility 386b (int 0b) origin Generated
+    after 800 interventions:      licensed 0; same(colour) status Some("REVOKED")
+      #2 act1 : same(r0,r1;c0) => t0 => Some(1) | REVOKED | n=529 counter=68 indep=54 int=61 transfer 49/49 utility 226b (int -161b) origin Generated
+    criterion: nothing licensed from observation; confound exposed by intervention => PASS
+
+[NegativeTransfer] seed 5  (licensed in room-A: 2)
+    room-B stream of 400 episodes, answers given before each outcome:
+    learner                         correct  wrong  abstain  first-correct-at
+    lived, scoped licences (BITMIND)     340      0       60      37
+    lived, scope ignored (ATANOR-like)     0    400        0
+    naive (no prior experience)          340      0       60      37
+    learning-cost ratio lived/naive = 1.00
+    criterion: scoped lived agent never confidently wrong, ablation is, cost ratio <= 1.2 => PASS
+
+==== E-R0 summary over seeds [1, 2, 3, 4, 5]
+  C1 equality, held-out values       2/5 pass
+  C2 order, held-out values          5/5 pass
+  C3 no-relation control             5/5 pass
+  C4 absolute-class control          5/5 pass
+  C5 observation-only confound       5/5 pass
+  C6 negative-transfer guard         5/5 pass
+  OVERALL: FAIL
+saved D:\7. The Ultimate\crates\bm-bench\../../experiments/results/r0.json
+resources: wall 4.8 s, peak working set 10 MB

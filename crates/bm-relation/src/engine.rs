@@ -552,6 +552,86 @@ impl RelationEngine {
     }
 
     /// K2 measurement (read-only): estimated retained bytes per structure, largest first.
+    /// K2′ diagnosis (read-only; ported from the v0.3 record into v0.4): laws and their allocated bytes by lifecycle state,
+    /// condition type, channel origin, channel cardinality class and target outcome cardinality.
+    /// Returns (category, laws, bytes), largest bytes first.
+    pub fn k2_breakdown(&self) -> Vec<(String, u64, u64)> {
+        // distinct values per channel, from the stored episodes
+        let mut card: HashMap<u16, std::collections::HashSet<i64>> = HashMap::new();
+        for e in self.store.iter() {
+            for r in &e.roles {
+                for f in &r.fillers {
+                    let s = card.entry(f.ch).or_default();
+                    if s.len() < 1000 {
+                        s.insert(f.val);
+                    }
+                }
+            }
+        }
+        let class = |n: usize| if n <= 8 { "<=8" } else if n <= 64 { "9-64" } else { ">64" };
+        let latent_hi = 3000 + 1000 * self.latent.len() as u16;
+        let origin = |ch: u16| {
+            if Some(ch) == self.identity_channel {
+                "identity"
+            } else if ch >= 3000 && ch < latent_hi {
+                "latent"
+            } else {
+                "sensed"
+            }
+        };
+        let ch_of = |f: &FeatureKind| match *f {
+            FeatureKind::Abs { ch, .. } | FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } | FeatureKind::Order { ch, .. } | FeatureKind::Delta { ch, .. } => ch,
+        };
+        let mut acc: std::collections::BTreeMap<String, (u64, u64)> = std::collections::BTreeMap::new();
+        let mut add = |k: String, b: u64| {
+            let e = acc.entry(k).or_insert((0, 0));
+            e.0 += 1;
+            e.1 += b;
+        };
+        for l in &self.laws {
+            let mut bytes = (std::mem::size_of::<RelationLaw>() + l.condition.capacity() * std::mem::size_of::<FeatureKind>() + l.ctx.capacity() * std::mem::size_of::<CtxEvidence>()) as u64;
+            for e in &l.ctx {
+                bytes += (e.bins.capacity() * std::mem::size_of::<OutcomeBin>() + e.history.capacity() * 16 + (e.transfer.trials.capacity() + e.scope_trials.trials.capacity()) * std::mem::size_of::<TransferTrial>()) as u64;
+                for b in &e.bins {
+                    bytes += b.signatures.bytes() + b.bindings.bytes() + b.rsits.bytes() + (b.episodes.capacity() * 8) as u64;
+                }
+            }
+            let status = if l.pruned {
+                "pruned".to_string()
+            } else {
+                let best = l.ctx.iter().map(|e| e.status).max().unwrap_or(Status::Candidate);
+                format!("{best:?}")
+            };
+            add(format!("status {status}"), bytes);
+            let ctype = match l.condition.len() {
+                0 => "base".to_string(),
+                1 => {
+                    let f = &l.condition[0];
+                    let ch = ch_of(f);
+                    let kind = if f.is_relational() { "relational" } else { "absolute" };
+                    format!("{kind} {} card {}", origin(ch), class(card.get(&ch).map(|s| s.len()).unwrap_or(0)))
+                }
+                _ => {
+                    let lat = l.condition.iter().any(|f| origin(ch_of(f)) == "latent");
+                    let hi = l.condition.iter().any(|f| !f.is_relational() && card.get(&ch_of(f)).map(|s| s.len() > 64).unwrap_or(false));
+                    format!("conjunction{}{}", if lat { " with latent" } else { "" }, if hi { " with >64-card absolute" } else { "" })
+                }
+            };
+            add(format!("cond {ctype}"), bytes);
+            let oc = self.alphabet_size(l.target).saturating_sub(1) as usize;
+            add(format!("target outcomes {}", class(oc)), bytes);
+            add(format!("target id {}", l.target), bytes);
+        }
+        let mut v: Vec<(String, u64, u64)> = acc.into_iter().map(|(k, (n, b))| (k, n, b)).collect();
+        let feat_entries: u64 = self.feat_kinds.iter().map(|v| (v.capacity() * std::mem::size_of::<FeatureKind>()) as u64).sum();
+        v.push(("store: per-episode feature lists".into(), self.feat_kinds.len() as u64, feat_entries));
+        let store_bytes: u64 = self.store.iter().map(|e| (std::mem::size_of::<Episode>() + e.roles.iter().map(|r| r.fillers.capacity() * 16 + 48).sum::<usize>() + e.outcomes.capacity() * 16) as u64).sum();
+        v.push(("store: episodes".into(), self.store.len() as u64, store_bytes));
+        v.push(("index entries".into(), self.index.len() as u64, self.index.len() as u64 * 32));
+        v.sort_by(|a, b| b.2.cmp(&a.2));
+        v
+    }
+
     pub fn memory_report(&self) -> Vec<(&'static str, u64, u64)> {
         let laws = self.laws.len() as u64;
         let (mut ctxs, mut bin_eps, mut sigs, mut binds, mut rsits, mut trials) = (0u64, 0u64, 0u64, 0u64, 0u64, 0u64);
