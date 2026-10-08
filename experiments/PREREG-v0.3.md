@@ -235,3 +235,26 @@ Change: the copy model enters the baseline only for targets whose outcome alphab
 (the high-cardinality class fixed in section 2). There a value match is improbable by coincidence
 and persistence is a fair null; it is the K2′-o case amendment 2 was written for. Targets with
 <= 64 outcome values use the plain smoothed distribution (as in D055). Everything else is unchanged.
+
+## Amendment 6: a materialized law starts with the gate's prequential information as utility (2026-10-08, after regression round 1, before round 2)
+Regression round 1 (`experiments/results/v03reg/`, build `05a8a2d`). Memory peaked <= 317 MB
+everywhere, but correctness regressed broadly through abstention:
+* R0 overall FAIL;
+* B7 25/25 FAIL (~175/200 unseen-colour predictions abstained);
+* C4a abstained on most negative pairs; C1, C2, C3 regress;
+* E1, E2, E3 regress;
+* G1 abstains; G3 has 2 seeds failing;
+* H2 regresses; F2, F3, F6, F7 regress.
+
+Wrong answers stay rare. Phase D passes.
+Cause: D055 requires a value to carry LLR >= log2(M) + 4 bits before its law exists, and D014 replay
+then gives the new law no utility. It must earn D012 utility a second time, live, so licensing is
+delayed far beyond v0.2, where utility accrued from the first case.
+Change (D055b): a single-feature law materialized from deferred evidence starts with utility (and
+intervention utility, from the interventions among those cases) equal to the gate's accumulated
+prequential information against the baseline. Every case in it was predicted before being
+counted, and the threshold already pays the multiple-comparison cost; it is honest prequential
+utility, not post-hoc fitting. Refinement children keep D014 (no utility from replay); transfer
+evidence stays strictly live.
+Stop rule: this is the last integration fix in v0.3. If round 2 still loses correctness
+materially, the memory/correctness tradeoff is reported and v0.3 is not frozen as a success.
