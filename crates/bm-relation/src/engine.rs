@@ -768,7 +768,7 @@ impl RelationEngine {
             let mut es: Vec<(&FeatureKind, &DeferredValue)> = t.entries.iter().filter(|(k, _)| ch.map(|c| ch_of(k) == c).unwrap_or(true)).collect();
             es.sort_by(|a, b| a.0.cmp(b.0));
             for (k, d) in es {
-                v.push(format!("DEFERRED {:?} n {} hist {:?} pooled {} info {:.2} bits (gate {:.2})", k, d.total(), d.hist, d.pooled, (d.ll_model - d.ll_base) as f64 / 65536.0, gate as f64 / 65536.0));
+                v.push(format!("DEFERRED {:?} n {} hist {:?} pooled {} info_q16 {} (gate_q16 {})", k, d.total(), d.hist, d.pooled, d.ll_model - d.ll_base, gate));
             }
         } else {
             v.push(format!("DEFERRED table: none | refine_tested {}", rt));
