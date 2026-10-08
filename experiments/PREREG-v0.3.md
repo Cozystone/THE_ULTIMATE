@@ -258,3 +258,10 @@ utility, not post-hoc fitting. Refinement children keep D014 (no utility from re
 evidence stays strictly live.
 Stop rule: this is the last integration fix in v0.3. If round 2 still loses correctness
 materially, the memory/correctness tradeoff is reported and v0.3 is not frozen as a success.
+
+**Amendment 6, second part (same integration fix, before round 2).** Spot check after D055b
+(`experiments/results/v03spot/`, F6 world): `diff(colour) => 0` has 857 cases, 0 counterexamples,
+64 independent supports and 199 bits of utility, but 0 transfer trials. It is materialized only
+after many cases, the replay fills its relevant-situation set to the D054 cap of 64, the set
+saturates, and novelty becomes undecidable forever. The cap was set when v0.2 carried millions of
+laws; under D055 there are thousands. Change: SET_CAP = 1,024.
