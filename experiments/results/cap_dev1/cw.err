@@ -1,0 +1,50 @@
+SEED_START 501
+PROBE seed 501 Agent step 3 action (7, [19, 22]) region true predicted [(0, 1, 0, true, 6518133448574792729)] observed(world) Some(0)
+PROBE seed 501 Agent step 41 action (7, [17, 14]) region true predicted [(0, 1, 1, true, 5769336614243610868)] observed(world) Some(0)
+PROBE seed 501 Agent step 44 action (7, [8, 15]) region true predicted [(0, 1, 2, true, 10212708816278560847)] observed(world) Some(0)
+SEED_END 501 wall 125.3 s working set 15 MB peak 1770 MB
+SEED_START 502
+PROBE seed 502 Agent step 2 action (7, [2, 10]) region true predicted [(0, 1, 0, true, 16244707680579830809)] observed(world) Some(0)
+PROBE seed 502 Agent step 4 action (7, [2, 19]) region true predicted [(0, 1, 1, true, 7499149348388044503)] observed(world) Some(0)
+PROBE seed 502 Agent step 5 action (7, [12, 3]) region true predicted [(0, 1, 2, true, 10559946961672602030)] observed(world) Some(0)
+SEED_END 502 wall 116.9 s working set 17 MB peak 1770 MB
+SEED_START 503
+PROBE seed 503 Agent step 6 action (7, [21, 12]) region true predicted [(0, 1, 0, true, 16757044530160859507)] observed(world) Some(1)
+PROBE seed 503 Agent step 11 action (7, [6, 10]) region true predicted [(0, 1, 1, true, 490346682649156383)] observed(world) Some(1)
+PROBE seed 503 Agent step 18 action (7, [20, 1]) region true predicted [(0, 1, 2, true, 5764769968460686891)] observed(world) Some(1)
+SEED_END 503 wall 119.7 s working set 19 MB peak 1770 MB
+SEED_START 504
+PROBE seed 504 Agent step 0 action (7, [2, 18]) region true predicted [(0, 1, 0, true, 5859839896992666169)] observed(world) Some(1)
+PROBE seed 504 Agent step 4 action (7, [11, 5]) region true predicted [(0, 1, 1, true, 4579586963485154038)] observed(world) Some(1)
+PROBE seed 504 Agent step 15 action (7, [19, 13]) region true predicted [(0, 1, 2, true, 3585984602611643563)] observed(world) Some(1)
+SEED_END 504 wall 216.8 s working set 20 MB peak 2405 MB
+SEED_START 505
+PROBE seed 505 Agent step 5 action (7, [23, 7]) region true predicted [(0, 1, 0, true, 13413949765581732695)] observed(world) Some(1)
+PROBE seed 505 Agent step 6 action (7, [25, 0]) region true predicted [(0, 1, 1, true, 14180349112244969577)] observed(world) Some(1)
+PROBE seed 505 Agent step 8 action (7, [3, 5]) region true predicted [(0, 1, 2, true, 10186039231057231626)] observed(world) Some(1)
+SEED_END 505 wall 180.0 s working set 22 MB peak 2405 MB
+SEED_START 506
+PROBE seed 506 Agent step 4 action (7, [15, 10]) region true predicted [(0, 1, 0, true, 15092916360587885207)] observed(world) Some(1)
+PROBE seed 506 Agent step 16 action (7, [19, 20]) region true predicted [(0, 1, 1, true, 14048014281157106854)] observed(world) Some(1)
+PROBE seed 506 Agent step 19 action (7, [14, 25]) region true predicted [(0, 1, 2, true, 10376755428689449913)] observed(world) Some(1)
+SEED_END 506 wall 124.4 s working set 22 MB peak 2405 MB
+SEED_START 507
+PROBE seed 507 Agent step 4 action (7, [12, 7]) region true predicted [(0, 1, 0, true, 11020976155700860205)] observed(world) Some(0)
+PROBE seed 507 Agent step 6 action (7, [14, 12]) region true predicted [(0, 1, 1, true, 8457109102287183644)] observed(world) Some(0)
+PROBE seed 507 Agent step 8 action (7, [17, 23]) region true predicted [(0, 1, 2, true, 16705148684426880494)] observed(world) Some(0)
+SEED_END 507 wall 121.6 s working set 23 MB peak 2405 MB
+SEED_START 508
+PROBE seed 508 Agent step 6 action (7, [24, 13]) region true predicted [(0, 1, 0, true, 5291257824179249848)] observed(world) Some(0)
+PROBE seed 508 Agent step 11 action (7, [5, 23]) region true predicted [(0, 1, 1, true, 6400553103181868650)] observed(world) Some(0)
+PROBE seed 508 Agent step 22 action (7, [21, 26]) region true predicted [(0, 1, 2, true, 15598328456968965505)] observed(world) Some(0)
+SEED_END 508 wall 128.3 s working set 23 MB peak 2405 MB
+SEED_START 509
+PROBE seed 509 Agent step 4 action (7, [14, 21]) region true predicted [(0, 1, 0, true, 13544810258916221228)] observed(world) Some(0)
+PROBE seed 509 Agent step 11 action (7, [20, 8]) region true predicted [(0, 1, 1, true, 9279151089690824419)] observed(world) Some(0)
+PROBE seed 509 Agent step 21 action (7, [7, 4]) region true predicted [(0, 1, 2, true, 7539473378483355119)] observed(world) Some(0)
+SEED_END 509 wall 124.9 s working set 23 MB peak 2405 MB
+SEED_START 510
+PROBE seed 510 Agent step 11 action (7, [0, 17]) region true predicted [(0, 1, 0, true, 4207352049749241769)] observed(world) Some(0)
+PROBE seed 510 Agent step 26 action (7, [9, 3]) region true predicted [(0, 1, 1, true, 10200258452145878601)] observed(world) Some(0)
+PROBE seed 510 Agent step 39 action (7, [17, 0]) region true predicted [(0, 1, 2, true, 5365193571590055136)] observed(world) Some(0)
+SEED_END 510 wall 127.1 s working set 23 MB peak 2405 MB

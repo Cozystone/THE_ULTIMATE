@@ -1,0 +1,96 @@
+
+===== seed 501
+  world: 24 objects, region pairs 26 (queries 13, evidence 13), region truth flips false, measured noise tolerance 1/100; stage 1: conflict abstentions 12 of 13 queries; other ["answered 0 (truth 0)"]
+    conflict law (predicts 0): #1579 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=219 counter=0 indep=61 int=219 transfer 62/62 utility 119b (int 119b) origin Generated
+    conflict law (predicts 1): #3205 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=465 counter=0 indep=64 int=465 transfer 61/61 utility 364b (int 364b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+  Agent     saved 12: settled-correct 12 (active 12), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 3, steps with no informative candidate 47, min units reached 3, answers at steps 50-50; chosen actions diagnostic-new 3 diagnostic-redundant 0 non-diagnostic 47; 11.7 s
+  Random    saved 12: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 12; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.0 s
+  Wait      saved 12: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 12; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 4.2 s
+
+===== seed 502
+  world: 22 objects, region pairs 24 (queries 12, evidence 12), region truth flips false, measured noise tolerance 1/100; stage 1: conflict abstentions 12 of 12 queries; other []
+    conflict law (predicts 0): #4944 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=363 counter=0 indep=64 int=363 transfer 62/62 utility 182b (int 182b) origin Generated
+    conflict law (predicts 1): #1544 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=397 counter=0 indep=64 int=397 transfer 62/62 utility 343b (int 343b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+  Agent     saved 12: settled-correct 12 (active 12), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 3, steps with no informative candidate 7, min units reached 3, answers at steps 10-10; chosen actions diagnostic-new 3 diagnostic-redundant 0 non-diagnostic 7; 3.1 s
+  Random    saved 12: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 12; region probes 2 (2 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 2, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.1 s
+  Wait      saved 12: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 12; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 4.5 s
+
+===== seed 503
+  world: 25 objects, region pairs 51 (queries 26, evidence 25), region truth flips true, measured noise tolerance 1/100; stage 1: conflict abstentions 26 of 26 queries; other []
+    conflict law (predicts 0): #765 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=390 counter=0 indep=64 int=390 transfer 62/62 utility 226b (int 226b) origin Generated
+    conflict law (predicts 1): #1060 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=375 counter=0 indep=64 int=375 transfer 62/62 utility 405b (int 405b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+  Agent     saved 26: settled-correct 26 (active 26), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 3, steps with no informative candidate 17, min units reached 3, answers at steps 20-20; chosen actions diagnostic-new 3 diagnostic-redundant 0 non-diagnostic 17; 5.5 s
+  Random    saved 26: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 26; region probes 2 (2 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 2, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.8 s
+  Wait      saved 26: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 26; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.3 s
+
+===== seed 504
+  world: 24 objects, region pairs 37 (queries 19, evidence 18), region truth flips true, measured noise tolerance 1/100; stage 1: conflict abstentions 19 of 19 queries; other []
+    conflict law (predicts 0): #2539 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=448 counter=0 indep=64 int=448 transfer 62/62 utility 262b (int 262b) origin Generated
+    conflict law (predicts 1): #1066 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=346 counter=0 indep=64 int=346 transfer 62/62 utility 412b (int 412b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+  Agent     saved 19: settled-correct 19 (active 19), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 3, steps with no informative candidate 17, min units reached 3, answers at steps 20-20; chosen actions diagnostic-new 3 diagnostic-redundant 0 non-diagnostic 17; 8.8 s
+  Random    saved 19: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 19; region probes 1 (1 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 1, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 9.1 s
+  Wait      saved 19: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 19; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 8.2 s
+
+===== seed 505
+  world: 26 objects, region pairs 32 (queries 16, evidence 16), region truth flips true, measured noise tolerance 1/100; stage 1: conflict abstentions 16 of 16 queries; other []
+    conflict law (predicts 0): #2191 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=295 counter=0 indep=64 int=295 transfer 62/62 utility 162b (int 162b) origin Generated
+    conflict law (predicts 1): #3551 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=337 counter=0 indep=64 int=337 transfer 62/62 utility 264b (int 264b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+  Agent     saved 16: settled-correct 16 (active 16), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 3, steps with no informative candidate 7, min units reached 3, answers at steps 10-10; chosen actions diagnostic-new 3 diagnostic-redundant 0 non-diagnostic 7; 4.9 s
+  Random    saved 16: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 16; region probes 1 (1 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 1, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 8.0 s
+  Wait      saved 16: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 16; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 7.8 s
+
+===== seed 506
+  world: 29 objects, region pairs 40 (queries 20, evidence 20), region truth flips true, measured noise tolerance 1/100; stage 1: conflict abstentions 20 of 20 queries; other []
+    conflict law (predicts 0): #2527 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=329 counter=0 indep=64 int=329 transfer 62/62 utility 205b (int 205b) origin Generated
+    conflict law (predicts 1): #4555 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=413 counter=0 indep=64 int=413 transfer 62/62 utility 422b (int 422b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+  Agent     saved 20: settled-correct 20 (active 20), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 3, steps with no informative candidate 17, min units reached 3, answers at steps 20-20; chosen actions diagnostic-new 3 diagnostic-redundant 0 non-diagnostic 17; 5.4 s
+  Random    saved 20: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 20; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.2 s
+  Wait      saved 20: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 20; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.0 s
+
+===== seed 507
+  world: 26 objects, region pairs 44 (queries 22, evidence 22), region truth flips false, measured noise tolerance 1/100; stage 1: conflict abstentions 22 of 22 queries; other []
+    conflict law (predicts 0): #3499 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=339 counter=0 indep=64 int=339 transfer 62/62 utility 211b (int 211b) origin Generated
+    conflict law (predicts 1): #5251 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=426 counter=0 indep=64 int=426 transfer 62/62 utility 402b (int 402b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+  Agent     saved 22: settled-correct 22 (active 22), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 3, steps with no informative candidate 7, min units reached 3, answers at steps 10-10; chosen actions diagnostic-new 3 diagnostic-redundant 0 non-diagnostic 7; 3.1 s
+  Random    saved 22: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 22; region probes 2 (2 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 2, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.8 s
+  Wait      saved 22: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 22; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.2 s
+
+===== seed 508
+  world: 27 objects, region pairs 45 (queries 23, evidence 22), region truth flips false, measured noise tolerance 1/100; stage 1: conflict abstentions 23 of 23 queries; other []
+    conflict law (predicts 0): #252 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=415 counter=0 indep=64 int=415 transfer 62/62 utility 213b (int 213b) origin Generated
+    conflict law (predicts 1): #4550 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=327 counter=0 indep=64 int=327 transfer 62/62 utility 393b (int 393b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+  Agent     saved 23: settled-correct 23 (active 23), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 3, steps with no informative candidate 27, min units reached 3, answers at steps 30-30; chosen actions diagnostic-new 3 diagnostic-redundant 0 non-diagnostic 27; 7.9 s
+  Random    saved 23: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 23; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.4 s
+  Wait      saved 23: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 23; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.2 s
+
+===== seed 509
+  world: 23 objects, region pairs 37 (queries 19, evidence 18), region truth flips false, measured noise tolerance 1/100; stage 1: conflict abstentions 19 of 19 queries; other []
+    conflict law (predicts 0): #3737 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=454 counter=0 indep=64 int=454 transfer 62/62 utility 214b (int 214b) origin Generated
+    conflict law (predicts 1): #1301 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=344 counter=0 indep=64 int=344 transfer 62/62 utility 416b (int 416b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+  Agent     saved 19: settled-correct 19 (active 19), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 3, steps with no informative candidate 27, min units reached 3, answers at steps 30-30; chosen actions diagnostic-new 3 diagnostic-redundant 0 non-diagnostic 27; 7.7 s
+  Random    saved 19: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 19; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.3 s
+  Wait      saved 19: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 19; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 4.6 s
+
+===== seed 510
+  world: 24 objects, region pairs 39 (queries 20, evidence 19), region truth flips false, measured noise tolerance 1/100; stage 1: conflict abstentions 20 of 20 queries; other []
+    conflict law (predicts 0): #3360 act7 : r0.c2=2 => t15005 => Some(0) | LICENSED | n=354 counter=0 indep=64 int=354 transfer 62/62 utility 199b (int 199b) origin Generated
+    conflict law (predicts 1): #5231 act7 : same(r0,r1;c1) => t15005 => Some(1) | LICENSED | n=344 counter=0 indep=64 int=344 transfer 62/62 utility 274b (int 274b) origin Generated
+    conflict evidence at stage 1: [(0, 1, 0, 0, 0)]
+  Agent     saved 20: settled-correct 20 (active 20), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 0; region probes 3 (3 distinct pairs), diagnostic choices 3, steps with no informative candidate 37, min units reached 3, answers at steps 40-40; chosen actions diagnostic-new 3 diagnostic-redundant 0 non-diagnostic 37; 10.0 s
+  Random    saved 20: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 20; region probes 2 (2 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 2, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.6 s
+  Wait      saved 20: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0, unsettled answers 0, unresolved 20; region probes 0 (0 distinct pairs), diagnostic choices 0, steps with no informative candidate 0, min units reached 0, answers at steps 0-0; chosen actions diagnostic-new 0 diagnostic-redundant 0 non-diagnostic 0; 5.2 s
+
+===== totals
+  Agent     saved 189 settled-correct 189 dissolved-correct 0 wrong 0 unsettled answers 0 unresolved 0 region probes 30 diagnostic choices 30
+  Random    saved 189 settled-correct 0 dissolved-correct 0 wrong 0 unsettled answers 0 unresolved 189 region probes 10 diagnostic choices 0
+  Wait      saved 189 settled-correct 0 dissolved-correct 0 wrong 0 unsettled answers 0 unresolved 189 region probes 0 diagnostic choices 0
+resources: wall 1389.7 s, peak working set 2405 MB
