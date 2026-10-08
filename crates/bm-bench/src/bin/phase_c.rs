@@ -272,6 +272,15 @@ fn door(seed: u64, out: &mut Out) {
         .filter(|&l| a.rel.laws[l].condition.iter().any(|f| matches!(f, FeatureKind::Abs { ch, .. } if *ch == dv::ON)))
         .filter(|&l| a.rel.laws[l].ctx(ctx).and_then(|e| e.majority()).map(|m| m.0) == Some(1))
         .collect();
+    if std::env::var("DIAG_C3").is_ok() {
+        for &l in phase1.iter().take(1) {
+            let t = a.rel.laws[l].target;
+            eprintln!("C3DIAG seed {seed} parent {} | children {}", a.rel.summary(l, ctx), a.rel.laws[l].lineage.children.len());
+            for line in a.rel.diag_target(dv::USE, t, ctx, Some(dv::ON)) {
+                eprintln!("C3DIAG seed {seed}   {line}");
+            }
+        }
+    }
     for &l in phase1.iter().take(2) {
         let _ = writeln!(out.report, "      phase-1 law now: {}", a.rel.summary(l, ctx));
     }

@@ -281,8 +281,17 @@ fn e3(seed: u64) -> (u32, u32, u32) {
     }
     let ctx = w.context;
     let first_new = rel.laws.len();
-    rel.sleep(ctx, 200);
+    let st = rel.sleep(ctx, 200);
     let sleep_laws: std::collections::HashSet<usize> = (first_new..rel.laws.len()).collect();
+    if std::env::var("DIAG_E3").is_ok() {
+        eprintln!("E3DIAG seed {seed} sleep {st:?}; laws created in sleep {}", sleep_laws.len());
+        let door_targets: std::collections::BTreeSet<u32> = rel.laws.iter().filter(|l| l.action == dv::USE && l.target % 10_000 == dv::ON as u32 + CHANGE && l.condition.is_empty()).map(|l| l.target).collect();
+        for t in door_targets {
+            for line in rel.diag_target(dv::USE, t, ctx, Some(dv::ON)) {
+                eprintln!("E3DIAG seed {seed} t{t}  {line}");
+            }
+        }
+    }
     let prefs = Preferences::default();
     // compare: how often does the chosen action test a sleep-generated, unlicensed hypothesis?
     let options: Vec<(u16, Vec<usize>)> = vec![(dv::USE, vec![dv::KEY]), (dv::TOGGLE, vec![dv::POWER]), (dv::TOGGLE, vec![3]), (dv::TOGGLE, vec![4]), (dv::WAIT, vec![0])];

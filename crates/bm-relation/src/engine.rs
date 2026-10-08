@@ -552,6 +552,24 @@ impl RelationEngine {
     }
 
     /// K2 measurement (read-only): estimated retained bytes per structure, largest first.
+    /// Diagnostic (read-only, v0.4 C3/E3 provenance): every law for (action, target) in `ctx`
+    /// whose condition mentions channel `ch` (all laws if None), with status, origin and children.
+    pub fn diag_target(&self, action: u16, target: u32, ctx: u64, ch: Option<u16>) -> Vec<String> {
+        let ch_of = |f: &FeatureKind| match *f {
+            FeatureKind::Abs { ch, .. } | FeatureKind::Same { ch, .. } | FeatureKind::Diff { ch, .. } | FeatureKind::Order { ch, .. } | FeatureKind::Delta { ch, .. } => ch,
+        };
+        let mut v: Vec<String> = Vec::new();
+        for l in self.laws.iter().filter(|l| l.action == action && l.target == target) {
+            if let Some(c) = ch {
+                if !l.condition.iter().any(|f| ch_of(f) == c) && !l.condition.is_empty() {
+                    continue;
+                }
+            }
+            v.push(format!("LAW {} | pruned {} | children {}", self.summary(l.id, ctx), l.pruned, l.lineage.children.len()));
+        }
+        v
+    }
+
     /// K2′ diagnosis (read-only; ported from the v0.3 record into v0.4): laws and their allocated bytes by lifecycle state,
     /// condition type, channel origin, channel cardinality class and target outcome cardinality.
     /// Returns (category, laws, bytes), largest bytes first.
