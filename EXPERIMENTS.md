@@ -751,3 +751,7 @@ Peak working set, round 2 vs v0.2:
 **Verdict.** Under the pre-registered stop rule (PREREG-v0.4 section 4), round 2 fails one
 condition. v0.4 is not frozen, no `bitmind-v0.4` tag is created and no K-series world is built.
 The latest frozen learner remains `bitmind-v0.2`. Report: `experiments/REPORT-v0.4.md`.
+
+## Capability phase: evidence-seeking conflict resolution (capability-h4)
+Pre-registration: `experiments/PREREG-capability-h4.md` (branch `capability-h4-dev`, rooted at
+`bitmind-v0.2`; committed before any learner change). The v0.3/v0.4 memory line is paused.
