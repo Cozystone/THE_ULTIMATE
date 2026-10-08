@@ -1,0 +1,166 @@
+BITMIND v0.4 - C3 / E3 diagnosis (PREREG-v0.4 section 2), 2026-10-08
+====================================================================
+
+Builds compared (both from a clean build, run concurrently on separate target directories):
+  * v0.2 learner: branch v0.4-dev at 8c6773e (= bitmind-v0.2 learner + read-only diag_target);
+  * v0.3 candidate: scratch worktree = v0.4-dev with crates/bm-relation/src from main (learner
+    28fac94) plus a read-only diag_target that also lists deferred entries, and an env-gated
+    REFINE_TRACE print in refine_ex (prints the gate inputs; changes nothing).
+Harness prints: DIAG_C3 in phase_c door(), DIAG_E3 / E3STEP in phase_e e3() (read-only).
+Seeds 46-60 for both. Raw logs were kept in the session scratchpad; the tables below are
+extracted from them by script.
+
+Result in one line: C3 and E3 fail for different reasons, and neither reason is K5.
+  * C3: class 6 (replay/transfer evidence accounting), 15/15 seeds.
+  * E3: class 8 (other), concretely an evaluation defect plus a coverage effect. The v0.2 pass
+    is not evidence of targeted verification.
+
+
+C3 hidden condition - class 6, replay/transfer evidence accounting (15/15 seeds)
+-------------------------------------------------------------------------------
+The decisive law is not a refinement child in either learner. In v0.2 the conditional law that
+answers the USE queries is a single-feature law, "rK.c3=1 => door changes", where rK is the
+power role and c3 the ON channel. It is created on its first case and licensed with transfer
+13/13. The phase-1 parent (unconditional law) has 0 children in both learners, so classes 1, 2,
+4 and 5 do not apply.
+
+In v0.3 the same hypothesis is deferred during phase 1. Power is constant there, so its
+information against the base model is ~0. It becomes informative in phase 2 and is materialized
+by replay (D055) only after many cases. Replay gives counts and keys but no transfer credit
+(D014). It therefore marks every relevant situation already seen as seen. The door world has
+only 16 relevant situations for this law and all were seen before materialization, so no later
+case is ever novel. Transfer stays 0/0 forever and the law can never be licensed. Its utility
+is above threshold in every seed, and counterexamples are 0. Classes 3 and 6 coincide here:
+the law is materialized but never licensed because of transfer accounting.
+
+The negative-side law, "rK.c3=0 => no change", is licensed in both learners with transfer
+13/13. It is materialized earlier, while unseen situations remained.
+
+  seed  decisive law          v0.2 status (n, transfer, utility)       v0.3 status (n, counter, indep, transfer, utility)
+  46    r2.c3=1 => 1          LICENSED n=380 tr 13/13 u=71b            PROVISIONAL n=380 c=0 ind=16 tr 0/0 u=72b
+  47    r1.c3=1 => 1          LICENSED n=387 tr 13/13 u=75b            PROVISIONAL n=387 c=0 ind=16 tr 0/0 u=76b
+  48    r3.c3=1 => 1          LICENSED n=385 tr 13/13 u=72b            PROVISIONAL n=385 c=0 ind=16 tr 0/0 u=72b
+  49    r1.c3=1 => 1          LICENSED n=373 tr 13/13 u=67b            PROVISIONAL n=373 c=0 ind=16 tr 0/0 u=68b
+  50    r2.c3=1 => 1          LICENSED n=406 tr 13/13 u=75b            PROVISIONAL n=406 c=0 ind=16 tr 0/0 u=75b
+  51    r4.c3=1 => 1          LICENSED n=351 tr 13/13 u=78b            PROVISIONAL n=351 c=0 ind=16 tr 0/0 u=79b
+  52    r3.c3=1 => 1          LICENSED n=364 tr 13/13 u=65b            PROVISIONAL n=364 c=0 ind=16 tr 0/0 u=66b
+  53    r1.c3=1 => 1          LICENSED n=356 tr 13/13 u=77b            PROVISIONAL n=356 c=0 ind=16 tr 0/0 u=77b
+  54    r3.c3=1 => 1          LICENSED n=355 tr 13/13 u=80b            PROVISIONAL n=355 c=0 ind=16 tr 0/0 u=80b
+  55    r1.c3=1 => 1          LICENSED n=351 tr 13/13 u=71b            PROVISIONAL n=351 c=0 ind=16 tr 0/0 u=71b
+  56    r4.c3=1 => 1          LICENSED n=334 tr 13/13 u=80b            PROVISIONAL n=334 c=0 ind=16 tr 0/0 u=80b
+  57    r1.c3=1 => 1          LICENSED n=372 tr 13/13 u=76b            PROVISIONAL n=372 c=0 ind=16 tr 0/0 u=77b
+  58    r4.c3=1 => 1          LICENSED n=325 tr 13/13 u=74b            PROVISIONAL n=325 c=0 ind=16 tr 0/0 u=74b
+  59    r1.c3=1 => 1          LICENSED n=407 tr 13/13 u=68b            PROVISIONAL n=407 c=0 ind=16 tr 0/0 u=68b
+  60    r4.c3=1 => 1          LICENSED n=385 tr 13/13 u=95b            PROVISIONAL n=385 c=0 ind=16 tr 0/0 u=95b
+
+Consequence. Half of the USE queries (power on) abstain in v0.3. This matches the v0.3 record
+of ~100 correct and ~100 abstain per seed.
+
+Why this is not K5. The licence cost is not the binding constraint: utility (66-95 bits)
+exceeds log2(n_cand) + margin in both learners. The missing ingredient is held-out evidence,
+and in a closed world that evidence can only be gathered prospectively, while the hypothesis is
+still deferred.
+
+Repair direction (to be pre-registered as a dated amendment before implementation). A deferred
+value keeps the same prospective transfer record a law would keep. When a case arrives:
+  * if the value already predicts (>= GATE_MIN_CASES cases, majority within noise, >= 2 relevant
+    bindings), and
+  * the case's relevant situation is provably unseen for that value,
+then the value's current majority is recorded as a pre-registered prediction before the outcome
+is counted. On materialization the law inherits these tallies.
+
+This is not retroactive credit: every trial was predicted before its outcome was read, by a
+hypothesis that existed (deferred) at that time. Memory: one bounded relevant-situation key set
+plus two counters per deferred entry. The bound and its effect on H5 / C4b memory are measured
+in development.
+
+
+E3 verification actions - class 8, other: evaluation defect + hypothesis coverage (15/15 seeds)
+-------------------------------------------------------------------------------------------------
+The E3 criterion counts the first 30 wake actions whose candidate episode matches at least one
+unlicensed law created in sleep. It requires active >= 60% of 30 and >= 2x a fixed-rotation twin.
+
+  seed | v0.2: gate active/twin, laws before sleep, sleep-created, of which unlicensed, max unlicensed matches per option at step 0, matches of chosen option | v0.3: same
+  46 | PASS 30/0, 1960, 8019, 1469, 243, 206 | FAIL 0/1, 182, 95, 83, 0, 0
+  47 | PASS 30/0, 1960, 7984, 1448, 242, 8 | FAIL 0/2, 134, 56, 51, 0, 0
+  48 | PASS 30/0, 1970, 8087, 1598, 213, 208 | FAIL 0/0, 141, 63, 55, 0, 0
+  49 | PASS 30/0, 1960, 8000, 1518, 228, 204 | FAIL 0/0, 139, 79, 68, 0, 0
+  50 | PASS 30/0, 1970, 8038, 1582, 205, 167 | FAIL 0/19, 135, 79, 56, 0, 0
+  51 | PASS 30/0, 1970, 8016, 1334, 207, 165 | FAIL 0/0, 139, 63, 49, 0, 0
+  52 | PASS 30/0, 1980, 8077, 1601, 200, 200 | FAIL 0/0, 145, 125, 90, 0, 0
+  53 | PASS 30/0, 1970, 8085, 1529, 250, 133 | FAIL 0/0, 153, 58, 57, 0, 0
+  54 | PASS 30/0, 1980, 8128, 1578, 152, 126 | FAIL 0/0, 147, 142, 90, 0, 0
+  55 | PASS 30/0, 1970, 8057, 1524, 209, 207 | FAIL 0/0, 137, 81, 62, 16, 0
+  56 | PASS 30/0, 1980, 8086, 1448, 190, 171 | FAIL 0/0, 157, 93, 70, 0, 0
+  57 | PASS 30/0, 1960, 7977, 1389, 192, 167 | FAIL 0/0, 151, 61, 54, 0, 0
+  58 | PASS 30/0, 1960, 8053, 1602, 206, 206 | FAIL 0/0, 157, 141, 114, 32, 0
+  59 | PASS 30/0, 1960, 8023, 1596, 216, 131 | FAIL 0/0, 142, 87, 78, 0, 0
+  60 | PASS 30/0, 1960, 8000, 1473, 224, 91 | FAIL 0/0, 145, 49, 39, 0, 0
+
+Findings.
+
+(a) The v0.2 pass is produced by quantity, not by choice.
+  * v0.2 sleep creates ~8,000 laws per seed, ~1,500 of them unlicensed.
+  * Every one of the five options (USE key, TOGGLE x3, WAIT) matches 150-250 of them.
+  * In v0.2 the chosen action at step 0 is WAIT on the inspected seeds (46, 58). WAIT has the
+    lowest total score: no residual ambiguity from licensed laws, small information gain. It
+    counts as "testing sleep hypotheses" because ~200 unlicensed sleep laws are about WAIT.
+  * Any policy would have scored ~30/30 on this measure.
+
+(b) The twin comparison is defective in both builds.
+  * The twin engine is a replay of the store without sleep (clone_engine; sleep is never run on
+    it).
+  * It tests membership in sleep_laws, a set of law INDICES from the other engine.
+  * Its counts are index coincidences: 0 in v0.2, where the twin has fewer laws than the first
+    sleep index; 0-19 in v0.3.
+  * The ">= 2x twin" half of the criterion therefore measured nothing in the v0.2 regression of
+    record.
+
+(c) v0.3 coverage.
+  * The D055 refinement gate keeps sleep to 49-142 new laws, 39-114 of them unlicensed.
+  * In 13/15 seeds none of the five options matches any of them at step 0. In seeds 55 and 58
+    one option matches 16 / 32, but the policy prefers WAIT (total 0.228 vs 0.251; 0.225 vs
+    0.390).
+  * Sleep refinement does generate children: 192 of 285 sleep refinement attempts on seed 46
+    passed the gate. Those that pass are mostly licensed or revoked within sleep by the held-out
+    split (D048), so little is left for wake to verify.
+
+Why this is not K5. The E3 result depends on how many unlicensed sleep hypotheses exist and
+which actions they are about, not on the licence cost.
+
+Consequence for PREREG-v0.4. The pre-registration requires every gate that passed in the v0.2
+regression of record to pass. Finding (b) means the E3 gate as recorded cannot discriminate.
+Finding (a) means the v0.2 pass would be reproduced by restoring hypothesis over-generation, not
+by better verification. Restoring over-generation to pass E3 would reverse the memory result and
+is not done.
+
+The proposed treatment is a dated amendment made before any v0.4 learner change:
+  * correct the twin (it runs the same sleep, and its own sleep-created laws are used);
+  * re-measure the v0.2 baseline and the candidate with the corrected harness;
+  * E3 counts as a must-pass gate only if v0.2 passes it under the corrected measurement.
+
+This is a change to a pre-registered criterion and is reported as such in the final report.
+
+
+Classes not observed: 1 (parent never examined), 2 (parent deferred: the C3 parent is
+materialized and licensed in both learners), 5 (child generated but gated out), 7 (sleep
+compaction or revocation interaction).
+
+
+Addendum (same day): E3 re-measured with the corrected twin
+-----------------------------------------------------------
+The harness was corrected as proposed: the twin replays the same store, runs the same sleep, and
+tests its own sleep-created laws. Both learners were re-run on seeds 46-60, with no learner
+change.
+
+  * v0.2 learner: FAIL on 15/15 seeds; active 30, fixed-rotation twin 30 on every seed.
+    The recorded v0.2 pass was produced by the defect: any action tests some of the ~1,500
+    unlicensed sleep hypotheses.
+  * v0.3 learner: FAIL on 15/15 seeds; active 0, twin 0-9 (seeds 46: 2, 52: 4, 55: 9, 58: 9,
+    others 0).
+    The active policy prefers WAIT even where a fixed rotation would test sleep hypotheses. This
+    is a real, if small, weakness of the D043 scoring when few hypotheses exist. It is reported,
+    not repaired, because E3 is out of the must-pass set; see PREREG-v0.4 amendment 1.
+
+Under a valid measurement E3 is therefore a v0.2 baseline failure, like E1 seed 54 and H2 seeds
+210-211.

@@ -638,3 +638,116 @@ Peak working set:
 * real-OS C chunks 2.1-4.6 GB (v0.1: ~10 GB);
 * G chunks ~3.8 GB (real-OS G1/G2);
 * everything else < 0.5 GB.
+
+### Result: Phase H, held-out validation of the frozen v0.2 learner (seeds 201-215)
+Freeze guard passed before and after the run (learner crates identical to `bitmind-v0.2`). Raw
+output: `experiments/results/v02_phase_h/`. Harness build `078a89d`.
+
+| gate | seeds | outcome totals | verdict |
+|---|---|---|---|
+| H1 relational transfer to new objects and never-seen sizes | 15/15 | correct 2,647; wrong 0; safe abstention 98; insufficient 0; identity leakage 0 | PASS |
+| H2 cyclic hidden ranks (established pairs) | 13/15 | correct 376; wrong 0; safe abstention 11; leakage 0 | FAIL (210: 23/26, 211: 26/30, below 90% by abstentions only) |
+| H3a/H3b identity and label permutation | 15/15 | identical answers 3,000/3,000 (H1) and 391/391 (H2) | PASS |
+| H4 reachable conflict | 0/15 | stage 1 safe abstention 160/160, wrong 0, answers while unsettled 0. Stage 2: 0 answers by D041 settlement; 154 answered correctly after the conflict dissolved (the competing licence lost to counterevidence), with 3-14 distinct region pairs probed by then; 6 still abstained; wrong 0 | FAIL |
+| H5 20,000 steps under a 2 GB budget | 0/15 | peak working set 3.5-6.9 GB; accuracy end 1,070 vs mid 1,058 correct; wrong 4 (seeds 207, 213); counterexample counts never decreased | FAIL (memory budget) |
+
+Outcome classes over all H answers:
+* wrong confident answers: 4 (all in H5);
+* identity leakage: 0;
+* memory-budget failure: 15/15 H5 runs.
+
+## v0.3
+Pre-registration: `experiments/PREREG-v0.3.md` (committed before any v0.3 learner change).
+
+### v0.3 result: stop rule invoked, v0.3 not frozen (2026-10-08)
+Learner build `28fac94` (D055 + D055b). Regression round 2: `experiments/results/v03reg2/`
+(round 1: `v03reg_round1/`). Compared with the v0.2 regression of record (`v02reg3`,
+`v02_phase_h`):
+
+| item | v0.2 | v0.3 round 2 |
+|---|---|---|
+| H5 peak working set, 20,000 steps | 3.5-6.9 GB, 0/15 | 191-347 MB, 15/15 (end 1,042 correct, 3 wrong) |
+| real-OS C peak (chunks) | 2.1-4.6 GB | 211-242 MB |
+| real-OS G peak (chunks) | 3.7-3.9 GB | 167-190 MB |
+| H1 relational transfer | 2,647 correct, 0 wrong, 98 safe abstention, 0 leakage; 15/15 | 2,236 correct, 0 wrong, 356 safe abstention, **153 identity leakage**; 2/15 |
+| H2 established pairs | 376 correct, 0 wrong, 11 abstain; 13/15 | 113 correct, **3 wrong**, 271 abstain; 0/15 |
+| H3 invariance | 15/15 | 15/15 |
+| C1 / C2 / C3 / C4a / C4b-1 | 15 / 15 / 15 / 15 / 15 | 7 / 13 / **0** / 14 / 13 (2 wrong on seed 51) |
+| E1 / E2 / E3 | 15 / 15 / 15 | 13 / 15 / **0** |
+| G1-G4 | 15 each | 14 (2 wrong on seed 110) / 15 / 15 / 15 |
+| R0 | PASS | FAIL (C2 23/25) |
+| B, D | PASS | PASS |
+| F | PASS | F3 fails on 3 seeds (90%, abstentions) |
+
+**Verdict.** The memory budget is met everywhere, but correctness is lost materially:
+* identity leakage reappeared (153 answers);
+* new wrong answers in C4b-1, G1 and H2;
+* C3 and E3 collapsed;
+* broad abstention increases.
+
+PREREG-v0.3 amendment 6 made round 2 the last integration fix. v0.3 is therefore not frozen, no
+`bitmind-v0.3` tag is created and the J-series is not built. The latest frozen learner remains
+`bitmind-v0.2`. `main` keeps the D055 development state with these records.
+
+## v0.4
+Pre-registration: `experiments/PREREG-v0.4.md` (branch `v0.4-dev`, rooted at `bitmind-v0.2`; committed before any v0.4 learner change).
+
+### v0.4 result: stop rule invoked, v0.4 not frozen (2026-10-08)
+Development round 2 (the last allowed) on learner build `707dafb`:
+`experiments/results/v04dev2/` (`COMPARISON.txt`). Round 1 (`33b3e23`) is in `v04dev1/`. After
+the run, `a702c08` changed one diagnostic print to integers (constitution); there is no
+behavioural change. Seeds and worlds are the development battery of PREREG-v0.4 section 4.
+
+| gate (seeds passing) | v0.2 record | v0.4 round 1 | v0.4 round 2 |
+|---|---|---|---|
+| B3-B6 | 25 each | 25 each | 25 each |
+| **B7 bridge** | 25 | 25 | **24** (seed 1: 26 correct, 0 wrong, 174 abstain) |
+| C1 / C2 / C3 | 15 / 15 / 15 | 7 / 13 / 0 | 15 / 15 / 15 |
+| C4a / C4b-1 / C4b-2 / C5 | 15 each | 15 / 13* / 13* / 15 | 15 each |
+| D2 / D3 | 15 / 15 | 15 / 15 | 15 / 15 |
+| E1 / E2 | 14 / 15 | 11 / 15 | 15 / 15 |
+| E3 (corrected twin; amendment 1a) | 15 (defective measure) | 0 | 0 |
+| F1-F7 | 30 each | F3 27, others 30 | 30 each |
+| G1-G4 | 15 each | 15 each | 15 each |
+| H1 (leakage) | 15 (0) | 15 (0) | 15 (0) |
+| H2 | 13 | 0 (3 wrong) | 14 (0 wrong) |
+| H3a / H3b | 15 / 15 | 15 / 15 | 15 / 15 |
+| H4 | 0 | 0 | 0 |
+| H5 (<= 2,048 MB, 20,000 steps) | 0 (3.5-6.9 GB) | 15 (240-352 MB) | 15 (870-1,443 MB) |
+
+\* C4b seeds 48-49 in round 1 failed with an environment error (sandbox directory collision with
+a concurrent diagnostic run), not with a learner result.
+
+Phase totals, round 2 vs v0.2:
+
+| phase | correct | wrong | abstain |
+|---|---|---|---|
+| B | 95.7% vs 99.2% | 29 / 29 | **187 vs 13** |
+| C | 93.5% / 93.5% | 1,522 / 1,522 | 125 / 131 |
+| F | identical | identical | identical |
+| G | identical | identical | identical |
+| H | 93.2% vs 93.6% | 7 / 8 | 397 / 371 |
+
+Identity leakage is 0 everywhere, and no counterexample count decreased (H5 audit).
+
+Peak working set, round 2 vs v0.2:
+
+| world | v0.4 round 2 | v0.2 |
+|---|---|---|
+| real-OS C | 279-717 MB | 2.1-4.6 GB |
+| real-OS G | 395-425 MB | 3.7-3.9 GB |
+| H (3 seeds per process) | 1.0-1.4 GB | 3.9-6.9 GB |
+
+**The failing condition.** B7 seed 1 does not pass. One genuine, noisy law,
+`diff(r0,r1;c0) => 0`, stays provisional: 572 cases, 21 counterexamples, transfer 381/400, and
+19 bits of incremental utility, since the base rate already predicts most cases.
+* Its target's family is |F| = 60,067, a cost of 19.9 bits (round 1: 670, 13.4 bits; measured
+  with the read-only `DIAG_B7` print).
+* D058 (search on deferred parents) multiplied the family about 90x; that search is what made
+  H2 and E1 pass in round 2.
+* This one gate drags phase B below "correct >= v0.2 - 1 pp" and above the abstention bound.
+* No wrong answer was added.
+
+**Verdict.** Under the pre-registered stop rule (PREREG-v0.4 section 4), round 2 fails one
+condition. v0.4 is not frozen, no `bitmind-v0.4` tag is created and no K-series world is built.
+The latest frozen learner remains `bitmind-v0.2`. Report: `experiments/REPORT-v0.4.md`.

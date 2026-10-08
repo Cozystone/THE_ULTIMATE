@@ -1,0 +1,858 @@
+v0.4 development regression vs v0.2 regression of record (v02reg3 + v02_phase_h)
+Excused (v0.2 baseline failures): E3 (amendment 1a), E1 seed 54, H2 seeds 210-211
+
+B3 novelty                         seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  16  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  17  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  18  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  19  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  20  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  21  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  22  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  23  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  24  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B3 novelty                         seed  25  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  16  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  17  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  18  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  19  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  20  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  21  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  22  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  23  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  24  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5a merge                          seed  25  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  16  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  17  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  18  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  19  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  20  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  21  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  22  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  23  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  24  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B5b split                          seed  25  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  16  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  17  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  18  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  19  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  20  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  21  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  22  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  23  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  24  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B6 OS                              seed  25  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+B7 bridge                          seed   1  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 200/0/0/0  v0.4 26/0/174/0  <-- REGRESSION
+B7 bridge                          seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 196/2/2/0  v0.4 196/2/2/0
+B7 bridge                          seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 198/1/1/0  v0.4 198/1/1/0
+B7 bridge                          seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 199/1/0/0  v0.4 199/1/0/0
+B7 bridge                          seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 198/1/1/0  v0.4 198/1/1/0
+B7 bridge                          seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 198/2/0/0  v0.4 198/2/0/0
+B7 bridge                          seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 197/1/2/0  v0.4 197/1/2/0
+B7 bridge                          seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 199/1/0/0  v0.4 199/1/0/0
+B7 bridge                          seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 198/1/1/0  v0.4 198/1/1/0
+B7 bridge                          seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 198/2/0/0  v0.4 198/2/0/0
+B7 bridge                          seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 199/1/0/0  v0.4 199/1/0/0
+B7 bridge                          seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+B7 bridge                          seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 199/0/1/0  v0.4 199/0/1/0
+B7 bridge                          seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 199/1/0/0  v0.4 199/1/0/0
+B7 bridge                          seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 197/2/1/0  v0.4 197/2/1/0
+B7 bridge                          seed  16  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 198/1/1/0  v0.4 198/1/1/0
+B7 bridge                          seed  17  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 198/2/0/0  v0.4 198/2/0/0
+B7 bridge                          seed  18  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 197/2/1/0  v0.4 197/2/1/0
+B7 bridge                          seed  19  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 197/2/1/0  v0.4 197/2/1/0
+B7 bridge                          seed  20  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 199/1/0/0  v0.4 199/1/0/0
+B7 bridge                          seed  21  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 199/1/0/0  v0.4 199/1/0/0
+B7 bridge                          seed  22  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 198/1/1/0  v0.4 198/1/1/0
+B7 bridge                          seed  23  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+B7 bridge                          seed  24  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 198/2/0/0  v0.4 198/2/0/0
+B7 bridge                          seed  25  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 199/1/0/0  v0.4 199/1/0/0
+C1 untrained combinations          seed  46  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  47  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  48  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  49  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  50  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  51  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  52  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  53  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  54  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  55  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  56  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  57  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  58  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  59  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C1 untrained combinations          seed  60  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 750/0/0/0  v0.4 750/0/0/0
+C2 intervention vs observation     seed  46  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 294/106/0/0  v0.4 294/106/0/0
+C2 intervention vs observation     seed  47  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 301/99/0/0  v0.4 301/99/0/0
+C2 intervention vs observation     seed  48  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 296/104/0/0  v0.4 296/104/0/0
+C2 intervention vs observation     seed  49  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 302/98/0/0  v0.4 302/98/0/0
+C2 intervention vs observation     seed  50  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 301/99/0/0  v0.4 301/99/0/0
+C2 intervention vs observation     seed  51  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 306/94/0/0  v0.4 306/94/0/0
+C2 intervention vs observation     seed  52  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 299/101/0/0  v0.4 299/101/0/0
+C2 intervention vs observation     seed  53  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 301/99/0/0  v0.4 301/99/0/0
+C2 intervention vs observation     seed  54  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 296/104/0/0  v0.4 296/104/0/0
+C2 intervention vs observation     seed  55  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 309/91/0/0  v0.4 309/91/0/0
+C2 intervention vs observation     seed  56  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 309/91/0/0  v0.4 309/91/0/0
+C2 intervention vs observation     seed  57  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 289/111/0/0  v0.4 289/111/0/0
+C2 intervention vs observation     seed  58  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 285/115/0/0  v0.4 285/115/0/0
+C2 intervention vs observation     seed  59  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 305/95/0/0  v0.4 305/95/0/0
+C2 intervention vs observation     seed  60  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 296/104/0/0  v0.4 296/104/0/0
+C3 hidden condition                seed  46  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  47  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  48  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  49  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  50  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  51  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  52  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  53  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  54  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  55  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  56  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  57  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  58  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  59  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C3 hidden condition                seed  60  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C4a latent cause (micro)           seed  46  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+C4a latent cause (micro)           seed  47  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 76/0/0/0  v0.4 76/0/0/0
+C4a latent cause (micro)           seed  48  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 82/0/0/0  v0.4 82/0/0/0
+C4a latent cause (micro)           seed  49  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 98/0/0/0  v0.4 98/0/0/0
+C4a latent cause (micro)           seed  50  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 96/0/0/0  v0.4 96/0/0/0
+C4a latent cause (micro)           seed  51  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 92/0/0/0  v0.4 92/0/0/0
+C4a latent cause (micro)           seed  52  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 68/0/0/0  v0.4 68/0/0/0
+C4a latent cause (micro)           seed  53  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+C4a latent cause (micro)           seed  54  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 104/0/0/0  v0.4 104/0/0/0
+C4a latent cause (micro)           seed  55  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 84/0/4/0  v0.4 84/0/4/0
+C4a latent cause (micro)           seed  56  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 90/0/10/0  v0.4 96/0/4/0
+C4a latent cause (micro)           seed  57  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 88/0/0/0  v0.4 88/0/0/0
+C4a latent cause (micro)           seed  58  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 80/0/0/0  v0.4 80/0/0/0
+C4a latent cause (micro)           seed  59  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+C4a latent cause (micro)           seed  60  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 104/0/0/0  v0.4 104/0/0/0
+C4b-1 abstain without evidence     seed  46  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 62/0/8/0  v0.4 62/0/8/0
+C4b-1 abstain without evidence     seed  47  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 52/0/8/0  v0.4 52/0/8/0
+C4b-1 abstain without evidence     seed  48  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 52/0/8/0  v0.4 52/0/8/0
+C4b-1 abstain without evidence     seed  49  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 38/0/8/0  v0.4 38/0/8/0
+C4b-1 abstain without evidence     seed  50  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 54/10/0/0  v0.4 54/10/0/0
+C4b-1 abstain without evidence     seed  51  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 50/0/10/0  v0.4 50/0/10/0
+C4b-1 abstain without evidence     seed  52  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 42/0/8/0  v0.4 42/0/8/0
+C4b-1 abstain without evidence     seed  53  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 50/0/10/0  v0.4 50/0/10/0
+C4b-1 abstain without evidence     seed  54  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 44/0/10/0  v0.4 44/0/10/0
+C4b-1 abstain without evidence     seed  55  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 46/0/8/0  v0.4 46/0/8/0
+C4b-1 abstain without evidence     seed  56  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 44/0/8/0  v0.4 44/0/8/0
+C4b-1 abstain without evidence     seed  57  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 56/0/8/0  v0.4 56/0/8/0
+C4b-1 abstain without evidence     seed  58  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 56/1/7/0  v0.4 56/1/7/0
+C4b-1 abstain without evidence     seed  59  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 58/0/8/0  v0.4 58/0/8/0
+C4b-1 abstain without evidence     seed  60  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 54/0/8/0  v0.4 54/0/8/0
+C4b-2 learn from new evidence      seed  46  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  47  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  48  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  49  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  50  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  51  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  52  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  53  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  54  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  55  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  56  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  57  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  58  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  59  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C4b-2 learn from new evidence      seed  60  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+C5 counterfactual                  seed  46  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  47  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  48  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  49  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  50  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  51  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  52  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  53  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  54  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  55  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  56  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  57  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  58  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  59  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+C5 counterfactual                  seed  60  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 200/0/0/0  v0.4 200/0/0/0
+D2 act/ask/wait                    seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D2 act/ask/wait                    seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+D3 constraints                     seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  46  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  47  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  48  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  49  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  50  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  51  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  52  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  53  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  54  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  55  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  56  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  57  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  58  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  59  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E1 consolidation                   seed  60  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  46  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  47  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  48  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  49  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  50  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  51  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  52  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  53  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  54  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  55  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  56  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  57  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  58  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  59  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E2 calibration                     seed  60  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  46  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  47  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  48  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  49  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  50  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  51  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  52  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  53  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  54  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  55  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  56  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  57  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  58  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  59  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+E3 verification actions            seed  60  v0.2 PASS v0.4 FAIL    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F1 one-shot recall                 seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 796/0/4/0  v0.4 796/0/4/0
+F1 one-shot recall                 seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 790/2/8/0  v0.4 790/2/8/0
+F1 one-shot recall                 seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 767/7/26/0  v0.4 767/7/26/0
+F1 one-shot recall                 seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 792/0/8/0  v0.4 792/0/8/0
+F1 one-shot recall                 seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 785/1/14/0  v0.4 785/1/14/0
+F1 one-shot recall                 seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 794/0/6/0  v0.4 794/0/6/0
+F1 one-shot recall                 seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 794/0/6/0  v0.4 794/0/6/0
+F1 one-shot recall                 seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 787/3/10/0  v0.4 787/3/10/0
+F1 one-shot recall                 seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 798/0/2/0  v0.4 798/0/2/0
+F1 one-shot recall                 seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 800/0/0/0  v0.4 800/0/0/0
+F1 one-shot recall                 seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 796/0/4/0  v0.4 796/0/4/0
+F1 one-shot recall                 seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 771/3/26/0  v0.4 771/3/26/0
+F1 one-shot recall                 seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 800/0/0/0  v0.4 800/0/0/0
+F1 one-shot recall                 seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 796/2/2/0  v0.4 796/2/2/0
+F1 one-shot recall                 seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 782/4/14/0  v0.4 782/4/14/0
+F1 one-shot recall                 seed 101  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 748/8/44/0  v0.4 748/8/44/0
+F1 one-shot recall                 seed 102  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 764/4/32/0  v0.4 764/4/32/0
+F1 one-shot recall                 seed 103  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 761/9/30/0  v0.4 761/9/30/0
+F1 one-shot recall                 seed 104  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 792/0/8/0  v0.4 792/0/8/0
+F1 one-shot recall                 seed 105  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 796/0/4/0  v0.4 796/0/4/0
+F1 one-shot recall                 seed 106  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 768/3/29/0  v0.4 768/3/29/0
+F1 one-shot recall                 seed 107  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 794/0/6/0  v0.4 794/0/6/0
+F1 one-shot recall                 seed 108  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 794/0/6/0  v0.4 794/0/6/0
+F1 one-shot recall                 seed 109  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 796/0/4/0  v0.4 796/0/4/0
+F1 one-shot recall                 seed 110  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 792/0/8/0  v0.4 792/0/8/0
+F1 one-shot recall                 seed 111  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 782/3/15/0  v0.4 782/3/15/0
+F1 one-shot recall                 seed 112  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 796/0/4/0  v0.4 796/0/4/0
+F1 one-shot recall                 seed 113  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 771/1/28/0  v0.4 771/1/28/0
+F1 one-shot recall                 seed 114  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 794/0/6/0  v0.4 794/0/6/0
+F1 one-shot recall                 seed 115  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 798/0/2/0  v0.4 798/0/2/0
+F2 compositional held-out          seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 101  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 102  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 103  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 104  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 105  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 106  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 107  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 108  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 109  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 110  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 111  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 112  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 113  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 114  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F2 compositional held-out          seed 115  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 600/0/0/0  v0.4 600/0/0/0
+F3 intervention accuracy           seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1800/200/0/0  v0.4 1800/200/0/0
+F3 intervention accuracy           seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 101  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 102  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 103  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 104  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 105  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 106  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1800/200/0/0  v0.4 1800/200/0/0
+F3 intervention accuracy           seed 107  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 108  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1800/200/0/0  v0.4 1800/200/0/0
+F3 intervention accuracy           seed 109  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 110  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 111  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 112  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 113  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 114  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F3 intervention accuracy           seed 115  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 1700/300/0/0  v0.4 1700/300/0/0
+F4 counterfactual                  seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 101  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 102  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 103  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 104  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 105  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 106  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 107  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 108  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 109  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 110  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 111  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 112  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 113  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 114  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F4 counterfactual                  seed 115  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 100/0/0/0  v0.4 100/0/0/0
+F5 calibration                     seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 101  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 102  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 103  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 104  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 105  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 106  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 107  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 108  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 109  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 110  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 111  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 112  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 113  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 114  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F5 calibration                     seed 115  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 101  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 102  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 103  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 104  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 105  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 106  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 107  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 108  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 109  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 110  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 111  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 112  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 113  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 114  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F6 compression                     seed 115  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed   1  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed   2  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed   3  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed   4  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed   5  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed   6  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed   7  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed   8  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed   9  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed  10  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed  11  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed  12  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed  13  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed  14  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed  15  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 101  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 102  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 103  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 104  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 105  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 106  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 107  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 108  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 109  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 110  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 111  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 112  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 113  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 114  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+F7 transfer speed                  seed 115  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+G1 hidden directories (OS)         seed 101  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 66/0/0/0  v0.4 66/0/0/0
+G1 hidden directories (OS)         seed 102  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 54/0/0/0  v0.4 54/0/0/0
+G1 hidden directories (OS)         seed 103  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 40/0/0/0  v0.4 40/0/0/0
+G1 hidden directories (OS)         seed 104  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 40/0/0/0  v0.4 40/0/0/0
+G1 hidden directories (OS)         seed 105  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 52/2/0/0  v0.4 52/2/0/0
+G1 hidden directories (OS)         seed 106  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 54/0/0/0  v0.4 54/0/0/0
+G1 hidden directories (OS)         seed 107  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 60/0/0/0  v0.4 60/0/0/0
+G1 hidden directories (OS)         seed 108  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 50/0/0/0  v0.4 50/0/0/0
+G1 hidden directories (OS)         seed 109  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 60/0/0/0  v0.4 60/0/0/0
+G1 hidden directories (OS)         seed 110  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 52/0/2/0  v0.4 52/0/2/0
+G1 hidden directories (OS)         seed 111  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 52/0/0/0  v0.4 52/0/0/0
+G1 hidden directories (OS)         seed 112  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 34/0/0/0  v0.4 34/0/0/0
+G1 hidden directories (OS)         seed 113  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 60/0/0/0  v0.4 60/0/0/0
+G1 hidden directories (OS)         seed 114  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 62/0/0/0  v0.4 62/0/0/0
+G1 hidden directories (OS)         seed 115  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 50/0/0/0  v0.4 50/0/0/0
+G2 hidden read-only (OS, explore)  seed 101  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 102  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 103  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 104  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 105  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 106  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 107  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 108  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 109  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 110  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 111  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 112  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 113  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 114  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G2 hidden read-only (OS, explore)  seed 115  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/600/0  v0.4 0/0/600/0
+G3 two-relation conjunction        seed 101  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 394/0/0/0  v0.4 394/0/0/0
+G3 two-relation conjunction        seed 102  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 379/0/0/0  v0.4 379/0/0/0
+G3 two-relation conjunction        seed 103  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 384/0/0/0  v0.4 384/0/0/0
+G3 two-relation conjunction        seed 104  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 377/0/0/0  v0.4 377/0/0/0
+G3 two-relation conjunction        seed 105  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 380/0/0/0  v0.4 380/0/0/0
+G3 two-relation conjunction        seed 106  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 385/0/0/0  v0.4 385/0/0/0
+G3 two-relation conjunction        seed 107  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 391/0/0/0  v0.4 391/0/0/0
+G3 two-relation conjunction        seed 108  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 382/0/0/0  v0.4 382/0/0/0
+G3 two-relation conjunction        seed 109  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 378/0/0/0  v0.4 378/0/0/0
+G3 two-relation conjunction        seed 110  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 390/0/0/0  v0.4 390/0/0/0
+G3 two-relation conjunction        seed 111  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 390/0/0/0  v0.4 390/0/0/0
+G3 two-relation conjunction        seed 112  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 372/0/0/0  v0.4 372/0/0/0
+G3 two-relation conjunction        seed 113  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 375/0/0/0  v0.4 375/0/0/0
+G3 two-relation conjunction        seed 114  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 381/0/0/0  v0.4 381/0/0/0
+G3 two-relation conjunction        seed 115  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 379/0/0/0  v0.4 379/0/0/0
+G4 anti-equivalence latent         seed 101  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 68/0/0/0  v0.4 68/0/0/0
+G4 anti-equivalence latent         seed 102  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 54/0/0/0  v0.4 54/0/0/0
+G4 anti-equivalence latent         seed 103  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 40/0/0/0  v0.4 40/0/0/0
+G4 anti-equivalence latent         seed 104  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 40/0/0/0  v0.4 40/0/0/0
+G4 anti-equivalence latent         seed 105  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 54/0/0/0  v0.4 54/0/0/0
+G4 anti-equivalence latent         seed 106  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 54/0/0/0  v0.4 54/0/0/0
+G4 anti-equivalence latent         seed 107  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 60/0/0/0  v0.4 60/0/0/0
+G4 anti-equivalence latent         seed 108  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 50/0/0/0  v0.4 50/0/0/0
+G4 anti-equivalence latent         seed 109  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 62/0/0/0  v0.4 62/0/0/0
+G4 anti-equivalence latent         seed 110  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 58/0/0/0  v0.4 58/0/0/0
+G4 anti-equivalence latent         seed 111  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 52/0/0/0  v0.4 52/0/0/0
+G4 anti-equivalence latent         seed 112  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 36/0/0/0  v0.4 36/0/0/0
+G4 anti-equivalence latent         seed 113  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 60/0/0/0  v0.4 60/0/0/0
+G4 anti-equivalence latent         seed 114  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 64/0/0/0  v0.4 64/0/0/0
+G4 anti-equivalence latent         seed 115  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 48/0/0/0  v0.4 48/0/0/0
+H1 relational transfer             seed 201  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 183/0/0/0  v0.4 183/0/0/0
+H1 relational transfer             seed 202  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 166/0/17/0  v0.4 166/0/17/0
+H1 relational transfer             seed 203  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 183/0/0/0  v0.4 183/0/0/0
+H1 relational transfer             seed 204  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 183/0/0/0  v0.4 183/0/0/0
+H1 relational transfer             seed 205  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 183/0/0/0  v0.4 183/0/0/0
+H1 relational transfer             seed 206  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 167/0/16/0  v0.4 167/0/16/0
+H1 relational transfer             seed 207  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 183/0/0/0  v0.4 183/0/0/0
+H1 relational transfer             seed 208  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 167/0/16/0  v0.4 167/0/16/0
+H1 relational transfer             seed 209  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 167/0/16/0  v0.4 167/0/16/0
+H1 relational transfer             seed 210  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 166/0/17/0  v0.4 166/0/17/0
+H1 relational transfer             seed 211  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 183/0/0/0  v0.4 167/0/16/0
+H1 relational transfer             seed 212  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 183/0/0/0  v0.4 183/0/0/0
+H1 relational transfer             seed 213  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 183/0/0/0  v0.4 183/0/0/0
+H1 relational transfer             seed 214  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 183/0/0/0  v0.4 183/0/0/0
+H1 relational transfer             seed 215  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 167/0/16/0  v0.4 167/0/16/0
+H2 cyclic hidden ranks             seed 201  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 54/0/0/0  v0.4 54/0/0/0
+H2 cyclic hidden ranks             seed 202  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 46/0/0/0  v0.4 46/0/0/0
+H2 cyclic hidden ranks             seed 203  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 60/0/0/0  v0.4 60/0/0/0
+H2 cyclic hidden ranks             seed 204  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 54/0/0/0  v0.4 54/0/0/0
+H2 cyclic hidden ranks             seed 205  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 58/0/0/0  v0.4 58/0/0/0
+H2 cyclic hidden ranks             seed 206  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 44/0/0/0  v0.4 44/0/0/0
+H2 cyclic hidden ranks             seed 207  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 50/0/0/0  v0.4 50/0/0/0
+H2 cyclic hidden ranks             seed 208  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 48/0/0/0  v0.4 48/0/0/0
+H2 cyclic hidden ranks             seed 209  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 54/0/0/0  v0.4 54/0/0/0
+H2 cyclic hidden ranks             seed 210  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 46/0/6/0  v0.4 52/0/0/0
+H2 cyclic hidden ranks             seed 211  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 52/0/8/0  v0.4 52/0/8/0
+H2 cyclic hidden ranks             seed 212  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 58/0/0/0  v0.4 58/0/0/0
+H2 cyclic hidden ranks             seed 213  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 30/0/0/0  v0.4 30/0/0/0
+H2 cyclic hidden ranks             seed 214  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 56/0/4/0  v0.4 60/0/0/0
+H2 cyclic hidden ranks             seed 215  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 42/0/4/0  v0.4 46/0/0/0
+H3a permutation invariance (H1)    seed 201  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 202  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 203  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 204  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 205  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 206  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 207  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 208  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 209  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 210  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 211  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 212  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 213  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 214  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3a permutation invariance (H1)    seed 215  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 201  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 202  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 203  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 204  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 205  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 206  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 207  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 208  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 209  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 210  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 211  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 212  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 213  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 214  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H3b permutation invariance (H2)    seed 215  v0.2 PASS v0.4 PASS    | c/w/a/leak v0.2 0/0/0/0  v0.4 0/0/0/0
+H4 reachable conflict              seed 201  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/10/0  v0.4 0/0/10/0
+H4 reachable conflict              seed 202  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/8/0  v0.4 0/0/8/0
+H4 reachable conflict              seed 203  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/14/0  v0.4 0/0/14/0
+H4 reachable conflict              seed 204  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/16/0  v0.4 0/0/16/0
+H4 reachable conflict              seed 205  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/7/0  v0.4 0/0/7/0
+H4 reachable conflict              seed 206  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/8/0  v0.4 0/0/8/0
+H4 reachable conflict              seed 207  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/12/0  v0.4 0/0/12/0
+H4 reachable conflict              seed 208  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/13/0  v0.4 0/0/13/0
+H4 reachable conflict              seed 209  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/10/0  v0.4 0/0/10/0
+H4 reachable conflict              seed 210  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/5/0  v0.4 0/0/5/0
+H4 reachable conflict              seed 211  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/5/0  v0.4 0/0/5/0
+H4 reachable conflict              seed 212  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/11/0  v0.4 0/0/11/0
+H4 reachable conflict              seed 213  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/4/0  v0.4 0/0/4/0
+H4 reachable conflict              seed 214  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/8/0  v0.4 0/0/8/0
+H4 reachable conflict              seed 215  v0.2 FAIL v0.4 FAIL    | c/w/a/leak v0.2 0/0/4/0  v0.4 0/0/4/0
+H5 long horizon, memory budget     seed 201  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 156/0/0/0  v0.4 156/0/0/0
+H5 long horizon, memory budget     seed 202  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 142/0/0/0  v0.4 142/0/0/0
+H5 long horizon, memory budget     seed 203  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 98/0/44/0  v0.4 93/0/49/0
+H5 long horizon, memory budget     seed 204  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 156/0/0/0  v0.4 156/0/0/0
+H5 long horizon, memory budget     seed 205  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 172/0/0/0  v0.4 172/0/0/0
+H5 long horizon, memory budget     seed 206  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 172/0/0/0  v0.4 172/0/0/0
+H5 long horizon, memory budget     seed 207  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 104/6/44/0  v0.4 97/6/51/0
+H5 long horizon, memory budget     seed 208  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 146/0/0/0  v0.4 146/0/0/0
+H5 long horizon, memory budget     seed 209  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 164/0/0/0  v0.4 164/0/0/0
+H5 long horizon, memory budget     seed 210  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 138/0/0/0  v0.4 138/0/0/0
+H5 long horizon, memory budget     seed 211  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 144/0/0/0  v0.4 144/0/0/0
+H5 long horizon, memory budget     seed 212  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 146/0/0/0  v0.4 146/0/0/0
+H5 long horizon, memory budget     seed 213  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 104/2/28/0  v0.4 93/1/40/0
+H5 long horizon, memory budget     seed 214  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 142/0/0/0  v0.4 142/0/0/0
+H5 long horizon, memory budget     seed 215  v0.2 FAIL v0.4 PASS    | c/w/a/leak v0.2 144/0/0/0  v0.4 144/0/0/0
+
+Per phase totals (summed over gate lines; same rule for both versions):
+  phase B: correct v0.2 4958 (99.2%) v0.4 4784 (95.7%); wrong 29 -> 29; abstain 13 -> 187; leakage 0 -> 0  <-- CORRECT RATE BELOW v0.2 - 1pp  <-- ABSTENTIONS ABOVE v0.2 x 1.10 + 5
+  phase C: correct v0.2 23859 (93.5%) v0.4 23865 (93.5%); wrong 1522 -> 1522; abstain 131 -> 125; leakage 0 -> 0
+  phase D: correct v0.2 0 (0.0%) v0.4 0 (0.0%); wrong 0 -> 0; abstain 0 -> 0; leakage 0 -> 0
+  phase E: correct v0.2 0 (0.0%) v0.4 0 (0.0%); wrong 0 -> 0; abstain 0 -> 0; leakage 0 -> 0
+  phase F: correct v0.2 95894 (91.3%) v0.4 95894 (91.3%); wrong 8750 -> 8750; abstain 356 -> 356; leakage 0 -> 0
+  phase G: correct v0.2 7323 (44.9%) v0.4 7323 (44.9%); wrong 2 -> 2; abstain 9002 -> 9002; leakage 0 -> 0
+  phase H: correct v0.2 5527 (93.6%) v0.4 5502 (93.2%); wrong 8 -> 7; abstain 371 -> 397; leakage 0 -> 0
+
+Per seed engine stats (BM_STATS; engines summed per seed; family = max over engines):
+  b      seed   1: engines 1, laws 1487 (licensed 48, revoked/split 28, provisional 14, candidate 1397, pruned/retired 0), materialized 76, deferred entries 1008, untracked cases 0, family max 73860; wall 51.2 s, working set 7 MB, process peak 40 MB
+  b      seed   2: engines 1, laws 1576 (licensed 48, revoked/split 92, provisional 36, candidate 1400, pruned/retired 0), materialized 93, deferred entries 1354, untracked cases 0, family max 75339; wall 48.1 s, working set 8 MB, process peak 40 MB
+  b      seed   3: engines 1, laws 1591 (licensed 50, revoked/split 73, provisional 24, candidate 1444, pruned/retired 0), materialized 93, deferred entries 1434, untracked cases 0, family max 79444; wall 47.0 s, working set 8 MB, process peak 41 MB
+  b      seed   4: engines 1, laws 1641 (licensed 46, revoked/split 110, provisional 31, candidate 1454, pruned/retired 0), materialized 78, deferred entries 1017, untracked cases 0, family max 77893; wall 48.1 s, working set 8 MB, process peak 42 MB
+  b      seed   5: engines 1, laws 1638 (licensed 47, revoked/split 79, provisional 9, candidate 1503, pruned/retired 0), materialized 77, deferred entries 1375, untracked cases 0, family max 75077; wall 51.3 s, working set 7 MB, process peak 42 MB
+  b      seed   6: engines 1, laws 1564 (licensed 44, revoked/split 60, provisional 41, candidate 1419, pruned/retired 0), materialized 72, deferred entries 1037, untracked cases 0, family max 76238; wall 45.3 s, working set 8 MB, process peak 42 MB
+  b      seed   7: engines 1, laws 1717 (licensed 50, revoked/split 47, provisional 36, candidate 1584, pruned/retired 0), materialized 93, deferred entries 979, untracked cases 0, family max 76485; wall 45.9 s, working set 8 MB, process peak 42 MB
+  b      seed   8: engines 1, laws 1591 (licensed 51, revoked/split 60, provisional 32, candidate 1448, pruned/retired 0), materialized 83, deferred entries 1322, untracked cases 0, family max 62764; wall 45.3 s, working set 8 MB, process peak 43 MB
+  b      seed   9: engines 1, laws 1638 (licensed 50, revoked/split 39, provisional 15, candidate 1534, pruned/retired 0), materialized 77, deferred entries 1019, untracked cases 0, family max 75347; wall 47.8 s, working set 9 MB, process peak 43 MB
+  b      seed  10: engines 1, laws 1582 (licensed 50, revoked/split 34, provisional 15, candidate 1483, pruned/retired 0), materialized 76, deferred entries 986, untracked cases 0, family max 78525; wall 47.8 s, working set 9 MB, process peak 43 MB
+  b      seed  11: engines 1, laws 1730 (licensed 53, revoked/split 54, provisional 32, candidate 1591, pruned/retired 0), materialized 76, deferred entries 1005, untracked cases 0, family max 77074; wall 44.7 s, working set 9 MB, process peak 43 MB
+  b      seed  12: engines 1, laws 1597 (licensed 37, revoked/split 147, provisional 31, candidate 1382, pruned/retired 0), materialized 84, deferred entries 1849, untracked cases 0, family max 78181; wall 45.5 s, working set 9 MB, process peak 43 MB
+  b      seed  13: engines 1, laws 1566 (licensed 52, revoked/split 38, provisional 12, candidate 1464, pruned/retired 0), materialized 80, deferred entries 990, untracked cases 0, family max 76336; wall 46.5 s, working set 9 MB, process peak 43 MB
+  b      seed  14: engines 1, laws 1671 (licensed 51, revoked/split 83, provisional 19, candidate 1518, pruned/retired 0), materialized 90, deferred entries 997, untracked cases 0, family max 75251; wall 43.3 s, working set 9 MB, process peak 43 MB
+  b      seed  15: engines 1, laws 1766 (licensed 52, revoked/split 118, provisional 45, candidate 1551, pruned/retired 0), materialized 132, deferred entries 1511, untracked cases 0, family max 74998; wall 50.2 s, working set 9 MB, process peak 43 MB
+  b      seed  16: engines 1, laws 2029 (licensed 64, revoked/split 124, provisional 107, candidate 1734, pruned/retired 0), materialized 229, deferred entries 1970, untracked cases 0, family max 76667; wall 47.7 s, working set 9 MB, process peak 43 MB
+  b      seed  17: engines 1, laws 1570 (licensed 53, revoked/split 39, provisional 10, candidate 1468, pruned/retired 0), materialized 84, deferred entries 999, untracked cases 0, family max 75322; wall 46.6 s, working set 9 MB, process peak 43 MB
+  b      seed  18: engines 1, laws 1553 (licensed 52, revoked/split 23, provisional 19, candidate 1459, pruned/retired 0), materialized 74, deferred entries 1013, untracked cases 0, family max 75726; wall 45.9 s, working set 9 MB, process peak 43 MB
+  b      seed  19: engines 1, laws 1682 (licensed 52, revoked/split 36, provisional 27, candidate 1567, pruned/retired 0), materialized 81, deferred entries 1060, untracked cases 0, family max 75410; wall 44.1 s, working set 8 MB, process peak 43 MB
+  b      seed  20: engines 1, laws 1638 (licensed 48, revoked/split 73, provisional 33, candidate 1484, pruned/retired 0), materialized 94, deferred entries 1441, untracked cases 0, family max 74527; wall 45.0 s, working set 9 MB, process peak 43 MB
+  b      seed  21: engines 1, laws 1695 (licensed 52, revoked/split 50, provisional 37, candidate 1556, pruned/retired 0), materialized 76, deferred entries 1396, untracked cases 0, family max 73149; wall 42.1 s, working set 9 MB, process peak 43 MB
+  b      seed  22: engines 1, laws 1641 (licensed 50, revoked/split 62, provisional 29, candidate 1500, pruned/retired 0), materialized 83, deferred entries 980, untracked cases 0, family max 74848; wall 44.4 s, working set 9 MB, process peak 43 MB
+  b      seed  23: engines 1, laws 1883 (licensed 52, revoked/split 134, provisional 70, candidate 1627, pruned/retired 0), materialized 130, deferred entries 1895, untracked cases 0, family max 77551; wall 48.1 s, working set 9 MB, process peak 43 MB
+  b      seed  24: engines 1, laws 1746 (licensed 48, revoked/split 76, provisional 30, candidate 1592, pruned/retired 0), materialized 81, deferred entries 1840, untracked cases 0, family max 76572; wall 46.6 s, working set 9 MB, process peak 43 MB
+  b      seed  25: engines 1, laws 1706 (licensed 53, revoked/split 37, provisional 19, candidate 1597, pruned/retired 0), materialized 80, deferred entries 1011, untracked cases 0, family max 73302; wall 46.9 s, working set 9 MB, process peak 43 MB
+  c_a    seed  46: engines 5, laws 36527 (licensed 200, revoked/split 6245, provisional 1643, candidate 24191, pruned/retired 4248), materialized 1642, deferred entries 27088, untracked cases 0, family max 7080733; wall 293.2 s, working set 10 MB, process peak 271 MB
+  c_a    seed  47: engines 5, laws 32921 (licensed 182, revoked/split 6032, provisional 1126, candidate 23585, pruned/retired 1996), materialized 1296, deferred entries 30397, untracked cases 0, family max 6867349; wall 290.7 s, working set 9 MB, process peak 271 MB
+  c_a    seed  48: engines 5, laws 36051 (licensed 226, revoked/split 6009, provisional 2022, candidate 24050, pruned/retired 3744), materialized 1421, deferred entries 28127, untracked cases 0, family max 6919570; wall 283.7 s, working set 10 MB, process peak 271 MB
+  c_a    seed  49: engines 5, laws 40981 (licensed 365, revoked/split 5827, provisional 2983, candidate 25134, pruned/retired 6672), materialized 1571, deferred entries 32793, untracked cases 0, family max 7436527; wall 339.0 s, working set 10 MB, process peak 271 MB
+  c_a    seed  50: engines 5, laws 43418 (licensed 315, revoked/split 6748, provisional 1770, candidate 27412, pruned/retired 7173), materialized 1776, deferred entries 31578, untracked cases 0, family max 7496809; wall 331.7 s, working set 11 MB, process peak 279 MB
+  c_b    seed  51: engines 5, laws 33861 (licensed 459, revoked/split 5703, provisional 3314, candidate 21687, pruned/retired 2698), materialized 1335, deferred entries 28243, untracked cases 0, family max 7899278; wall 302.7 s, working set 9 MB, process peak 248 MB
+  c_b    seed  52: engines 5, laws 36156 (licensed 325, revoked/split 6704, provisional 2347, candidate 22424, pruned/retired 4356), materialized 1384, deferred entries 29615, untracked cases 0, family max 9093991; wall 312.3 s, working set 9 MB, process peak 256 MB
+  c_b    seed  53: engines 5, laws 33590 (licensed 312, revoked/split 5626, provisional 1520, candidate 23468, pruned/retired 2664), materialized 1318, deferred entries 28246, untracked cases 0, family max 8274309; wall 299.2 s, working set 10 MB, process peak 256 MB
+  c_b    seed  54: engines 5, laws 61070 (licensed 751, revoked/split 8872, provisional 3100, candidate 32583, pruned/retired 15764), materialized 2364, deferred entries 47941, untracked cases 0, family max 14769513; wall 1449.0 s, working set 11 MB, process peak 717 MB
+  c_b    seed  55: engines 5, laws 36833 (licensed 511, revoked/split 6790, provisional 1704, candidate 24754, pruned/retired 3074), materialized 1541, deferred entries 27877, untracked cases 0, family max 7329239; wall 295.0 s, working set 11 MB, process peak 717 MB
+  c_c    seed  56: engines 5, laws 35377 (licensed 225, revoked/split 7548, provisional 1690, candidate 22719, pruned/retired 3195), materialized 1593, deferred entries 30397, untracked cases 0, family max 7641728; wall 283.7 s, working set 9 MB, process peak 233 MB
+  c_c    seed  57: engines 5, laws 35111 (licensed 192, revoked/split 6865, provisional 1444, candidate 22062, pruned/retired 4548), materialized 1492, deferred entries 29913, untracked cases 0, family max 8188515; wall 299.9 s, working set 8 MB, process peak 255 MB
+  c_c    seed  58: engines 5, laws 35673 (licensed 292, revoked/split 5584, provisional 2059, candidate 23608, pruned/retired 4130), materialized 1463, deferred entries 27081, untracked cases 0, family max 6827212; wall 277.1 s, working set 8 MB, process peak 255 MB
+  c_c    seed  59: engines 5, laws 35575 (licensed 239, revoked/split 6932, provisional 2078, candidate 24565, pruned/retired 1761), materialized 1641, deferred entries 25912, untracked cases 0, family max 6245076; wall 297.7 s, working set 9 MB, process peak 286 MB
+  c_c    seed  60: engines 5, laws 40213 (licensed 201, revoked/split 7026, provisional 2133, candidate 26022, pruned/retired 4831), materialized 1462, deferred entries 32545, untracked cases 0, family max 7206434; wall 318.4 s, working set 9 MB, process peak 286 MB
+  d      seed   1: engines 36, laws 72989 (licensed 830, revoked/split 6168, provisional 4674, candidate 61317, pruned/retired 0), materialized 2415, deferred entries 94105, untracked cases 0, family max 1156446; wall 127.5 s, working set 7 MB, process peak 49 MB
+  d      seed   2: engines 36, laws 68425 (licensed 610, revoked/split 4741, provisional 5121, candidate 57953, pruned/retired 0), materialized 2174, deferred entries 124880, untracked cases 0, family max 2516221; wall 152.4 s, working set 7 MB, process peak 57 MB
+  d      seed   3: engines 36, laws 77069 (licensed 1002, revoked/split 5389, provisional 5041, candidate 65637, pruned/retired 0), materialized 2469, deferred entries 125603, untracked cases 0, family max 3432754; wall 168.4 s, working set 7 MB, process peak 88 MB
+  d      seed   4: engines 36, laws 73463 (licensed 677, revoked/split 4974, provisional 5200, candidate 62612, pruned/retired 0), materialized 2445, deferred entries 94969, untracked cases 0, family max 1079761; wall 115.5 s, working set 8 MB, process peak 88 MB
+  d      seed   5: engines 36, laws 70899 (licensed 652, revoked/split 5045, provisional 6790, candidate 58412, pruned/retired 0), materialized 2367, deferred entries 97753, untracked cases 0, family max 1075432; wall 120.0 s, working set 8 MB, process peak 88 MB
+  d      seed   6: engines 36, laws 69658 (licensed 814, revoked/split 5401, provisional 5464, candidate 57979, pruned/retired 0), materialized 2289, deferred entries 93563, untracked cases 0, family max 1203099; wall 91.8 s, working set 8 MB, process peak 88 MB
+  d      seed   7: engines 36, laws 68661 (licensed 837, revoked/split 4510, provisional 4687, candidate 58627, pruned/retired 0), materialized 2220, deferred entries 99450, untracked cases 0, family max 894036; wall 90.0 s, working set 8 MB, process peak 88 MB
+  d      seed   8: engines 36, laws 71760 (licensed 825, revoked/split 4996, provisional 5436, candidate 60503, pruned/retired 0), materialized 2611, deferred entries 96825, untracked cases 0, family max 1219973; wall 111.1 s, working set 8 MB, process peak 88 MB
+  d      seed   9: engines 36, laws 71703 (licensed 699, revoked/split 5151, provisional 5234, candidate 60619, pruned/retired 0), materialized 2218, deferred entries 127988, untracked cases 0, family max 2769062; wall 167.8 s, working set 8 MB, process peak 88 MB
+  d      seed  10: engines 36, laws 70288 (licensed 817, revoked/split 4380, provisional 5186, candidate 59905, pruned/retired 0), materialized 2367, deferred entries 96919, untracked cases 0, family max 1142653; wall 102.2 s, working set 8 MB, process peak 88 MB
+  d      seed  11: engines 36, laws 71510 (licensed 832, revoked/split 4577, provisional 5051, candidate 61050, pruned/retired 0), materialized 2393, deferred entries 91029, untracked cases 0, family max 1117542; wall 91.3 s, working set 9 MB, process peak 88 MB
+  d      seed  12: engines 36, laws 68865 (licensed 628, revoked/split 4909, provisional 4537, candidate 58791, pruned/retired 0), materialized 2121, deferred entries 95863, untracked cases 0, family max 1109930; wall 105.4 s, working set 9 MB, process peak 88 MB
+  d      seed  13: engines 36, laws 69313 (licensed 670, revoked/split 5021, provisional 4960, candidate 58662, pruned/retired 0), materialized 2258, deferred entries 90242, untracked cases 0, family max 1119381; wall 91.3 s, working set 9 MB, process peak 88 MB
+  d      seed  14: engines 36, laws 68905 (licensed 688, revoked/split 4709, provisional 5190, candidate 58318, pruned/retired 0), materialized 2278, deferred entries 93352, untracked cases 0, family max 715389; wall 85.9 s, working set 9 MB, process peak 88 MB
+  d      seed  15: engines 36, laws 76853 (licensed 627, revoked/split 5424, provisional 5411, candidate 65391, pruned/retired 0), materialized 2505, deferred entries 122183, untracked cases 0, family max 3712937; wall 175.5 s, working set 9 MB, process peak 90 MB
+  e      seed  46: engines 7, laws 12223 (licensed 2967, revoked/split 2395, provisional 2181, candidate 4680, pruned/retired 0), materialized 1094, deferred entries 12576, untracked cases 0, family max 83592; wall 35.4 s, working set 8 MB, process peak 59 MB
+  e      seed  47: engines 7, laws 12278 (licensed 2772, revoked/split 2129, provisional 2196, candidate 5181, pruned/retired 0), materialized 846, deferred entries 12765, untracked cases 0, family max 82904; wall 35.9 s, working set 9 MB, process peak 61 MB
+  e      seed  48: engines 7, laws 11508 (licensed 2550, revoked/split 1744, provisional 2445, candidate 4769, pruned/retired 0), materialized 919, deferred entries 13442, untracked cases 0, family max 82064; wall 36.6 s, working set 31 MB, process peak 61 MB
+  e      seed  49: engines 7, laws 11575 (licensed 2464, revoked/split 2256, provisional 2105, candidate 4750, pruned/retired 0), materialized 1018, deferred entries 13762, untracked cases 0, family max 83100; wall 36.6 s, working set 9 MB, process peak 61 MB
+  e      seed  50: engines 7, laws 11911 (licensed 2609, revoked/split 2119, provisional 2173, candidate 5010, pruned/retired 0), materialized 1008, deferred entries 12723, untracked cases 0, family max 82021; wall 35.7 s, working set 10 MB, process peak 61 MB
+  e      seed  51: engines 7, laws 11192 (licensed 2923, revoked/split 2038, provisional 1666, candidate 4565, pruned/retired 0), materialized 884, deferred entries 13128, untracked cases 0, family max 84591; wall 35.1 s, working set 10 MB, process peak 61 MB
+  e      seed  52: engines 7, laws 11326 (licensed 2611, revoked/split 1962, provisional 2142, candidate 4611, pruned/retired 0), materialized 998, deferred entries 12678, untracked cases 0, family max 84210; wall 35.4 s, working set 31 MB, process peak 61 MB
+  e      seed  53: engines 7, laws 12625 (licensed 2806, revoked/split 2844, provisional 2212, candidate 4763, pruned/retired 0), materialized 994, deferred entries 14313, untracked cases 0, family max 86926; wall 38.6 s, working set 10 MB, process peak 62 MB
+  e      seed  54: engines 7, laws 11985 (licensed 2594, revoked/split 2542, provisional 2260, candidate 4589, pruned/retired 0), materialized 1102, deferred entries 14276, untracked cases 0, family max 82243; wall 36.4 s, working set 10 MB, process peak 62 MB
+  e      seed  55: engines 7, laws 12638 (licensed 2653, revoked/split 2473, provisional 2373, candidate 5139, pruned/retired 0), materialized 1012, deferred entries 13738, untracked cases 0, family max 83859; wall 37.6 s, working set 10 MB, process peak 62 MB
+  e      seed  56: engines 7, laws 12944 (licensed 2900, revoked/split 2813, provisional 2241, candidate 4990, pruned/retired 0), materialized 1037, deferred entries 13174, untracked cases 0, family max 83640; wall 36.4 s, working set 34 MB, process peak 64 MB
+  e      seed  57: engines 7, laws 12329 (licensed 2349, revoked/split 3539, provisional 1724, candidate 4717, pruned/retired 0), materialized 945, deferred entries 13124, untracked cases 0, family max 85269; wall 35.7 s, working set 34 MB, process peak 64 MB
+  e      seed  58: engines 7, laws 12585 (licensed 2558, revoked/split 2433, provisional 2397, candidate 5197, pruned/retired 0), materialized 936, deferred entries 13921, untracked cases 0, family max 83604; wall 37.3 s, working set 10 MB, process peak 67 MB
+  e      seed  59: engines 7, laws 12327 (licensed 2759, revoked/split 2473, provisional 2315, candidate 4780, pruned/retired 0), materialized 993, deferred entries 12638, untracked cases 0, family max 84283; wall 36.4 s, working set 10 MB, process peak 67 MB
+  e      seed  60: engines 7, laws 11540 (licensed 2662, revoked/split 2284, provisional 2071, candidate 4523, pruned/retired 0), materialized 1036, deferred entries 14735, untracked cases 0, family max 83487; wall 38.3 s, working set 10 MB, process peak 67 MB
+  f      seed   1: engines 8, laws 4865 (licensed 128, revoked/split 399, provisional 136, candidate 4202, pruned/retired 0), materialized 178, deferred entries 3266, untracked cases 0, family max 81698; wall 35.6 s, working set 7 MB, process peak 27 MB
+  f      seed   2: engines 8, laws 4750 (licensed 146, revoked/split 450, provisional 140, candidate 4014, pruned/retired 0), materialized 197, deferred entries 3674, untracked cases 0, family max 81514; wall 37.4 s, working set 8 MB, process peak 28 MB
+  f      seed   3: engines 8, laws 5066 (licensed 123, revoked/split 485, provisional 178, candidate 4280, pruned/retired 0), materialized 203, deferred entries 3689, untracked cases 0, family max 85640; wall 36.3 s, working set 8 MB, process peak 29 MB
+  f      seed   4: engines 8, laws 5005 (licensed 132, revoked/split 588, provisional 181, candidate 4104, pruned/retired 0), materialized 186, deferred entries 3298, untracked cases 0, family max 84166; wall 36.2 s, working set 9 MB, process peak 30 MB
+  f      seed   5: engines 8, laws 5094 (licensed 116, revoked/split 477, provisional 247, candidate 4254, pruned/retired 0), materialized 183, deferred entries 3644, untracked cases 0, family max 81443; wall 40.1 s, working set 9 MB, process peak 30 MB
+  f      seed   6: engines 8, laws 4939 (licensed 131, revoked/split 559, provisional 183, candidate 4066, pruned/retired 0), materialized 188, deferred entries 3256, untracked cases 0, family max 82172; wall 36.0 s, working set 9 MB, process peak 30 MB
+  f      seed   7: engines 8, laws 5169 (licensed 129, revoked/split 443, provisional 311, candidate 4286, pruned/retired 0), materialized 202, deferred entries 3287, untracked cases 0, family max 83585; wall 35.6 s, working set 8 MB, process peak 30 MB
+  f      seed   8: engines 8, laws 4828 (licensed 147, revoked/split 442, provisional 170, candidate 4069, pruned/retired 0), materialized 177, deferred entries 3595, untracked cases 0, family max 68256; wall 35.9 s, working set 11 MB, process peak 30 MB
+  f      seed   9: engines 8, laws 5079 (licensed 130, revoked/split 460, provisional 228, candidate 4261, pruned/retired 0), materialized 180, deferred entries 3293, untracked cases 0, family max 84454; wall 33.8 s, working set 9 MB, process peak 30 MB
+  f      seed  10: engines 8, laws 5089 (licensed 117, revoked/split 420, provisional 321, candidate 4231, pruned/retired 0), materialized 182, deferred entries 3254, untracked cases 0, family max 85835; wall 35.8 s, working set 9 MB, process peak 30 MB
+  f      seed  11: engines 8, laws 4885 (licensed 125, revoked/split 438, provisional 201, candidate 4121, pruned/retired 0), materialized 176, deferred entries 3244, untracked cases 0, family max 83436; wall 34.9 s, working set 12 MB, process peak 30 MB
+  f      seed  12: engines 8, laws 5091 (licensed 121, revoked/split 568, provisional 331, candidate 4071, pruned/retired 0), materialized 203, deferred entries 4118, untracked cases 0, family max 84446; wall 38.9 s, working set 8 MB, process peak 30 MB
+  f      seed  13: engines 8, laws 5011 (licensed 130, revoked/split 439, provisional 212, candidate 4230, pruned/retired 0), materialized 187, deferred entries 3207, untracked cases 0, family max 84088; wall 35.4 s, working set 12 MB, process peak 30 MB
+  f      seed  14: engines 8, laws 5224 (licensed 132, revoked/split 522, provisional 265, candidate 4305, pruned/retired 0), materialized 199, deferred entries 3238, untracked cases 0, family max 82128; wall 34.3 s, working set 9 MB, process peak 30 MB
+  f      seed  15: engines 8, laws 5337 (licensed 123, revoked/split 546, provisional 230, candidate 4438, pruned/retired 0), materialized 243, deferred entries 3803, untracked cases 0, family max 81931; wall 38.9 s, working set 9 MB, process peak 30 MB
+  f_101  seed 101: engines 8, laws 5124 (licensed 139, revoked/split 541, provisional 293, candidate 4151, pruned/retired 0), materialized 217, deferred entries 4217, untracked cases 0, family max 84552; wall 38.0 s, working set 7 MB, process peak 27 MB
+  f_101  seed 102: engines 8, laws 5303 (licensed 129, revoked/split 527, provisional 236, candidate 4411, pruned/retired 0), materialized 208, deferred entries 4024, untracked cases 0, family max 82126; wall 40.7 s, working set 7 MB, process peak 29 MB
+  f_101  seed 103: engines 8, laws 4943 (licensed 132, revoked/split 549, provisional 238, candidate 4024, pruned/retired 0), materialized 222, deferred entries 4496, untracked cases 0, family max 84386; wall 39.1 s, working set 8 MB, process peak 29 MB
+  f_101  seed 104: engines 8, laws 5027 (licensed 122, revoked/split 439, provisional 181, candidate 4285, pruned/retired 0), materialized 181, deferred entries 3279, untracked cases 0, family max 81841; wall 36.7 s, working set 8 MB, process peak 29 MB
+  f_101  seed 105: engines 8, laws 5109 (licensed 131, revoked/split 541, provisional 223, candidate 4214, pruned/retired 0), materialized 172, deferred entries 3297, untracked cases 0, family max 79327; wall 33.7 s, working set 8 MB, process peak 29 MB
+  f_101  seed 106: engines 8, laws 5153 (licensed 131, revoked/split 467, provisional 215, candidate 4340, pruned/retired 0), materialized 198, deferred entries 4535, untracked cases 0, family max 83653; wall 38.4 s, working set 8 MB, process peak 30 MB
+  f_101  seed 107: engines 8, laws 5181 (licensed 145, revoked/split 374, provisional 188, candidate 4474, pruned/retired 0), materialized 179, deferred entries 3319, untracked cases 0, family max 81686; wall 35.3 s, working set 8 MB, process peak 30 MB
+  f_101  seed 108: engines 8, laws 5129 (licensed 128, revoked/split 484, provisional 183, candidate 4334, pruned/retired 0), materialized 189, deferred entries 3236, untracked cases 0, family max 80165; wall 37.9 s, working set 8 MB, process peak 30 MB
+  f_101  seed 109: engines 8, laws 5051 (licensed 132, revoked/split 482, provisional 199, candidate 4238, pruned/retired 0), materialized 192, deferred entries 3262, untracked cases 0, family max 82523; wall 37.1 s, working set 8 MB, process peak 30 MB
+  f_101  seed 110: engines 8, laws 5108 (licensed 124, revoked/split 438, provisional 175, candidate 4371, pruned/retired 0), materialized 184, deferred entries 3254, untracked cases 0, family max 82191; wall 37.0 s, working set 9 MB, process peak 30 MB
+  f_101  seed 111: engines 8, laws 5099 (licensed 116, revoked/split 512, provisional 227, candidate 4244, pruned/retired 0), materialized 196, deferred entries 3608, untracked cases 0, family max 81890; wall 36.2 s, working set 11 MB, process peak 30 MB
+  f_101  seed 112: engines 8, laws 5047 (licensed 147, revoked/split 432, provisional 175, candidate 4293, pruned/retired 0), materialized 186, deferred entries 3354, untracked cases 0, family max 83027; wall 37.3 s, working set 8 MB, process peak 30 MB
+  f_101  seed 113: engines 8, laws 5208 (licensed 127, revoked/split 462, provisional 283, candidate 4336, pruned/retired 0), materialized 196, deferred entries 3762, untracked cases 0, family max 82905; wall 37.6 s, working set 11 MB, process peak 30 MB
+  f_101  seed 114: engines 8, laws 5205 (licensed 116, revoked/split 434, provisional 169, candidate 4486, pruned/retired 0), materialized 188, deferred entries 3235, untracked cases 0, family max 82244; wall 36.7 s, working set 8 MB, process peak 30 MB
+  f_101  seed 115: engines 8, laws 5145 (licensed 130, revoked/split 480, provisional 178, candidate 4357, pruned/retired 0), materialized 196, deferred entries 3332, untracked cases 0, family max 85460; wall 39.1 s, working set 8 MB, process peak 30 MB
+  g_a    seed 101: engines 4, laws 72697 (licensed 369, revoked/split 11670, provisional 2248, candidate 39597, pruned/retired 18813), materialized 4903, deferred entries 91736, untracked cases 0, family max 9384664; wall 863.2 s, working set 13 MB, process peak 425 MB
+  g_a    seed 102: engines 4, laws 71765 (licensed 215, revoked/split 9393, provisional 2169, candidate 43100, pruned/retired 16888), materialized 2929, deferred entries 91054, untracked cases 0, family max 8189620; wall 811.6 s, working set 13 MB, process peak 425 MB
+  g_a    seed 103: engines 4, laws 75850 (licensed 227, revoked/split 7689, provisional 1713, candidate 44252, pruned/retired 21969), materialized 3903, deferred entries 93113, untracked cases 0, family max 9986538; wall 831.6 s, working set 12 MB, process peak 425 MB
+  g_a    seed 104: engines 4, laws 71315 (licensed 239, revoked/split 8885, provisional 2453, candidate 37553, pruned/retired 22185), materialized 4276, deferred entries 92172, untracked cases 0, family max 10248682; wall 806.9 s, working set 13 MB, process peak 425 MB
+  g_a    seed 105: engines 4, laws 71046 (licensed 277, revoked/split 9318, provisional 2198, candidate 42214, pruned/retired 17039), materialized 3224, deferred entries 94294, untracked cases 0, family max 9795220; wall 825.6 s, working set 14 MB, process peak 425 MB
+  g_b    seed 106: engines 4, laws 68940 (licensed 410, revoked/split 7491, provisional 2819, candidate 41345, pruned/retired 16875), materialized 3258, deferred entries 89113, untracked cases 0, family max 9285064; wall 752.4 s, working set 10 MB, process peak 326 MB
+  g_b    seed 107: engines 4, laws 69340 (licensed 138, revoked/split 9791, provisional 1948, candidate 41887, pruned/retired 15576), materialized 3791, deferred entries 94174, untracked cases 0, family max 10451534; wall 843.2 s, working set 11 MB, process peak 370 MB
+  g_b    seed 108: engines 4, laws 82178 (licensed 208, revoked/split 10697, provisional 1703, candidate 47884, pruned/retired 21686), materialized 4593, deferred entries 95621, untracked cases 0, family max 11157282; wall 851.4 s, working set 11 MB, process peak 411 MB
+  g_b    seed 109: engines 4, laws 77185 (licensed 159, revoked/split 8797, provisional 1275, candidate 45574, pruned/retired 21380), materialized 4113, deferred entries 89262, untracked cases 0, family max 10047021; wall 798.4 s, working set 14 MB, process peak 411 MB
+  g_b    seed 110: engines 4, laws 72227 (licensed 152, revoked/split 8384, provisional 1514, candidate 44200, pruned/retired 17977), materialized 2939, deferred entries 93188, untracked cases 0, family max 9380022; wall 800.3 s, working set 14 MB, process peak 411 MB
+  g_c    seed 111: engines 4, laws 78169 (licensed 314, revoked/split 11013, provisional 2347, candidate 44250, pruned/retired 20245), materialized 3843, deferred entries 94409, untracked cases 0, family max 8803564; wall 910.7 s, working set 12 MB, process peak 380 MB
+  g_c    seed 112: engines 4, laws 73151 (licensed 315, revoked/split 8530, provisional 2312, candidate 43170, pruned/retired 18824), materialized 3062, deferred entries 91584, untracked cases 0, family max 8190086; wall 805.8 s, working set 12 MB, process peak 380 MB
+  g_c    seed 113: engines 4, laws 74434 (licensed 246, revoked/split 8412, provisional 2192, candidate 49041, pruned/retired 14543), materialized 3389, deferred entries 93439, untracked cases 0, family max 9402708; wall 875.5 s, working set 13 MB, process peak 395 MB
+  g_c    seed 114: engines 4, laws 71609 (licensed 319, revoked/split 9176, provisional 1249, candidate 41023, pruned/retired 19842), materialized 4461, deferred entries 91696, untracked cases 0, family max 9545662; wall 822.6 s, working set 13 MB, process peak 395 MB
+  g_c    seed 115: engines 4, laws 77994 (licensed 372, revoked/split 8343, provisional 2240, candidate 47048, pruned/retired 19991), materialized 3241, deferred entries 93254, untracked cases 0, family max 8807886; wall 823.7 s, working set 14 MB, process peak 395 MB
+  h_a    seed 201: engines 6, laws 116117 (licensed 178, revoked/split 9616, provisional 1539, candidate 87502, pruned/retired 17282), materialized 1602, deferred entries 76072, untracked cases 0, family max 29313996; wall 2095.5 s, working set 15 MB, process peak 1097 MB
+  h_a    seed 202: engines 6, laws 107432 (licensed 152, revoked/split 10499, provisional 1470, candidate 80520, pruned/retired 14791), materialized 1589, deferred entries 66340, untracked cases 0, family max 17047857; wall 1508.1 s, working set 14 MB, process peak 1097 MB
+  h_a    seed 203: engines 6, laws 109807 (licensed 726, revoked/split 10683, provisional 2598, candidate 84315, pruned/retired 11485), materialized 1586, deferred entries 83097, untracked cases 0, family max 36848104; wall 2687.2 s, working set 17 MB, process peak 1281 MB
+  h_b    seed 204: engines 6, laws 111443 (licensed 163, revoked/split 10970, provisional 1164, candidate 84007, pruned/retired 15139), materialized 1775, deferred entries 72225, untracked cases 0, family max 17802503; wall 1512.9 s, working set 13 MB, process peak 870 MB
+  h_b    seed 205: engines 6, laws 105975 (licensed 154, revoked/split 10062, provisional 1100, candidate 79980, pruned/retired 14679), materialized 1789, deferred entries 68291, untracked cases 0, family max 26196655; wall 1929.8 s, working set 15 MB, process peak 1110 MB
+  h_b    seed 206: engines 6, laws 99950 (licensed 149, revoked/split 7999, provisional 1119, candidate 78613, pruned/retired 12070), materialized 1467, deferred entries 67336, untracked cases 0, family max 28102953; wall 1881.2 s, working set 16 MB, process peak 1110 MB
+  h_c    seed 207: engines 6, laws 109490 (licensed 518, revoked/split 10547, provisional 2004, candidate 80816, pruned/retired 15605), materialized 1455, deferred entries 73745, untracked cases 0, family max 22783399; wall 2016.5 s, working set 13 MB, process peak 1009 MB
+  h_c    seed 208: engines 6, laws 95341 (licensed 146, revoked/split 9692, provisional 1087, candidate 74507, pruned/retired 9909), materialized 1440, deferred entries 62633, untracked cases 0, family max 15528764; wall 1395.3 s, working set 13 MB, process peak 1009 MB
+  h_c    seed 209: engines 6, laws 96456 (licensed 165, revoked/split 8419, provisional 1237, candidate 74076, pruned/retired 12559), materialized 1441, deferred entries 63698, untracked cases 0, family max 16028566; wall 1427.3 s, working set 15 MB, process peak 1009 MB
+  h_d    seed 210: engines 6, laws 95156 (licensed 231, revoked/split 10139, provisional 1402, candidate 69167, pruned/retired 14217), materialized 1508, deferred entries 58275, untracked cases 0, family max 18301808; wall 1729.2 s, working set 13 MB, process peak 882 MB
+  h_d    seed 211: engines 6, laws 130349 (licensed 159, revoked/split 11545, provisional 1126, candidate 94175, pruned/retired 23344), materialized 1822, deferred entries 89802, untracked cases 0, family max 47070391; wall 2968.7 s, working set 16 MB, process peak 1393 MB
+  h_d    seed 212: engines 6, laws 125072 (licensed 164, revoked/split 10556, provisional 1214, candidate 95878, pruned/retired 17260), materialized 1819, deferred entries 85473, untracked cases 0, family max 45826247; wall 2757.9 s, working set 17 MB, process peak 1443 MB
+  h_e    seed 213: engines 6, laws 120003 (licensed 563, revoked/split 10802, provisional 2579, candidate 84799, pruned/retired 21260), materialized 1773, deferred entries 81015, untracked cases 0, family max 36650207; wall 2837.7 s, working set 15 MB, process peak 1262 MB
+  h_e    seed 214: engines 6, laws 94121 (licensed 160, revoked/split 9465, provisional 1359, candidate 75143, pruned/retired 7994), materialized 1530, deferred entries 66903, untracked cases 0, family max 14441993; wall 1480.9 s, working set 15 MB, process peak 1262 MB
+  h_e    seed 215: engines 6, laws 101970 (licensed 245, revoked/split 10737, provisional 1817, candidate 78617, pruned/retired 10554), materialized 1465, deferred entries 68245, untracked cases 0, family max 13184608; wall 2231.9 s, working set 14 MB, process peak 1262 MB
+  r0     seed   1: engines 7, laws 918 (licensed 16, revoked/split 277, provisional 38, candidate 587, pruned/retired 0), materialized 64, deferred entries 1094, untracked cases 0, family max 38265; wall 1.4 s, working set 7 MB, process peak 11 MB
+  r0     seed   2: engines 7, laws 915 (licensed 14, revoked/split 263, provisional 43, candidate 595, pruned/retired 0), materialized 63, deferred entries 1127, untracked cases 0, family max 40584; wall 1.5 s, working set 7 MB, process peak 12 MB
+  r0     seed   3: engines 7, laws 890 (licensed 11, revoked/split 256, provisional 47, candidate 576, pruned/retired 0), materialized 61, deferred entries 1122, untracked cases 0, family max 39243; wall 1.6 s, working set 7 MB, process peak 12 MB
+  r0     seed   4: engines 7, laws 870 (licensed 12, revoked/split 269, provisional 51, candidate 538, pruned/retired 0), materialized 66, deferred entries 1124, untracked cases 0, family max 40474; wall 1.7 s, working set 7 MB, process peak 12 MB
+  r0     seed   5: engines 7, laws 914 (licensed 14, revoked/split 263, provisional 49, candidate 588, pruned/retired 0), materialized 61, deferred entries 1106, untracked cases 0, family max 38581; wall 1.6 s, working set 7 MB, process peak 13 MB
+  r0     seed   6: engines 7, laws 927 (licensed 13, revoked/split 288, provisional 54, candidate 572, pruned/retired 0), materialized 69, deferred entries 1119, untracked cases 0, family max 40512; wall 1.7 s, working set 7 MB, process peak 13 MB
+  r0     seed   7: engines 7, laws 900 (licensed 16, revoked/split 262, provisional 43, candidate 579, pruned/retired 0), materialized 69, deferred entries 1121, untracked cases 0, family max 40585; wall 1.6 s, working set 8 MB, process peak 13 MB
+  r0     seed   8: engines 7, laws 900 (licensed 14, revoked/split 239, provisional 38, candidate 609, pruned/retired 0), materialized 53, deferred entries 1121, untracked cases 0, family max 38311; wall 1.6 s, working set 7 MB, process peak 13 MB
+  r0     seed   9: engines 7, laws 867 (licensed 15, revoked/split 248, provisional 30, candidate 574, pruned/retired 0), materialized 55, deferred entries 1135, untracked cases 0, family max 39865; wall 1.6 s, working set 7 MB, process peak 13 MB
+  r0     seed  10: engines 7, laws 877 (licensed 13, revoked/split 242, provisional 39, candidate 583, pruned/retired 0), materialized 57, deferred entries 1117, untracked cases 0, family max 38805; wall 1.6 s, working set 8 MB, process peak 13 MB
+  r0     seed  11: engines 7, laws 896 (licensed 14, revoked/split 260, provisional 41, candidate 581, pruned/retired 0), materialized 67, deferred entries 1123, untracked cases 0, family max 40455; wall 1.6 s, working set 8 MB, process peak 13 MB
+  r0     seed  12: engines 7, laws 856 (licensed 13, revoked/split 245, provisional 34, candidate 564, pruned/retired 0), materialized 60, deferred entries 1130, untracked cases 0, family max 39386; wall 1.6 s, working set 7 MB, process peak 13 MB
+  r0     seed  13: engines 7, laws 858 (licensed 14, revoked/split 272, provisional 41, candidate 531, pruned/retired 0), materialized 60, deferred entries 1130, untracked cases 0, family max 41044; wall 1.6 s, working set 8 MB, process peak 13 MB
+  r0     seed  14: engines 7, laws 905 (licensed 16, revoked/split 253, provisional 27, candidate 609, pruned/retired 0), materialized 66, deferred entries 1124, untracked cases 0, family max 40219; wall 1.7 s, working set 7 MB, process peak 13 MB
+  r0     seed  15: engines 7, laws 957 (licensed 16, revoked/split 291, provisional 39, candidate 611, pruned/retired 0), materialized 66, deferred entries 1124, untracked cases 0, family max 39932; wall 1.6 s, working set 7 MB, process peak 13 MB
+  r0     seed  16: engines 7, laws 903 (licensed 16, revoked/split 274, provisional 43, candidate 570, pruned/retired 0), materialized 65, deferred entries 1125, untracked cases 0, family max 39483; wall 1.6 s, working set 7 MB, process peak 13 MB
+  r0     seed  17: engines 7, laws 847 (licensed 16, revoked/split 239, provisional 46, candidate 546, pruned/retired 0), materialized 67, deferred entries 1123, untracked cases 0, family max 40816; wall 1.6 s, working set 7 MB, process peak 13 MB
+  r0     seed  18: engines 7, laws 941 (licensed 16, revoked/split 285, provisional 43, candidate 597, pruned/retired 0), materialized 71, deferred entries 1103, untracked cases 0, family max 38698; wall 1.6 s, working set 8 MB, process peak 13 MB
+  r0     seed  19: engines 7, laws 899 (licensed 15, revoked/split 305, provisional 47, candidate 532, pruned/retired 0), materialized 63, deferred entries 1127, untracked cases 0, family max 40258; wall 1.6 s, working set 8 MB, process peak 13 MB
+  r0     seed  20: engines 7, laws 921 (licensed 15, revoked/split 251, provisional 45, candidate 610, pruned/retired 0), materialized 61, deferred entries 1119, untracked cases 0, family max 39533; wall 1.6 s, working set 8 MB, process peak 13 MB
+  r0     seed  21: engines 7, laws 890 (licensed 12, revoked/split 280, provisional 40, candidate 558, pruned/retired 0), materialized 57, deferred entries 1133, untracked cases 0, family max 40310; wall 1.6 s, working set 8 MB, process peak 13 MB
+  r0     seed  22: engines 7, laws 909 (licensed 14, revoked/split 252, provisional 48, candidate 595, pruned/retired 0), materialized 64, deferred entries 1120, untracked cases 0, family max 38496; wall 1.6 s, working set 7 MB, process peak 13 MB
+  r0     seed  23: engines 7, laws 943 (licensed 14, revoked/split 267, provisional 47, candidate 615, pruned/retired 0), materialized 59, deferred entries 1115, untracked cases 0, family max 39187; wall 1.6 s, working set 8 MB, process peak 13 MB
+  r0     seed  24: engines 7, laws 917 (licensed 15, revoked/split 256, provisional 37, candidate 609, pruned/retired 0), materialized 57, deferred entries 1133, untracked cases 0, family max 40583; wall 1.6 s, working set 8 MB, process peak 13 MB
+  r0     seed  25: engines 7, laws 910 (licensed 12, revoked/split 248, provisional 33, candidate 617, pruned/retired 0), materialized 60, deferred entries 1130, untracked cases 0, family max 40384; wall 1.7 s, working set 8 MB, process peak 13 MB
+
+Resources per file:
+  b.txt      resources: wall 1178.4 s, peak working set 43 MB
+  c_a.txt    resources: wall 1540.5 s, peak working set 279 MB
+  c_b.txt    resources: wall 2660.8 s, peak working set 717 MB
+  c_c.txt    resources: wall 1479.3 s, peak working set 286 MB
+  d.txt      resources: wall 1804.9 s, peak working set 90 MB
+  e.txt      resources: wall 555.9 s, peak working set 67 MB
+  f.txt      resources: wall 553.1 s, peak working set 30 MB
+  f_101.txt  resources: wall 568.8 s, peak working set 30 MB
+  g_a.txt    resources: wall 4142.0 s, peak working set 425 MB
+  g_b.txt    resources: wall 4047.8 s, peak working set 411 MB
+  g_c.txt    resources: wall 4241.6 s, peak working set 395 MB
+  h_a.txt    resources: wall 6292.3 s, peak working set 1281 MB
+  h_b.txt    resources: wall 5325.1 s, peak working set 1110 MB
+  h_c.txt    resources: wall 4840.7 s, peak working set 1009 MB
+  h_d.txt    resources: wall 7457.3 s, peak working set 1443 MB
+  h_e.txt    resources: wall 6551.7 s, peak working set 1262 MB
+  r0.txt     resources: wall 56.6 s, peak working set 13 MB
+
+Criterion violations:
+  B7 bridge seed 1: v0.2 PASS, v0.4 FAIL
+  phase B: correct rate 95.7% < v0.2 99.2% - 1pp
+  phase B: abstentions 187 > 13 x 1.10 + 5

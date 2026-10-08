@@ -281,18 +281,39 @@ fn e3(seed: u64) -> (u32, u32, u32) {
     }
     let ctx = w.context;
     let first_new = rel.laws.len();
-    rel.sleep(ctx, 200);
+    let st = rel.sleep(ctx, 200);
     let sleep_laws: std::collections::HashSet<usize> = (first_new..rel.laws.len()).collect();
+    if std::env::var("DIAG_E3").is_ok() {
+        eprintln!("E3DIAG seed {seed} sleep {st:?}; laws created in sleep {}", sleep_laws.len());
+        let mut by: std::collections::BTreeMap<String, u32> = std::collections::BTreeMap::new();
+        for &l in &sleep_laws {
+            let s = rel.summary(l, ctx);
+            let st = ["LICENSED", "PROVISIONAL", "CANDIDATE", "REVOKED"].iter().find(|k| s.contains(*k)).copied().unwrap_or("OTHER");
+            *by.entry(format!("{st} a{} t{}", rel.laws[l].action, rel.laws[l].target)).or_insert(0) += 1;
+        }
+        eprintln!("E3DIAG seed {seed} sleep-law status {by:?}");
+        let door_targets: std::collections::BTreeSet<u32> = rel.laws.iter().filter(|l| l.action == dv::USE && l.target % 10_000 == dv::ON as u32 + CHANGE && l.condition.is_empty()).map(|l| l.target).collect();
+        for t in door_targets {
+            for line in rel.diag_target(dv::USE, t, ctx, Some(dv::ON)) {
+                eprintln!("E3DIAG seed {seed} t{t}  {line}");
+            }
+        }
+    }
     let prefs = Preferences::default();
     // compare: how often does the chosen action test a sleep-generated, unlicensed hypothesis?
     let options: Vec<(u16, Vec<usize>)> = vec![(dv::USE, vec![dv::KEY]), (dv::TOGGLE, vec![dv::POWER]), (dv::TOGGLE, vec![3]), (dv::TOGGLE, vec![4]), (dv::WAIT, vec![0])];
-    let tests_hyp = |rel: &mut RelationEngine, ep: &Episode, targets: &[u32]| -> bool {
-        targets.iter().any(|&t| rel.matching_ids(ep, t).iter().any(|l| sleep_laws.contains(l) && !rel.laws[*l].applicable(ctx)))
+    let tests_hyp = |rel: &mut RelationEngine, sl: &std::collections::HashSet<usize>, ep: &Episode, targets: &[u32]| -> bool {
+        targets.iter().any(|&t| rel.matching_ids(ep, t).iter().any(|l| sl.contains(l) && !rel.laws[*l].applicable(ctx)))
     };
     let (mut active_hits, mut random_hits) = (0, 0);
     let k = 30;
     let mut wr = w.clone();
+    // v0.4 amendment (E3 twin): the twin has the same evidence and the same sleep; its own
+    // sleep-created laws are the hypotheses it can test (law indices are not shared across engines)
     let mut rel_r = clone_engine(&rel);
+    let first_r = rel_r.laws.len();
+    rel_r.sleep(ctx, 200);
+    let sleep_laws_r: std::collections::HashSet<usize> = (first_r..rel_r.laws.len()).collect();
     let mut g_r = Grounder::new(seed);
     // the random twin needs the same perception history
     for id in 0..g.store.len() as u64 {
@@ -316,8 +337,20 @@ fn e3(seed: u64) -> (u32, u32, u32) {
             });
         }
         let pick = choose(&mut rel, &cands, &prefs).map(|x| x.0).unwrap_or(0);
+        if std::env::var("DIAG_E3").is_ok() && step < 3 {
+            for (i, c) in cands.iter().enumerate() {
+                let sc = score(&mut rel, c, &prefs);
+                let ep = c.episode.clone().unwrap();
+                let ids: Vec<usize> = c.targets.iter().flat_map(|&t| rel.matching_ids(&ep, t)).collect();
+                let hyps: Vec<String> = ids.into_iter().filter(|l| sleep_laws.contains(l) && !rel.laws[*l].applicable(ctx)).map(|l| rel.summary(l, ctx)).collect();
+                eprintln!("E3STEP seed {seed} step {step} cand {i}{} {:?} info {:.3} total {:.3} unlicensed-sleep-laws {}", if i == pick { "*" } else { "" }, options[i].0, sc.info_gain as f64 / Q as f64, sc.total as f64 / Q as f64, hyps.len());
+                for h in hyps.iter().take(2) {
+                    eprintln!("E3STEP seed {seed}     {h}");
+                }
+            }
+        }
         if let (Some(ep), t) = (&cands[pick].episode, cands[pick].targets.clone()) {
-            if tests_hyp(&mut rel, ep, &t) {
+            if tests_hyp(&mut rel, &sleep_laws, ep, &t) {
                 active_hits += 1;
             }
         }
@@ -332,7 +365,7 @@ fn e3(seed: u64) -> (u32, u32, u32) {
         let pgr = g_r.ground(&pev);
         if let Some(ep) = to_episode_scene(&pgr).map(|e| e.without_outcomes()) {
             let targets: Vec<u32> = (0..5).filter_map(|d| target_for(&pgr, &ptruth, d)).collect();
-            if tests_hyp(&mut rel_r, &ep, &targets) {
+            if tests_hyp(&mut rel_r, &sleep_laws_r, &ep, &targets) {
                 random_hits += 1;
             }
         }

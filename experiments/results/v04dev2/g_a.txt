@@ -1,0 +1,35 @@
+
+===== seed 101
+  G1 hidden directories (OS)     PASS  seed 101: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_101: never-probed pairs (7 same folder, 26 different): all correct 33 wrong 0 abstain 0 of 33; established without unresolved conflict correct 33 wrong 0 abstain 0 of 33; unresolved conflicts 0
+  G2 hidden read-only (OS, explore) PASS  seed 101: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 158 of 158; on writable files correct 0 wrong 0 abstain 142 of 142 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 101: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 94 wrong 0 abstain 0 of 94; licensed e.g. ["act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0", "act1 : diff(r0,r1;c0) => t0", "act1 : order(r0,r1;c1)> => t0", "act1 : same(r0,r1;c1) => t0"]
+  G4 anti-equivalence latent     PASS  seed 101: never-probed pairs: all correct 34 wrong 0 abstain 0 of 34; established without unresolved conflict correct 34 wrong 0 abstain 0 of 34; licensed latent laws 7
+
+===== seed 102
+  G1 hidden directories (OS)     PASS  seed 102: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_102: never-probed pairs (4 same folder, 23 different): all correct 27 wrong 0 abstain 0 of 27; established without unresolved conflict correct 27 wrong 0 abstain 0 of 27; unresolved conflicts 0
+  G2 hidden read-only (OS, explore) PASS  seed 102: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 137 of 137; on writable files correct 0 wrong 0 abstain 163 of 163 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 102: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 79 wrong 0 abstain 0 of 79; licensed e.g. ["act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0", "act1 : order(r0,r1;c1)> => t0", "act1 : diff(r0,r1;c0) => t0", "act1 : same(r0,r1;c1) => t0"]
+  G4 anti-equivalence latent     PASS  seed 102: never-probed pairs: all correct 27 wrong 0 abstain 0 of 27; established without unresolved conflict correct 27 wrong 0 abstain 0 of 27; licensed latent laws 6
+
+===== seed 103
+  G1 hidden directories (OS)     PASS  seed 103: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_103: never-probed pairs (5 same folder, 15 different): all correct 20 wrong 0 abstain 0 of 20; established without unresolved conflict correct 20 wrong 0 abstain 0 of 20; unresolved conflicts 0
+  G2 hidden read-only (OS, explore) PASS  seed 103: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 168 of 168; on writable files correct 0 wrong 0 abstain 132 of 132 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 103: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 84 wrong 0 abstain 0 of 84; licensed e.g. ["act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0", "act1 : diff(r0,r1;c0) => t0", "act1 : order(r0,r1;c1)> => t0", "act1 : same(r0,r1;c1) => t0"]
+  G4 anti-equivalence latent     PASS  seed 103: never-probed pairs: all correct 20 wrong 0 abstain 0 of 20; established without unresolved conflict correct 20 wrong 0 abstain 0 of 20; licensed latent laws 10
+
+===== seed 104
+  G1 hidden directories (OS)     PASS  seed 104: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_104: never-probed pairs (1 same folder, 19 different): all correct 20 wrong 0 abstain 0 of 20; established without unresolved conflict correct 20 wrong 0 abstain 0 of 20; unresolved conflicts 0
+  G2 hidden read-only (OS, explore) PASS  seed 104: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 141 of 141; on writable files correct 0 wrong 0 abstain 159 of 159 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 104: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 77 wrong 0 abstain 0 of 77; licensed e.g. ["act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0", "act1 : order(r0,r1;c1)> => t0", "act1 : diff(r0,r1;c0) => t0", "act1 : same(r0,r1;c1) => t0"]
+  G4 anti-equivalence latent     PASS  seed 104: never-probed pairs: all correct 20 wrong 0 abstain 0 of 20; established without unresolved conflict correct 20 wrong 0 abstain 0 of 20; licensed latent laws 16
+
+===== seed 105
+  G1 hidden directories (OS)     PASS  seed 105: real folders in C:\Users\anseo\AppData\Local\Temp\bitmind_g_g1_105: never-probed pairs (7 same folder, 20 different): all correct 26 wrong 1 abstain 0 of 27; established without unresolved conflict correct 26 wrong 1 abstain 0 of 27; unresolved conflicts 0
+  G2 hidden read-only (OS, explore) PASS  seed 105: WRITE outcome with an unsensed, history-dependent attribute: all correct 0 wrong 0 abstain 300 of 300; on read-only files correct 0 wrong 0 abstain 148 of 148; on writable files correct 0 wrong 0 abstain 152 of 152 (criterion: never confidently wrong; accuracy reported only)
+  G3 two-relation conjunction    PASS  seed 105: never-seen colours and sizes: correct 300 wrong 0 abstain 0 of 300; of which opening cases correct 80 wrong 0 abstain 0 of 80; licensed e.g. ["act1 : same(r0,r1;c0) & order(r0,r1;c1)< => t0", "act1 : order(r0,r1;c1)> => t0", "act1 : diff(r0,r1;c0) => t0", "act1 : same(r0,r1;c1) => t0"]
+  G4 anti-equivalence latent     PASS  seed 105: never-probed pairs: all correct 27 wrong 0 abstain 0 of 27; established without unresolved conflict correct 27 wrong 0 abstain 0 of 27; licensed latent laws 8
+
+  learner                        INFO  frozen at tag bitmind-v0.1 (crates hdc-core, bm-relation, bm-memory, bm-agent unchanged)
+
+E-G OVERALL: PASS
+resources: wall 4142.0 s, peak working set 425 MB

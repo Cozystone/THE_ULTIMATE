@@ -262,6 +262,11 @@ fn f6(seed: u64) -> (f64, f64, f64, usize) {
     // data = -log2 P(actual) with P = stated confidence if the prediction is right,
     // 1 - confidence if wrong, 1/2 when abstaining. Raw = 1 bit per outcome.
     let ctx = w.context;
+    if std::env::var("DIAG_F6").is_ok() {
+        for l in rel.laws.iter().filter(|l| l.condition.len() <= 1) {
+            eprintln!("F6LAW {}", rel.summary(l.id, ctx));
+        }
+    }
     let n_hyp = rel.active_hypotheses(ctx).max(2) as f64;
     let licensed = rel.laws.iter().filter(|l| l.applicable(ctx)).count();
     let model = licensed as f64 * (n_hyp.log2() + 16.0);

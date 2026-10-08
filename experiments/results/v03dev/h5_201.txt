@@ -1,0 +1,51 @@
+== H5 seed 201 step 1000: working set 30 MB (peak 32 MB); laws 152 (0 MB attributed to laws)
+   store: per-episode feature lists                           900 laws/items       1 MB
+   store: episodes                                            900 laws/items       1 MB
+   status Candidate                                            72 laws/items       0 MB
+   status Revoked                                              30 laws/items       0 MB
+   status Licensed                                             23 laws/items       0 MB
+   status Contested                                            20 laws/items       0 MB
+   status Provisional                                           7 laws/items       0 MB
+== H5 seed 201 step 5000: working set 70 MB (peak 71 MB); laws 1310 (4 MB attributed to laws)
+   store: per-episode feature lists                          4900 laws/items      12 MB
+   store: episodes                                           4900 laws/items      10 MB
+   target outcomes <=8                                       1310 laws/items       4 MB
+   status Candidate                                           806 laws/items       2 MB
+   status Revoked                                             283 laws/items       1 MB
+   cond conjunction                                           411 laws/items       1 MB
+   status Licensed                                             29 laws/items       0 MB
+   status pruned                                              134 laws/items       0 MB
+   status Contested                                            44 laws/items       0 MB
+   status Provisional                                          14 laws/items       0 MB
+== H5 seed 201 step 10000: working set 113 MB (peak 114 MB); laws 3199 (12 MB attributed to laws)
+   store: per-episode feature lists                          9900 laws/items      25 MB
+   store: episodes                                           9900 laws/items      21 MB
+   target outcomes <=8                                       3199 laws/items      12 MB
+   status Candidate                                          2310 laws/items       6 MB
+   cond conjunction with latent                              1739 laws/items       4 MB
+   status Revoked                                             579 laws/items       3 MB
+   cond conjunction                                           782 laws/items       3 MB
+   cond absolute latent card 9-64                             420 laws/items       1 MB
+   status Licensed                                             32 laws/items       0 MB
+   status Contested                                            53 laws/items       0 MB
+   status pruned                                              205 laws/items       0 MB
+   status Provisional                                          17 laws/items       0 MB
+   status Split                                                 3 laws/items       0 MB
+== H5 seed 201 step 20000: working set 202 MB (peak 203 MB); laws 5616 (29 MB attributed to laws)
+   store: per-episode feature lists                         19900 laws/items      51 MB
+   store: episodes                                          19900 laws/items      43 MB
+   target outcomes <=8                                       5616 laws/items      29 MB
+   status Candidate                                          3927 laws/items      17 MB
+   cond conjunction with latent                              3480 laws/items      13 MB
+   status Revoked                                            1093 laws/items       9 MB
+   cond conjunction                                          1316 laws/items       7 MB
+   cond absolute latent card 9-64                             510 laws/items       3 MB
+   cond absolute sensed card <=8                               38 laws/items       1 MB
+   cond relational sensed card 9-64                           101 laws/items       1 MB
+   cond base                                                   24 laws/items       1 MB
+   status pruned                                              451 laws/items       0 MB
+   status Licensed                                             33 laws/items       0 MB
+   status Contested                                            93 laws/items       0 MB
+   status Provisional                                          16 laws/items       0 MB
+   status Split                                                 3 laws/items       0 MB
+resources: wall 151.2 s, peak working set 203 MB
