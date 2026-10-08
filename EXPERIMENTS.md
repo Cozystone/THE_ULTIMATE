@@ -688,3 +688,6 @@ Learner build `28fac94` (D055 + D055b). Regression round 2: `experiments/results
 PREREG-v0.3 amendment 6 made round 2 the last integration fix. v0.3 is therefore not frozen, no
 `bitmind-v0.3` tag is created and the J-series is not built. The latest frozen learner remains
 `bitmind-v0.2`. `main` keeps the D055 development state with these records.
+
+## v0.4
+Pre-registration: `experiments/PREREG-v0.4.md` (branch `v0.4-dev`, rooted at `bitmind-v0.2`; committed before any v0.4 learner change).
