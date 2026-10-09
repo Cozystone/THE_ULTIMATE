@@ -1,0 +1,18 @@
+I-series I3, frozen learner bitmind-capability-h4-v0.1, budget 300
+
+===== seed 605: 47 objects, region pairs 22 (queries 11), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 9, answered correct 2, answered wrong 0, other abstentions 0
+  Agent  saved 9: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0 (while unresolved 0), unsettled answers 0, unresolved 9, leakage 0; region probes 0; chosen diagnostic-new 1 redundant 0 non-diagnostic 299; steps with an informative candidate 1 (diagnostic-new taken 1), with none 299; actions 300; 279.4 s
+  Random saved 9: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0 (while unresolved 0), unsettled answers 0, unresolved 9, leakage 0; region probes 0; chosen diagnostic-new 0 redundant 0 non-diagnostic 0; steps with an informative candidate 0 (diagnostic-new taken 0), with none 0; actions 300; 122.0 s
+  Wait   saved 9: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0 (while unresolved 0), unsettled answers 0, unresolved 9, leakage 0; region probes 0; chosen diagnostic-new 0 redundant 0 non-diagnostic 0; steps with an informative candidate 0 (diagnostic-new taken 0), with none 0; actions 300; 118.8 s
+
+===== totals I3 (seeds 1)
+  Agent  saved 9 | resolved correctly 0 (0.0%; settled 0, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 9 (100.0%) | leakage 0 | diagnostic-new 100.0% of steps with an informative candidate | no informative candidate in 99.7% of steps
+  Random saved 9 | resolved correctly 0 (0.0%; settled 0, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 9 (100.0%) | leakage 0 | diagnostic-new 0.0% of steps with an informative candidate | no informative candidate in 0.0% of steps
+  Wait   saved 9 | resolved correctly 0 (0.0%; settled 0, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 9 (100.0%) | leakage 0 | diagnostic-new 0.0% of steps with an informative candidate | no informative candidate in 0.0% of steps
+
+===== pre-registered criteria I3
+  PASS wrong 0 = 0
+  PASS still abstaining 100.0% >= 95%
+  PASS no informative probe declared in 99.7% of steps >= 90%
+  I3 overall: PASS
+resources: wall 1076.1 s, peak working set 7522 MB

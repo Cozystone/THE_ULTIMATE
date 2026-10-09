@@ -764,3 +764,15 @@ Pre-registration: `experiments/PREREG-capability-h4.md` (branch `capability-h4-d
   phase total (correct / wrong / abstain / leakage) is identical to the v0.2 record. E3 differs
   only through the corrected twin (amendment 1a; a baseline failure). Peak working set 5.8 GB
   (H chunk); no process reached the 16 GB cap.
+
+### capability-h4 formal I-series result (2026-10-10)
+Frozen learner `bitmind-capability-h4-v0.1`; seeds 601-615; `results/iseries/SUMMARY.txt`.
+
+| world | verdict | key numbers |
+|---|---|---|
+| I1 | PASS | agent 145/145 correct (122 D041 settlements, 23 active dissolutions), random 22.1%, WAIT 0%, wrong 0 |
+| I2 | PASS | agent 145/145, random 8.3%; diagnostic choice on 100% of steps with an informative candidate |
+| I3 | PASS | all 145 saved conflicts still abstain, 0 wrong; no informative candidate on 99.8% of steps |
+| I4 | **FAIL** | agent 72.4% correct (< 80%), 9 wrong settlements caused by misperceived conditions under 1% sensor noise; 37 wrong stage-1 answers (a v0.2 weakness under noise); seed 606 aborted on memory allocation |
+
+Report: `experiments/REPORT-capability-h4.md`.

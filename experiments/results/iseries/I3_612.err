@@ -1,0 +1,4 @@
+SEED_START 612
+PROBE seed 612 step 5 action (21, [0, 3]) region false predicted [(0, 1, 1, true)]
+PROBE seed 612 step 32 action (21, [0, 16]) region false predicted [(0, 1, 2, true)]
+SEED_END 612 wall 1025.2 s working set 31 MB peak 6551 MB

@@ -1,0 +1,12 @@
+SEED_START 605
+PROBE seed 605 step 16 action (21, [43, 3]) region false predicted [(0, 1, 1, true)]
+PROBE seed 605 step 17 action (21, [12, 18]) region false predicted [(1, 0, 0, true)]
+PROBE seed 605 step 47 action (21, [43, 25]) region false predicted [(0, 1, 0, true)]
+PROBE seed 605 step 73 action (21, [34, 15]) region true predicted [(0, 1, 2, true)]
+PROBE seed 605 step 132 action (21, [26, 19]) region false predicted [(0, 1, 2, true)]
+PROBE seed 605 step 138 action (21, [19, 15]) region true predicted [(0, 1, 1, true)]
+PROBE seed 605 step 147 action (21, [22, 37]) region false predicted [(1, 0, 2, true)]
+PROBE seed 605 step 162 action (21, [12, 38]) region false predicted [(1, 0, 2, true)]
+PROBE seed 605 step 185 action (21, [43, 33]) region false predicted [(0, 1, 1, true)]
+PROBE seed 605 step 285 action (21, [21, 1]) region false predicted [(0, 1, 0, true)]
+SEED_END 605 wall 2115.0 s working set 48 MB peak 11565 MB

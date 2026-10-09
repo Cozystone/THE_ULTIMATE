@@ -1,0 +1,107 @@
+===== I1: 15 seeds
+  stage 1 seed 601: 36 objects, region pairs 17 (queries 9), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 9, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 602: 43 objects, region pairs 20 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 603: 41 objects, region pairs 21 (queries 11), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 11, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 604: 40 objects, region pairs 20 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 605: 47 objects, region pairs 22 (queries 11), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 9, answered correct 2, answered wrong 0, other abstentions 0
+  stage 1 seed 606: 39 objects, region pairs 19 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 607: 45 objects, region pairs 16 (queries 8), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 8, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 608: 47 objects, region pairs 24 (queries 12), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 12, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 609: 36 objects, region pairs 14 (queries 7), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 7, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 610: 41 objects, region pairs 23 (queries 12), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 12, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 611: 46 objects, region pairs 20 (queries 10), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 612: 39 objects, region pairs 15 (queries 8), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 8, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 613: 44 objects, region pairs 19 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 614: 44 objects, region pairs 22 (queries 11), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 11, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 615: 42 objects, region pairs 16 (queries 8), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 8, answered correct 0, answered wrong 0, other abstentions 0
+  Agent  saved 145: resolved correctly 145 (100.0%) [settled 122, dissolved 23 (agent-active 23)], wrong 0 (0.0% of answers; while unresolved 0), unsettled answers 0, still abstaining 0 (0.0%), leakage 0; region probes 41; chosen diagnostic-new 48 / redundant 0 / non-diagnostic 912; diagnostic-new taken in 100.0% of 48 steps with an informative candidate; no informative candidate in 95.0% of 960 steps; policy time 800 s
+  Random saved 145: resolved correctly 32 (22.1%) [settled 21, dissolved 11 (agent-active 0)], wrong 0 (0.0% of answers; while unresolved 0), unsettled answers 0, still abstaining 113 (77.9%), leakage 0; region probes 23; chosen diagnostic-new 0 / redundant 0 / non-diagnostic 0; diagnostic-new taken in 0.0% of 0 steps with an informative candidate; no informative candidate in 0.0% of 4060 steps; policy time 1439 s
+  Wait   saved 145: resolved correctly 0 (0.0%) [settled 0, dissolved 0 (agent-active 0)], wrong 0 (0.0% of answers; while unresolved 0), unsettled answers 0, still abstaining 145 (100.0%), leakage 0; region probes 0; chosen diagnostic-new 0 / redundant 0 / non-diagnostic 0; diagnostic-new taken in 0.0% of 0 steps with an informative candidate; no informative candidate in 0.0% of 4500 steps; policy time 1698 s
+  PASS resolved correctly 100.0% >= 80%
+  PASS wrong while unresolved 0 = 0
+  PASS wrong 0.0% of answers <= 2%
+  PASS agent 100.0% >= random 22.1% + 30 pp
+  PASS WAIT-only 0.0% <= 10%
+  PASS leakage 0 = 0
+  I1 overall: PASS
+  resources: per-seed process peak 5214-8857 MB, wall 436-992 s per seed (total 2.9 h)
+
+===== I2: 15 seeds
+  stage 1 seed 601: 36 objects, region pairs 17 (queries 9), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 9, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 602: 43 objects, region pairs 20 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 603: 41 objects, region pairs 21 (queries 11), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 11, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 604: 40 objects, region pairs 20 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 605: 47 objects, region pairs 22 (queries 11), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 9, answered correct 2, answered wrong 0, other abstentions 0
+  stage 1 seed 606: 39 objects, region pairs 19 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 607: 45 objects, region pairs 16 (queries 8), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 8, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 608: 47 objects, region pairs 24 (queries 12), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 12, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 609: 36 objects, region pairs 14 (queries 7), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 7, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 610: 41 objects, region pairs 23 (queries 12), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 12, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 611: 46 objects, region pairs 20 (queries 10), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 612: 39 objects, region pairs 15 (queries 8), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 8, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 613: 44 objects, region pairs 19 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 614: 44 objects, region pairs 22 (queries 11), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 11, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 615: 42 objects, region pairs 16 (queries 8), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 8, answered correct 0, answered wrong 0, other abstentions 0
+  Agent  saved 145: resolved correctly 145 (100.0%) [settled 122, dissolved 23 (agent-active 23)], wrong 0 (0.0% of answers; while unresolved 0), unsettled answers 0, still abstaining 0 (0.0%), leakage 0; region probes 42; chosen diagnostic-new 45 / redundant 0 / non-diagnostic 1505; diagnostic-new taken in 100.0% of 45 steps with an informative candidate; no informative candidate in 97.1% of 1550 steps; policy time 1145 s
+  Random saved 145: resolved correctly 12 (8.3%) [settled 12, dissolved 0 (agent-active 0)], wrong 0 (0.0% of answers; while unresolved 0), unsettled answers 0, still abstaining 133 (91.7%), leakage 0; region probes 14; chosen diagnostic-new 0 / redundant 0 / non-diagnostic 0; diagnostic-new taken in 0.0% of 0 steps with an informative candidate; no informative candidate in 0.0% of 4430 steps; policy time 1266 s
+  Wait   saved 145: resolved correctly 0 (0.0%) [settled 0, dissolved 0 (agent-active 0)], wrong 0 (0.0% of answers; while unresolved 0), unsettled answers 0, still abstaining 145 (100.0%), leakage 0; region probes 0; chosen diagnostic-new 0 / redundant 0 / non-diagnostic 0; diagnostic-new taken in 0.0% of 0 steps with an informative candidate; no informative candidate in 0.0% of 4500 steps; policy time 1435 s
+  PASS resolved correctly 100.0% >= 80%
+  PASS wrong while unresolved 0 = 0
+  PASS wrong 0.0% of answers <= 2%
+  PASS agent 100.0% >= random 8.3% + 30 pp
+  PASS WAIT-only 0.0% <= 10%
+  PASS leakage 0 = 0
+  PASS diagnostic-new 100.0% of steps with a diagnostic candidate >= 80%
+  I2 overall: PASS
+  resources: per-seed process peak 5286-8948 MB, wall 342-1252 s per seed (total 2.7 h)
+
+===== I3: 15 seeds
+  stage 1 seed 601: 36 objects, region pairs 17 (queries 9), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 9, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 602: 43 objects, region pairs 20 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 603: 41 objects, region pairs 21 (queries 11), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 11, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 604: 40 objects, region pairs 20 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 605: 47 objects, region pairs 22 (queries 11), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 9, answered correct 2, answered wrong 0, other abstentions 0
+  stage 1 seed 606: 39 objects, region pairs 19 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 607: 45 objects, region pairs 16 (queries 8), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 8, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 608: 47 objects, region pairs 24 (queries 12), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 12, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 609: 36 objects, region pairs 14 (queries 7), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 7, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 610: 41 objects, region pairs 23 (queries 12), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 12, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 611: 46 objects, region pairs 20 (queries 10), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 612: 39 objects, region pairs 15 (queries 8), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 8, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 613: 44 objects, region pairs 19 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 614: 44 objects, region pairs 22 (queries 11), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 11, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 615: 42 objects, region pairs 16 (queries 8), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 8, answered correct 0, answered wrong 0, other abstentions 0
+  Agent  saved 145: resolved correctly 0 (0.0%) [settled 0, dissolved 0 (agent-active 0)], wrong 0 (0.0% of answers; while unresolved 0), unsettled answers 0, still abstaining 145 (100.0%), leakage 0; region probes 0; chosen diagnostic-new 11 / redundant 0 / non-diagnostic 4489; diagnostic-new taken in 100.0% of 11 steps with an informative candidate; no informative candidate in 99.8% of 4500 steps; policy time 4229 s
+  Random saved 145: resolved correctly 0 (0.0%) [settled 0, dissolved 0 (agent-active 0)], wrong 0 (0.0% of answers; while unresolved 0), unsettled answers 0, still abstaining 145 (100.0%), leakage 0; region probes 0; chosen diagnostic-new 0 / redundant 0 / non-diagnostic 0; diagnostic-new taken in 0.0% of 0 steps with an informative candidate; no informative candidate in 0.0% of 4500 steps; policy time 1955 s
+  Wait   saved 145: resolved correctly 0 (0.0%) [settled 0, dissolved 0 (agent-active 0)], wrong 0 (0.0% of answers; while unresolved 0), unsettled answers 0, still abstaining 145 (100.0%), leakage 0; region probes 0; chosen diagnostic-new 0 / redundant 0 / non-diagnostic 0; diagnostic-new taken in 0.0% of 0 steps with an informative candidate; no informative candidate in 0.0% of 4500 steps; policy time 1825 s
+  PASS wrong 0 = 0
+  PASS still abstaining 100.0% >= 95%
+  PASS no informative probe in 99.8% of steps >= 90%
+  I3 overall: PASS
+  resources: per-seed process peak 5217-8820 MB, wall 555-1502 s per seed (total 4.3 h)
+
+===== I4: 15 seeds
+  stage 1 seed 601: 36 objects, region pairs 17 (queries 9), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 5, answered correct 2, answered wrong 2, other abstentions 0
+  stage 1 seed 602: 43 objects, region pairs 20 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 3, answered correct 1, answered wrong 6, other abstentions 0
+  stage 1 seed 603: 41 objects, region pairs 21 (queries 11), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 7, answered correct 3, answered wrong 1, other abstentions 0
+  stage 1 seed 604: 40 objects, region pairs 20 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 1, answered correct 1, answered wrong 8, other abstentions 0
+  stage 1 seed 605: 47 objects, region pairs 22 (queries 11), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 9, answered correct 1, answered wrong 1, other abstentions 0
+  stage 1 seed 607: 45 objects, region pairs 16 (queries 8), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 4, answered correct 1, answered wrong 3, other abstentions 0
+  stage 1 seed 608: 47 objects, region pairs 24 (queries 12), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 2, answered wrong 0, other abstentions 0
+  stage 1 seed 609: 36 objects, region pairs 14 (queries 7), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 3, answered correct 1, answered wrong 3, other abstentions 0
+  stage 1 seed 610: 41 objects, region pairs 23 (queries 12), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 1, answered correct 3, answered wrong 8, other abstentions 0
+  stage 1 seed 611: 46 objects, region pairs 20 (queries 10), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 612: 39 objects, region pairs 15 (queries 8), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 0, answered correct 8, answered wrong 0, other abstentions 0
+  stage 1 seed 613: 44 objects, region pairs 19 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  stage 1 seed 614: 44 objects, region pairs 22 (queries 11), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 7, answered correct 0, answered wrong 4, other abstentions 0
+  stage 1 seed 615: 42 objects, region pairs 16 (queries 8), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 6, answered correct 1, answered wrong 1, other abstentions 0
+  Agent  saved 76: resolved correctly 55 (72.4%) [settled 55, dissolved 0 (agent-active 0)], wrong 9 (14.1% of answers; while unresolved 0), unsettled answers 0, still abstaining 12 (15.8%), leakage 0; region probes 37; chosen diagnostic-new 95 / redundant 0 / non-diagnostic 2585; diagnostic-new taken in 100.0% of 95 steps with an informative candidate; no informative candidate in 96.5% of 2680 steps; policy time 3090 s
+  Random saved 76: resolved correctly 27 (35.5%) [settled 27, dissolved 0 (agent-active 0)], wrong 18 (40.0% of answers; while unresolved 0), unsettled answers 0, still abstaining 31 (40.8%), leakage 0; region probes 16; chosen diagnostic-new 0 / redundant 0 / non-diagnostic 0; diagnostic-new taken in 0.0% of 0 steps with an informative candidate; no informative candidate in 0.0% of 3090 steps; policy time 1200 s
+  Wait   saved 76: resolved correctly 0 (0.0%) [settled 0, dissolved 0 (agent-active 0)], wrong 0 (0.0% of answers; while unresolved 0), unsettled answers 0, still abstaining 76 (100.0%), leakage 0; region probes 0; chosen diagnostic-new 0 / redundant 0 / non-diagnostic 0; diagnostic-new taken in 0.0% of 0 steps with an informative candidate; no informative candidate in 0.0% of 3900 steps; policy time 2056 s
+  FAIL resolved correctly 72.4% >= 80%
+  PASS settlement route 100.0% of correct >= 70%
+  PASS settlement audit 0 = 0
+  PASS agent 72.4% >= random 35.5% + 30 pp
+  I4 overall: FAIL
+  resources: per-seed process peak 3404-14958 MB, wall 288-3338 s per seed (total 4.8 h)
+
