@@ -1,0 +1,79 @@
+
+===== seed 1
+      D1 steps to 95% on all pairs: active 300 (acc 99%), random 525 (acc 100%)
+  D2 act/ask/wait              PASS  seed 1: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 15003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 1: forbidden option chosen 0/100 (it had the highest information gain in 8); budget 10 bits spent 8.25 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 270/300 licensed 4
+
+===== seed 2
+      D1 steps to 95% on all pairs: active 325 (acc 99%), random 450 (acc 99%)
+  D2 act/ask/wait              PASS  seed 2: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 25003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 2: forbidden option chosen 0/100 (it had the highest information gain in 19); budget 10 bits spent 7.50 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 267/300 licensed 4
+
+===== seed 3
+      D1 steps to 95% on all pairs: active 350 (acc 100%), random 700 (acc 100%)
+  D2 act/ask/wait              PASS  seed 3: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 35003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 3: forbidden option chosen 0/100 (it had the highest information gain in 13); budget 10 bits spent 7.50 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 257/300 licensed 4
+
+===== seed 4
+      D1 steps to 95% on all pairs: active 275 (acc 100%), random 525 (acc 98%)
+  D2 act/ask/wait              PASS  seed 4: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 25003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 4: forbidden option chosen 0/100 (it had the highest information gain in 22); budget 10 bits spent 10.00 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 270/300 licensed 4
+
+===== seed 5
+      D1 steps to 95% on all pairs: active 300 (acc 100%), random 525 (acc 100%)
+  D2 act/ask/wait              PASS  seed 5: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 15003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 5: forbidden option chosen 0/100 (it had the highest information gain in 18); budget 10 bits spent 8.75 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 270/300 licensed 4
+
+===== seed 6
+      D1 steps to 95% on all pairs: active 375 (acc 99%), random 550 (acc 100%)
+  D2 act/ask/wait              PASS  seed 6: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 45003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 6: forbidden option chosen 0/100 (it had the highest information gain in 17); budget 10 bits spent 7.50 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 265/300 licensed 4
+
+===== seed 7
+      D1 steps to 95% on all pairs: active 325 (acc 100%), random 450 (acc 97%)
+  D2 act/ask/wait              PASS  seed 7: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 35003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 7: forbidden option chosen 0/100 (it had the highest information gain in 29); budget 10 bits spent 7.50 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 249/300 licensed 4
+
+===== seed 8
+      D1 steps to 95% on all pairs: active 275 (acc 100%), random 600 (acc 99%)
+  D2 act/ask/wait              PASS  seed 8: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 45003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 8: forbidden option chosen 0/100 (it had the highest information gain in 12); budget 10 bits spent 10.00 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 270/300 licensed 4
+
+===== seed 9
+      D1 steps to 95% on all pairs: active 325 (acc 99%), random 500 (acc 95%)
+  D2 act/ask/wait              PASS  seed 9: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 45003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 9: forbidden option chosen 0/100 (it had the highest information gain in 22); budget 10 bits spent 10.00 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 265/300 licensed 4
+
+===== seed 10
+      D1 steps to 95% on all pairs: active 275 (acc 100%), random 550 (acc 98%)
+  D2 act/ask/wait              PASS  seed 10: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 35003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 10: forbidden option chosen 0/100 (it had the highest information gain in 7); budget 10 bits spent 8.75 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 253/300 licensed 5
+
+===== seed 11
+      D1 steps to 95% on all pairs: active 350 (acc 100%), random 550 (acc 99%)
+  D2 act/ask/wait              PASS  seed 11: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 35003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 11: forbidden option chosen 0/100 (it had the highest information gain in 14); budget 10 bits spent 7.50 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 257/300 licensed 4
+
+===== seed 12
+      D1 steps to 95% on all pairs: active 275 (acc 100%), random 525 (acc 99%)
+  D2 act/ask/wait              PASS  seed 12: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 25003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 12: forbidden option chosen 0/100 (it had the highest information gain in 16); budget 10 bits spent 10.00 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 270/300 licensed 4
+
+===== seed 13
+      D1 steps to 95% on all pairs: active 250 (acc 100%), random 550 (acc 98%)
+  D2 act/ask/wait              PASS  seed 13: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 25003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 13: forbidden option chosen 0/100 (it had the highest information gain in 11); budget 10 bits spent 7.50 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 270/300 licensed 4
+
+===== seed 14
+      D1 steps to 95% on all pairs: active 275 (acc 100%), random 350 (acc 99%)
+  D2 act/ask/wait              PASS  seed 14: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 35003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 14: forbidden option chosen 0/100 (it had the highest information gain in 19); budget 10 bits spent 7.50 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 270/300 licensed 4
+
+===== seed 15
+      D1 steps to 95% on all pairs: active 275 (acc 100%), random 775 (acc 98%)
+  D2 act/ask/wait              PASS  seed 15: act: 10/10 (e.g. Some(Act { action: 2, args: [0] })); ask: 10/10 (e.g. Some(Ask { target: 15003 })); wait: 10/10 (e.g. Some(Wait)); 
+  D3 constraints               PASS  seed 15: forbidden option chosen 0/100 (it had the highest information gain in 14); budget 10 bits spent 7.50 bits, overdrafts 0; dark-room ablation waits 300/300 licensed 0 vs epistemic agent waits 255/300 licensed 4
+  D1 efficiency                PASS  mean steps active 303 vs random 542 (ratio 0.56); active <= random on 15/15 seeds
+
+E-D OVERALL: PASS
+resources: wall 1917.2 s, peak working set 401 MB

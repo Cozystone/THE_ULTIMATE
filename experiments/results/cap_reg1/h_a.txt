@@ -1,0 +1,29 @@
+
+===== seed 201
+  H1 relational transfer             PASS  seed 201: new objects, never-seen sizes: correct relational 183, wrong 0, safe abstention 0, insufficient evidence 0, identity leakage 0 of 183
+  H3a permutation invariance (H1)    PASS  seed 201: identical answers under relabelled identities and labels 200/200
+  H2 cyclic hidden ranks             PASS  seed 201: never-probed pairs, established correct relational 27, wrong 0, safe abstention 0, insufficient evidence 0, identity leakage 0 of 27; all correct relational 27, wrong 0, safe abstention 0, insufficient evidence 0, identity leakage 0 of 27; licensed latent laws 15
+  H3b permutation invariance (H2)    PASS  seed 201: identical answers under relabelled identities and labels 27/27
+  H4 reachable conflict              FAIL  seed 201: stage 1 correct relational 0, wrong 0, safe abstention 10, insufficient evidence 0, identity leakage 0 of 10; answers while unsettled 0; saved 10; after 50 probes (24 chosen to test the conflict): settled by >= 3 independent bindings and correct 0, wrong 0, answered after the conflict dissolved (a competing licence lost to counterevidence) 10 with distinct region pairs probed by then [9, 9, 9, 9, 9, 9, 9, 9, 9, 9] (of 10 answered; only settled answers count for the gate)
+  H5 long horizon, memory budget     FAIL  seed 201: 20000 steps; peak working set 5427 MB (budget 2048); mid correct relational 78, wrong 0, safe abstention 0, insufficient evidence 0, identity leakage 0 of 78; end correct relational 78, wrong 0, safe abstention 0, insufficient evidence 0, identity leakage 0 of 78; counterexample counts decreased 0; trace (step, MB, laws) [(2000, 1347, 677412), (4000, 2210, 953317), (6000, 2875, 1109424), (8000, 3376, 1198360), (10000, 3787, 1233360), (12000, 4162, 1254414), (14000, 4515, 1275217), (16000, 4836, 1301417), (18000, 5097, 1308065), (20000, 5425, 1339227)]
+
+===== seed 202
+  H1 relational transfer             PASS  seed 202: new objects, never-seen sizes: correct relational 166, wrong 0, safe abstention 17, insufficient evidence 0, identity leakage 0 of 183
+  H3a permutation invariance (H1)    PASS  seed 202: identical answers under relabelled identities and labels 200/200
+  H2 cyclic hidden ranks             PASS  seed 202: never-probed pairs, established correct relational 23, wrong 0, safe abstention 0, insufficient evidence 0, identity leakage 0 of 23; all correct relational 23, wrong 0, safe abstention 0, insufficient evidence 0, identity leakage 0 of 23; licensed latent laws 21
+  H3b permutation invariance (H2)    PASS  seed 202: identical answers under relabelled identities and labels 23/23
+  H4 reachable conflict              FAIL  seed 202: stage 1 correct relational 0, wrong 0, safe abstention 8, insufficient evidence 0, identity leakage 0 of 8; answers while unsettled 0; saved 8; after 50 probes (15 chosen to test the conflict): settled by >= 3 independent bindings and correct 0, wrong 0, answered after the conflict dissolved (a competing licence lost to counterevidence) 8 with distinct region pairs probed by then [7, 7, 7, 7, 7, 7, 7, 7] (of 8 answered; only settled answers count for the gate)
+  H5 long horizon, memory budget     FAIL  seed 202: 20000 steps; peak working set 5427 MB (budget 2048); mid correct relational 71, wrong 0, safe abstention 0, insufficient evidence 0, identity leakage 0 of 71; end correct relational 71, wrong 0, safe abstention 0, insufficient evidence 0, identity leakage 0 of 71; counterexample counts decreased 0; trace (step, MB, laws) [(2000, 1067, 533704), (4000, 1670, 726945), (6000, 2115, 797308), (8000, 2474, 847340), (10000, 2791, 877788), (12000, 3072, 891529), (14000, 3322, 922395), (16000, 3555, 933211), (18000, 3768, 939554), (20000, 4030, 949338)]
+
+===== seed 203
+  H1 relational transfer             PASS  seed 203: new objects, never-seen sizes: correct relational 183, wrong 0, safe abstention 0, insufficient evidence 0, identity leakage 0 of 183
+  H3a permutation invariance (H1)    PASS  seed 203: identical answers under relabelled identities and labels 200/200
+  H2 cyclic hidden ranks             PASS  seed 203: never-probed pairs, established correct relational 30, wrong 0, safe abstention 0, insufficient evidence 0, identity leakage 0 of 30; all correct relational 30, wrong 0, safe abstention 0, insufficient evidence 0, identity leakage 0 of 30; licensed latent laws 37
+  H3b permutation invariance (H2)    PASS  seed 203: identical answers under relabelled identities and labels 30/30
+  H4 reachable conflict              FAIL  seed 203: stage 1 correct relational 0, wrong 0, safe abstention 14, insufficient evidence 0, identity leakage 0 of 14; answers while unsettled 0; saved 14; after 50 probes (30 chosen to test the conflict): settled by >= 3 independent bindings and correct 0, wrong 0, answered after the conflict dissolved (a competing licence lost to counterevidence) 14 with distinct region pairs probed by then [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12] (of 14 answered; only settled answers count for the gate)
+  H5 long horizon, memory budget     FAIL  seed 203: 20000 steps; peak working set 5427 MB (budget 2048); mid correct relational 48, wrong 0, safe abstention 2, insufficient evidence 21, identity leakage 0 of 71; end correct relational 50, wrong 0, safe abstention 8, insufficient evidence 13, identity leakage 0 of 71; counterexample counts decreased 0; trace (step, MB, laws) [(2000, 974, 476947), (4000, 1544, 661832), (6000, 1959, 712643), (8000, 2250, 727773), (10000, 2515, 739898), (12000, 2765, 748440), (14000, 2982, 755672), (16000, 3182, 759789), (18000, 3354, 762639), (20000, 3576, 767494)]
+
+  learner: frozen at tag bitmind-v0.2 (crates hdc-core, bm-relation, bm-memory, bm-agent unchanged)
+
+E-H OVERALL: FAIL
+resources: wall 4206.4 s, peak working set 5427 MB

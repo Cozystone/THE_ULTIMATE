@@ -755,3 +755,12 @@ The latest frozen learner remains `bitmind-v0.2`. Report: `experiments/REPORT-v0
 ## Capability phase: evidence-seeking conflict resolution (capability-h4)
 Pre-registration: `experiments/PREREG-capability-h4.md` (branch `capability-h4-dev`, rooted at
 `bitmind-v0.2`; committed before any learner change). The v0.3/v0.4 memory line is paused.
+
+### capability-h4: development and regression results (2026-10-09)
+* Development round 1 (`results/cap_dev1/SUMMARY.md`):
+  * CW agent 189/189 saved conflicts settled by D041, against random 0 and WAIT-only 0;
+  * H4 agent-driven: 133 active dissolutions, 2 unresolved, 0 settlements, 0 wrong.
+* Regression battery of the D060 build (`results/cap_reg1/COMPARISON.txt`): 0 violations. Every
+  phase total (correct / wrong / abstain / leakage) is identical to the v0.2 record. E3 differs
+  only through the corrected twin (amendment 1a; a baseline failure). Peak working set 5.8 GB
+  (H chunk); no process reached the 16 GB cap.
