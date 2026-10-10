@@ -1,0 +1,21 @@
+I-series I1, frozen learner bitmind-capability-h4-v0.1, budget 300
+
+===== seed 604: 40 objects, region pairs 20 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  Agent  saved 10: settled-correct 10 (active 10), dissolved-correct 0 (active 0), wrong 0 (while unresolved 0), unsettled answers 0, unresolved 0, leakage 0; region probes 3; chosen diagnostic-new 3 redundant 0 non-diagnostic 27; steps with an informative candidate 3 (diagnostic-new taken 3), with none 27; actions 30; 30.7 s
+  Random saved 10: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0 (while unresolved 0), unsettled answers 0, unresolved 10, leakage 0; region probes 2; chosen diagnostic-new 0 redundant 0 non-diagnostic 0; steps with an informative candidate 0 (diagnostic-new taken 0), with none 0; actions 300; 126.0 s
+  Wait   saved 10: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0 (while unresolved 0), unsettled answers 0, unresolved 10, leakage 0; region probes 0; chosen diagnostic-new 0 redundant 0 non-diagnostic 0; steps with an informative candidate 0 (diagnostic-new taken 0), with none 0; actions 300; 126.1 s
+
+===== totals I1 (seeds 1)
+  Agent  saved 10 | resolved correctly 10 (100.0%; settled 10, dissolved 0; agent-active 10) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 0 (0.0%) | leakage 0 | diagnostic-new 100.0% of steps with an informative candidate | no informative candidate in 90.0% of steps
+  Random saved 10 | resolved correctly 0 (0.0%; settled 0, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 10 (100.0%) | leakage 0 | diagnostic-new 0.0% of steps with an informative candidate | no informative candidate in 0.0% of steps
+  Wait   saved 10 | resolved correctly 0 (0.0%; settled 0, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 10 (100.0%) | leakage 0 | diagnostic-new 0.0% of steps with an informative candidate | no informative candidate in 0.0% of steps
+
+===== pre-registered criteria I1
+  PASS resolved correctly 100.0% >= 80%
+  PASS wrong while unresolved 0 = 0
+  PASS wrong 0.0% of answers <= 2%
+  PASS agent 100.0% >= random 0.0% + 30 pp
+  PASS WAIT-only resolves 0.0% <= 10%
+  PASS leakage 0 = 0
+  I1 overall: PASS
+resources: wall 759.4 s, peak working set 7415 MB

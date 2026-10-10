@@ -1,0 +1,12 @@
+SEED_START 615
+PROBE seed 615 step 12 action (21, [41, 28]) region false predicted [(1, 0, 1, true)]
+PROBE seed 615 step 14 action (21, [22, 13]) region true predicted [(0, 1, 1, true)]
+PROBE seed 615 step 15 action (21, [14, 17]) region false predicted [(1, 0, 1, true)]
+PROBE seed 615 step 43 action (21, [13, 20]) region false predicted [(1, 0, 2, true)]
+PROBE seed 615 step 50 action (21, [14, 13]) region false predicted [(1, 0, 2, true)]
+PROBE seed 615 step 54 action (21, [28, 30]) region false predicted [(1, 0, 0, true)]
+PROBE seed 615 step 86 action (21, [13, 11]) region true predicted [(0, 1, 1, true)]
+PROBE seed 615 step 103 action (21, [18, 27]) region false predicted [(1, 0, 1, true)]
+PROBE seed 615 step 236 action (21, [41, 27]) region false predicted [(1, 0, 2, true)]
+PROBE seed 615 step 290 action (21, [13, 11]) region true predicted [(0, 1, 2, true)]
+SEED_END 615 wall 758.2 s working set 33 MB peak 7311 MB

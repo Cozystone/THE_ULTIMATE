@@ -1,0 +1,14 @@
+SEED_START 604
+PROBE seed 604 step 10 action (21, [29, 9]) region false predicted [(0, 1, 0, true)]
+PROBE seed 604 step 20 action (21, [21, 23]) region false predicted [(1, 0, 0, true)]
+PROBE seed 604 step 97 action (21, [27, 9]) region false predicted [(0, 1, 1, true)]
+PROBE seed 604 step 99 action (21, [33, 19]) region true predicted [(0, 1, 0, true)]
+PROBE seed 604 step 104 action (21, [15, 8]) region false predicted [(0, 1, 1, true)]
+PROBE seed 604 step 109 action (21, [8, 4]) region true predicted [(0, 1, 2, true)]
+PROBE seed 604 step 129 action (21, [16, 4]) region false predicted [(1, 0, 1, true)]
+PROBE seed 604 step 156 action (21, [21, 25]) region false predicted [(1, 0, 1, true)]
+PROBE seed 604 step 183 action (21, [16, 7]) region false predicted [(1, 0, 2, true)]
+PROBE seed 604 step 261 action (21, [21, 25]) region false predicted [(1, 0, 1, true)]
+PROBE seed 604 step 272 action (21, [16, 4]) region false predicted [(1, 0, 2, true)]
+PROBE seed 604 step 289 action (21, [31, 8]) region false predicted [(0, 1, 1, true)]
+SEED_END 604 wall 1649.2 s working set 44 MB peak 10197 MB

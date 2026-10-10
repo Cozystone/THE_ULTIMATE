@@ -1,0 +1,9 @@
+SEED_START 602
+PROBE seed 602 step 8 action (21, [30, 8]) region false predicted [(1, 0, 2, true)]
+PROBE seed 602 step 38 action (21, [9, 13]) region false predicted [(0, 1, 2, true)]
+PROBE seed 602 step 40 action (21, [20, 17]) region false predicted [(1, 0, 1, true)]
+PROBE seed 602 step 68 action (21, [15, 36]) region false predicted [(0, 1, 0, true)]
+PROBE seed 602 step 74 action (21, [20, 36]) region false predicted [(0, 1, 1, true)]
+PROBE seed 602 step 83 action (21, [29, 13]) region true predicted [(0, 1, 2, true)]
+PROBE seed 602 step 257 action (21, [36, 21]) region false predicted [(0, 1, 2, true)]
+SEED_END 602 wall 2749.9 s working set 56 MB peak 13321 MB

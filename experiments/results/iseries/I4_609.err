@@ -1,0 +1,18 @@
+SEED_START 609
+PROBE seed 609 step 4 action (21, [21, 11]) region true predicted [(0, 1, 0, true)]
+PROBE seed 609 step 31 action (21, [26, 30]) region false predicted [(1, 0, 2, true)]
+PROBE seed 609 step 37 action (21, [5, 35]) region false predicted [(0, 1, 1, true)]
+PROBE seed 609 step 52 action (21, [15, 13]) region true predicted [(0, 1, 1, true)]
+PROBE seed 609 step 63 action (21, [21, 11]) region true predicted [(0, 1, 0, true)]
+PROBE seed 609 step 65 action (21, [0, 25]) region false predicted [(1, 0, 2, true)]
+PROBE seed 609 step 76 action (21, [26, 2]) region false predicted [(0, 1, 2, true)]
+PROBE seed 609 step 78 action (21, [25, 0]) region false predicted [(1, 0, 2, true)]
+PROBE seed 609 step 154 action (21, [6, 4]) region false predicted [(1, 0, 2, true)]
+PROBE seed 609 step 163 action (21, [24, 1]) region false predicted [(0, 1, 2, true)]
+PROBE seed 609 step 170 action (21, [4, 35]) region false predicted [(0, 1, 2, true)]
+PROBE seed 609 step 199 action (21, [8, 13]) region true predicted [(0, 1, 2, true)]
+PROBE seed 609 step 209 action (21, [14, 3]) region false predicted [(0, 1, 1, true)]
+PROBE seed 609 step 219 action (21, [21, 11]) region true predicted [(0, 1, 1, true)]
+PROBE seed 609 step 239 action (21, [6, 11]) region true predicted [(0, 1, 2, true)]
+PROBE seed 609 step 277 action (21, [0, 30]) region false predicted [(0, 1, 0, true)]
+SEED_END 609 wall 438.9 s working set 18 MB peak 3404 MB

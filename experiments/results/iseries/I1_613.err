@@ -1,0 +1,9 @@
+SEED_START 613
+PROBE seed 613 step 13 action (21, [30, 26]) region false predicted [(0, 1, 0, true)]
+PROBE seed 613 step 14 action (21, [26, 15]) region false predicted [(1, 0, 0, true)]
+PROBE seed 613 step 26 action (21, [12, 15]) region false predicted [(1, 0, 1, true)]
+PROBE seed 613 step 43 action (21, [0, 26]) region false predicted [(0, 1, 1, true)]
+PROBE seed 613 step 61 action (21, [5, 0]) region true predicted [(0, 1, 0, true)]
+PROBE seed 613 step 67 action (21, [33, 0]) region true predicted [(0, 1, 1, true)]
+PROBE seed 613 step 141 action (21, [39, 26]) region true predicted [(0, 1, 2, true)]
+SEED_END 613 wall 432.7 s working set 28 MB peak 5214 MB

@@ -1,0 +1,5 @@
+SEED_START 611
+PROBE seed 611 step 15 action (21, [40, 23]) region true predicted [(0, 1, 0, true)]
+PROBE seed 611 step 29 action (21, [34, 23]) region true predicted [(0, 1, 1, true)]
+PROBE seed 611 step 67 action (21, [42, 39]) region true predicted [(0, 1, 2, true)]
+SEED_END 611 wall 497.8 s working set 30 MB peak 5882 MB
