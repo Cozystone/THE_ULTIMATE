@@ -76,6 +76,9 @@ pub struct IWorld {
     vis_rng: Rng,
     noise_rng: Rng,
     pub t: u64,
+    /// Diagnostic record (grading only, never seen by the learner): (object, channel) of every
+    /// reading the sensor noise corrupted since the last `take_misreads`.
+    misreads: Vec<(usize, u16)>,
 }
 
 impl IWorld {
@@ -131,6 +134,7 @@ impl IWorld {
             noise_rng: Rng::new(seed ^ 0x4_A0A1),
             rng,
             t: 0,
+            misreads: Vec::new(),
         }
     }
 
@@ -172,6 +176,7 @@ impl IWorld {
     fn read(&mut self, i: usize, ch: u16) -> i64 {
         let mut v = Self::true_value(&self.objs[i], ch);
         if self.noise_pct > 0 && self.noise_rng.below(100) < self.noise_pct {
+            self.misreads.push((i, ch));
             v = match ch {
                 LIT | GLOW => 1 - v,
                 COATING => 1 - v,
@@ -269,6 +274,11 @@ impl IWorld {
         v.push((TAP, vec![self.rng.below(n as u64) as usize]));
         v.push((WAIT, vec![]));
         v
+    }
+
+    /// Diagnostic: misreads since the last call (grading only).
+    pub fn take_misreads(&mut self) -> Vec<(usize, u16)> {
+        std::mem::take(&mut self.misreads)
     }
 
     pub fn rng(&mut self) -> &mut Rng {

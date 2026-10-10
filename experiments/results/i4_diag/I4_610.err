@@ -1,0 +1,53 @@
+S1WRONG seed 41 query (1,10) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #751 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=358 counter=5 indep=64 int=353 transfer 62/63 utility 303b (int 303b) origin Generated
+S1WRONG   law #13780 act21 : r0.c10=556 & r1.c10=556 => t15015 => Some(1) | LICENSED | n=93 counter=1 indep=61 int=92 transfer 62/63 utility 60b (int 60b) origin Refined { parent: 2230 }
+S1WRONG   all matching licensed: [(21084, 0), (150293, 0), (150294, 0), (751, 1), (13780, 1), (32109, 0), (32113, 0), (32120, 0), (126615, 0)]
+S1WRONG seed 41 query (4,10) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #751 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=358 counter=5 indep=64 int=353 transfer 62/63 utility 303b (int 303b) origin Generated
+S1WRONG   law #13780 act21 : r0.c10=556 & r1.c10=556 => t15015 => Some(1) | LICENSED | n=93 counter=1 indep=61 int=92 transfer 62/63 utility 60b (int 60b) origin Refined { parent: 2230 }
+S1WRONG   all matching licensed: [(21084, 0), (150293, 0), (150294, 0), (751, 1), (13780, 1), (85130, 0), (32109, 0), (32113, 0), (32120, 0), (85134, 0), (85135, 0), (85136, 0), (126617, 0), (32114, 0), (32121, 0), (126615, 0)]
+S1WRONG seed 41 query (5,10) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #751 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=358 counter=5 indep=64 int=353 transfer 62/63 utility 303b (int 303b) origin Generated
+S1WRONG   law #13780 act21 : r0.c10=556 & r1.c10=556 => t15015 => Some(1) | LICENSED | n=93 counter=1 indep=61 int=92 transfer 62/63 utility 60b (int 60b) origin Refined { parent: 2230 }
+S1WRONG   law #37403 act21 : same(r0,r2;c10) & same(r1,r2;c10) => t15015 => Some(1) | LICENSED | n=52 counter=0 indep=52 int=52 transfer 48/48 utility 32b (int 32b) origin Refined { parent: 8032 }
+S1WRONG   all matching licensed: [(21084, 0), (150293, 0), (150294, 0), (751, 1), (13780, 1), (85130, 0), (32109, 0), (32113, 0), (32120, 0), (85134, 0), (85135, 0), (85136, 0), (126617, 0), (37403, 1), (32114, 0), (32121, 0), (126615, 0)]
+S1WRONG seed 41 query (9,10) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #751 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=358 counter=5 indep=64 int=353 transfer 62/63 utility 303b (int 303b) origin Generated
+S1WRONG   law #13780 act21 : r0.c10=556 & r1.c10=556 => t15015 => Some(1) | LICENSED | n=93 counter=1 indep=61 int=92 transfer 62/63 utility 60b (int 60b) origin Refined { parent: 2230 }
+S1WRONG   law #101126 act21 : order(r0,r2;c14)> & delta(r1,r2;c14)=+1 => t15015 => Some(1) | LICENSED | n=77 counter=1 indep=64 int=76 transfer 60/60 utility 33b (int 33b) origin Refined { parent: 1543 }
+S1WRONG   law #77657 act21 : order(r1,r2;c14)< & delta(r0,r2;c14)=-1 => t15015 => Some(1) | LICENSED | n=90 counter=3 indep=64 int=87 transfer 60/61 utility 29b (int 29b) origin Refined { parent: 7420 }
+S1WRONG   law #26006 act21 : order(r0,r3;c14)> & delta(r1,r3;c14)=+1 => t15015 => Some(1) | LICENSED | n=78 counter=1 indep=64 int=77 transfer 62/63 utility 35b (int 35b) origin Refined { parent: 5830 }
+S1WRONG   all matching licensed: [(21084, 0), (150293, 0), (150294, 0), (751, 1), (13780, 1), (85130, 0), (32109, 0), (32113, 0), (32120, 0), (85134, 0), (85135, 0), (85136, 0), (126617, 0), (32114, 0), (101126, 1), (77657, 1), (32121, 0), (26006, 1), (126615, 0)]
+S1WRONG seed 41 query (14,10) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #751 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=358 counter=5 indep=64 int=353 transfer 62/63 utility 303b (int 303b) origin Generated
+S1WRONG   law #13780 act21 : r0.c10=556 & r1.c10=556 => t15015 => Some(1) | LICENSED | n=93 counter=1 indep=61 int=92 transfer 62/63 utility 60b (int 60b) origin Refined { parent: 2230 }
+S1WRONG   all matching licensed: [(21084, 0), (150293, 0), (150294, 0), (751, 1), (13780, 1), (85130, 0), (32109, 0), (32113, 0), (32120, 0), (85134, 0), (85135, 0), (85136, 0), (126617, 0), (32114, 0), (32121, 0), (126615, 0)]
+S1WRONG seed 41 query (16,10) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #751 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=358 counter=5 indep=64 int=353 transfer 62/63 utility 303b (int 303b) origin Generated
+S1WRONG   law #13780 act21 : r0.c10=556 & r1.c10=556 => t15015 => Some(1) | LICENSED | n=93 counter=1 indep=61 int=92 transfer 62/63 utility 60b (int 60b) origin Refined { parent: 2230 }
+S1WRONG   law #37403 act21 : same(r0,r2;c10) & same(r1,r2;c10) => t15015 => Some(1) | LICENSED | n=52 counter=0 indep=52 int=52 transfer 48/48 utility 32b (int 32b) origin Refined { parent: 8032 }
+S1WRONG   all matching licensed: [(21084, 0), (150293, 0), (150294, 0), (751, 1), (13780, 1), (85130, 0), (32109, 0), (32113, 0), (32120, 0), (85134, 0), (85135, 0), (85136, 0), (126617, 0), (37403, 1), (32114, 0), (32121, 0), (126615, 0)]
+S1WRONG seed 41 query (35,32) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #751 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=358 counter=5 indep=64 int=353 transfer 62/63 utility 303b (int 303b) origin Generated
+S1WRONG   law #16063 act21 : r0.c10=576 & r1.c10=576 => t15015 => Some(1) | LICENSED | n=43 counter=0 indep=27 int=43 transfer 40/40 utility 31b (int 31b) origin Refined { parent: 730 }
+S1WRONG   all matching licensed: [(21084, 0), (93869, 0), (93870, 0), (751, 1), (16063, 1), (85130, 0), (790777, 0), (32113, 0), (32120, 0), (85134, 0), (85135, 0), (85136, 0), (126617, 0), (32114, 0), (32121, 0), (126615, 0)]
+S1WRONG seed 41 query (40,10) truth 0 answered 1; misreads of the query's own arguments [] (all [(11, 11)])
+S1WRONG   law #751 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=358 counter=5 indep=64 int=353 transfer 62/63 utility 303b (int 303b) origin Generated
+S1WRONG   law #13780 act21 : r0.c10=556 & r1.c10=556 => t15015 => Some(1) | LICENSED | n=93 counter=1 indep=61 int=92 transfer 62/63 utility 60b (int 60b) origin Refined { parent: 2230 }
+S1WRONG   all matching licensed: [(21084, 0), (150293, 0), (150294, 0), (751, 1), (13780, 1), (85130, 0), (32109, 0), (32113, 0), (32120, 0), (85134, 0), (85135, 0), (85136, 0), (126617, 0), (32114, 0), (32121, 0), (126615, 0)]
+SETTLE seed 610 answer 0 truth 0 (correct) groups [(21084, 0), (93869, 0), (93870, 0), (751, 1), (754, 1), (16063, 1), (85130, 0), (790777, 0), (1278072, 0), (32113, 0), (32120, 0), (85134, 0), (85135, 0), (85136, 0), (126617, 0), (32114, 0), (77657, 1), (32121, 0), (126615, 0)] ce [(0, 1, 13, 7, 6)]
+SETTLE   shared episode 297: observed outcome 1; provenance Some(Prov { act: 21, args: [9, 12], region: false, effect: Some(true), misreads: [(9, 11)] })
+SETTLE   shared episode 313: observed outcome 0; provenance Some(Prov { act: 21, args: [4, 32], region: false, effect: Some(false), misreads: [] })
+SETTLE   shared episode 359: observed outcome 1; provenance Some(Prov { act: 21, args: [1, 9], region: false, effect: Some(true), misreads: [] })
+SETTLE   shared episode 608: observed outcome 0; provenance Some(Prov { act: 21, args: [21, 32], region: false, effect: Some(false), misreads: [] })
+SETTLE   shared episode 735: observed outcome 1; provenance Some(Prov { act: 21, args: [31, 11], region: false, effect: Some(true), misreads: [(11, 12)] })
+SETTLE   shared episode 1006: observed outcome 1; provenance Some(Prov { act: 21, args: [14, 9], region: false, effect: Some(true), misreads: [(14, 12)] })
+SETTLE   shared episode 1888: observed outcome 1; provenance Some(Prov { act: 21, args: [32, 26], region: false, effect: Some(true), misreads: [] })
+SETTLE   shared episode 2063: observed outcome 0; provenance Some(Prov { act: 21, args: [4, 32], region: false, effect: Some(false), misreads: [(4, 11)] })
+SETTLE   shared episode 2334: observed outcome 1; provenance Some(Prov { act: 21, args: [10, 4], region: false, effect: Some(true), misreads: [(22, 15)] })
+SETTLE   shared episode 2389: observed outcome 1; provenance Some(Prov { act: 21, args: [32, 26], region: false, effect: Some(true), misreads: [] })
+SETTLE   shared episode 2452: observed outcome 0; provenance Some(Prov { act: 21, args: [30, 32], region: false, effect: Some(false), misreads: [(32, 11), (27, 10)] })
+SETTLE   shared episode 2483: observed outcome 0; provenance Some(Prov { act: 21, args: [13, 32], region: false, effect: Some(false), misreads: [] })
+SETTLE   shared episode 2833: observed outcome 0; provenance Some(Prov { act: 21, args: [34, 32], region: false, effect: Some(false), misreads: [] })
+SETTLE   shared episode 3034: observed outcome 0; provenance Some(Prov { act: 21, args: [23, 32], region: true, effect: Some(false), misreads: [(12, 12)] })
+SETTLE seed 610 summary: shared episodes 14, truly in region 1, with misreads 7

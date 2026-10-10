@@ -119,6 +119,33 @@ impl Outcome {
     }
 }
 
+/// Diagnostic provenance of one stored episode (DIAG_TRACE; grading only): the executed action,
+/// whether it was truly in the conflict region, its true effect and the sensor misreads.
+#[derive(Clone, Debug)]
+struct Prov {
+    act: u16,
+    args: Vec<usize>,
+    region: bool,
+    effect: Option<bool>,
+    misreads: Vec<(usize, u16)>,
+}
+
+fn step_traced(w: &mut IWorld, a: &mut Agent, prov: &mut Vec<Option<Prov>>, act: u16, args: Vec<usize>) {
+    let _ = w.take_misreads();
+    let region = act == hi::PRESS && w.in_region(args[0], args[1]);
+    let effect = if act == hi::PRESS { Some(w.effect(args[0], args[1])) } else { None };
+    let (ev, _) = w.step(act, args.clone());
+    let misreads = w.take_misreads();
+    let before = a.rel.store.len();
+    a.feed(ev);
+    while prov.len() < before {
+        prov.push(None);
+    }
+    for _ in before..a.rel.store.len() {
+        prov.push(Some(Prov { act, args: args.clone(), region, effect, misreads: misreads.clone() }));
+    }
+}
+
 #[derive(Clone)]
 struct Setup {
     w: IWorld,
@@ -126,6 +153,7 @@ struct Setup {
     queries: Vec<(usize, usize)>,
     saved: Vec<(Episode, u32, i64)>,
     stage1: String,
+    prov: Vec<Option<Prov>>,
 }
 
 fn setup(variant: Variant, seed: u64) -> Setup {
@@ -135,6 +163,7 @@ fn setup(variant: Variant, seed: u64) -> Setup {
     let queries: Vec<(usize, usize)> = region.iter().copied().enumerate().filter(|(k, _)| k % 2 == 0).map(|x| x.1).collect();
     let n = w.objs.len();
     let mut fed = 0;
+    let mut prov: Vec<Option<Prov>> = Vec::new();
     while fed < STAGE0 {
         let r = w.rng().below(100);
         let (act, args) = if r < 80 {
@@ -150,16 +179,29 @@ fn setup(variant: Variant, seed: u64) -> Setup {
         } else {
             (hi::WAIT, vec![])
         };
-        let (ev, _) = w.step(act, args);
-        a.feed(ev);
+        step_traced(&mut w, &mut a, &mut prov, act, args);
         fed += 1;
     }
     let mut saved = Vec::new();
     let (mut conflict, mut answered_ok, mut answered_wrong, mut other) = (0, 0, 0, 0);
     for &(i, j) in &queries {
+        let _ = w.take_misreads();
         let (ev, truth) = w.preview(hi::PRESS, vec![i, j]);
+        let qmis = w.take_misreads();
         let Some((q, t)) = a.query(&ev, &truth, j, hi::LIT) else { other += 1; continue };
         let tv = w.effect(i, j) as i64;
+        if std::env::var("DIAG_TRACE").is_ok() {
+            if let Answer::Value { val, laws, .. } = a.rel.predict(&q, t) {
+                if val != tv {
+                    let args_mis: Vec<(usize, u16)> = qmis.iter().copied().filter(|m| m.0 == i || m.0 == j).collect();
+                    eprintln!("S1WRONG seed {} query ({i},{j}) truth {tv} answered {val}; misreads of the query's own arguments {:?} (all {:?})", w.objs.len(), args_mis, qmis);
+                    for l in laws {
+                        eprintln!("S1WRONG   law {}", a.rel.summary(l, w.context));
+                    }
+                    eprintln!("S1WRONG   all matching licensed: {:?}", a.rel.explain(&q, t));
+                }
+            }
+        }
         match a.rel.predict(&q, t) {
             Answer::Abstain(Abstain::Conflict) => {
                 conflict += 1;
@@ -179,7 +221,7 @@ fn setup(variant: Variant, seed: u64) -> Setup {
         a.rel.policy.noise_tol_num,
         a.rel.policy.noise_tol_den
     );
-    Setup { w, a, queries, saved, stage1 }
+    Setup { w, a, queries, saved, stage1, prov }
 }
 
 fn candidate(a: &mut Agent, w: &mut IWorld, act: u16, args: &[usize]) -> Option<Candidate> {
@@ -203,6 +245,40 @@ fn names_identity(rel: &RelationEngine, laws: &[usize]) -> bool {
     // identity-specific answer: every answering law names a mark or a grounded identity
     !laws.is_empty()
         && laws.iter().all(|&l| rel.laws[l].condition.iter().any(|f| matches!(f, FeatureKind::Abs { ch, .. } if *ch == hi::MARK || *ch == INST_CH)))
+}
+
+/// DIAG_TRACE: the shared episodes behind one answer (both disagreeing value groups applied),
+/// with their true provenance.
+fn trace_settlement(seed: u64, a: &mut Agent, prov: &[Option<Prov>], q: &Episode, t: u32, tv: i64, val: i64) {
+    let groups = a.rel.explain(q, t);
+    let vals: std::collections::BTreeSet<i64> = groups.iter().map(|x| x.1).collect();
+    eprintln!("SETTLE seed {seed} answer {val} truth {tv} ({}) groups {:?} ce {:?}", if val == tv { "correct" } else { "WRONG" }, groups, a.rel.conflict_evidence(q, t));
+    if std::env::var("DIAG_LAWS").is_ok() {
+        for (l, v) in &groups {
+            eprintln!("SETTLE   group law (predicts {v}): {}", a.rel.summary(*l, q.context));
+        }
+    }
+    let (mut n, mut nreg, mut nmis) = (0, 0, 0);
+    for id in 0..a.rel.store.len() as u64 {
+        let e = a.rel.store.get(id).clone();
+        if e.context != q.context || e.action != q.action {
+            continue;
+        }
+        let Some(out) = e.outcome(t) else { continue };
+        let ex = a.rel.explain(&e.without_outcomes(), t);
+        let hit: std::collections::BTreeSet<i64> = ex.iter().filter(|x| groups.iter().any(|g| g.0 == x.0)).map(|x| x.1).collect();
+        if vals.len() < 2 || hit.len() < 2 {
+            continue;
+        }
+        n += 1;
+        let p = prov.get(id as usize).cloned().flatten();
+        let (reg, mis) = p.as_ref().map(|p| (p.region, !p.misreads.is_empty())).unwrap_or((false, false));
+        nreg += reg as u32;
+        nmis += mis as u32;
+        let members: Vec<(usize, i64)> = ex.iter().filter(|x| groups.iter().any(|g| g.0 == x.0)).copied().collect();
+        eprintln!("SETTLE   shared episode {id}: observed outcome {out}; members applying {:?}; provenance {:?}", members, p);
+    }
+    eprintln!("SETTLE seed {seed} summary: shared episodes {n}, truly in region {nreg}, with misreads {nmis}");
 }
 
 fn run_policy(seed: u64, base: &Setup, pol: Policy, log: bool) -> Outcome {
@@ -275,8 +351,7 @@ fn run_policy(seed: u64, base: &Setup, pol: Policy, log: bool) -> Outcome {
         if act == hi::PRESS && s.w.in_region(args[0], args[1]) {
             o.region_probes += 1;
         }
-        let (ev, _) = s.w.step(act, args);
-        s.a.feed(ev);
+        step_traced(&mut s.w, &mut s.a, &mut s.prov, act, args);
         if (step + 1) % 10 == 0 || step + 1 == BUDGET {
             for (k, (q, t, tv)) in s.saved.iter().enumerate() {
                 if done[k] {
@@ -287,6 +362,9 @@ fn run_policy(seed: u64, base: &Setup, pol: Policy, log: bool) -> Outcome {
                 let ans = s.a.rel.predict(q, *t);
                 let Answer::Value { val, laws, .. } = ans else { continue };
                 done[k] = true;
+                if std::env::var("DIAG_TRACE").is_ok() && pol == Policy::Agent {
+                    trace_settlement(seed, &mut s.a, &s.prov, q, *t, *tv, val);
+                }
                 if names_identity(&s.a.rel, &laws) {
                     o.leakage += 1;
                 }
@@ -352,6 +430,9 @@ fn main() {
         let base = setup(variant, seed);
         let _ = writeln!(Flush(&mut report), "\n===== seed {seed}: {}", base.stage1);
         for (pol, t) in tot.iter_mut() {
+            if std::env::var("DIAG_TRACE").is_ok() && *pol != Policy::Agent {
+                continue;
+            }
             let t0 = std::time::Instant::now();
             let o = run_policy(seed, &base, *pol, log);
             let _ = writeln!(

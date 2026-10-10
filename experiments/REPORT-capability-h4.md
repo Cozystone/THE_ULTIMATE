@@ -129,3 +129,16 @@ process. v0.2 is not efficient and not laptop-ready.
   * the corrected-E3 verification policy (active 0 vs fixed rotation);
   * G2 history-dependent state;
   * H4 settlement criterion.
+
+## Correction (2026-10-10, observation-evidence-dev)
+The I4 failure path given above ("misread coating or material makes non-region probes look
+diagnostic and supplies wrong shared evidence") is **not** supported by the read-only traces in
+`results/i4_diag/`:
+* All 9 wrong settlements rested on shared episodes with no sensor misread, at most 1 of 3
+  truly in the conflict region.
+* All 23 traced pre-action wrong answers were D041 settlements from stage-0 episodes.
+
+The decisive defect is that D041 scores *value groups*. Failures of bystander-relative and
+particular laws, which are licensed under the noise-raised tolerance, counted as evidence
+against the specific law that made the query a conflict. See `docs/observation-evidence-design.md`
+section A. The measured numbers above stand.

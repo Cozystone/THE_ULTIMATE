@@ -1,0 +1,32 @@
+S1WRONG seed 40 query (9,19) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #448 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=335 counter=6 indep=64 int=329 transfer 62/62 utility 274b (int 274b) origin Generated
+S1WRONG   law #20621 act21 : r0.c10=622 & r1.c10=622 => t15015 => Some(1) | LICENSED | n=139 counter=1 indep=64 int=138 transfer 62/62 utility 75b (int 75b) origin Refined { parent: 6945 }
+S1WRONG   all matching licensed: [(6294, 0), (448, 1), (20621, 1), (46884, 0), (14533, 0), (21554, 0), (46887, 0)]
+S1WRONG seed 40 query (13,19) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #448 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=335 counter=6 indep=64 int=329 transfer 62/62 utility 274b (int 274b) origin Generated
+S1WRONG   law #20621 act21 : r0.c10=622 & r1.c10=622 => t15015 => Some(1) | LICENSED | n=139 counter=1 indep=64 int=138 transfer 62/62 utility 75b (int 75b) origin Refined { parent: 6945 }
+S1WRONG   all matching licensed: [(6294, 0), (448, 1), (20621, 1), (46884, 0), (14533, 0), (21554, 0), (46887, 0)]
+S1WRONG seed 40 query (23,19) truth 0 answered 1; misreads of the query's own arguments [(19, 16)] (all [(19, 16), (34, 14)])
+S1WRONG   law #448 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=335 counter=6 indep=64 int=329 transfer 62/62 utility 274b (int 274b) origin Generated
+S1WRONG   law #20621 act21 : r0.c10=622 & r1.c10=622 => t15015 => Some(1) | LICENSED | n=139 counter=1 indep=64 int=138 transfer 62/62 utility 75b (int 75b) origin Refined { parent: 6945 }
+S1WRONG   all matching licensed: [(6294, 0), (448, 1), (20621, 1), (46884, 0), (14533, 0), (21554, 0), (46887, 0)]
+S1WRONG seed 40 query (27,8) truth 0 answered 1; misreads of the query's own arguments [(8, 12)] (all [(8, 12)])
+S1WRONG   law #448 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=335 counter=6 indep=64 int=329 transfer 62/62 utility 274b (int 274b) origin Generated
+S1WRONG   law #217291 act21 : r0.c10=547 & r1.c10=547 => t15015 => Some(1) | LICENSED | n=35 counter=0 indep=21 int=35 transfer 30/30 utility 23b (int 23b) origin Refined { parent: 3037 }
+S1WRONG   all matching licensed: [(29854, 0), (353430, 0), (6294, 0), (6296, 0), (6298, 0), (448, 1), (217291, 1), (46884, 0), (14533, 0), (21554, 0), (46887, 0)]
+S1WRONG seed 40 query (29,4) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #448 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=335 counter=6 indep=64 int=329 transfer 62/62 utility 274b (int 274b) origin Generated
+S1WRONG   law #217291 act21 : r0.c10=547 & r1.c10=547 => t15015 => Some(1) | LICENSED | n=35 counter=0 indep=21 int=35 transfer 30/30 utility 23b (int 23b) origin Refined { parent: 3037 }
+S1WRONG   all matching licensed: [(52614, 0), (52615, 0), (6294, 0), (43740, 0), (43741, 0), (448, 1), (217291, 1), (46884, 0), (14533, 0), (21554, 0), (46887, 0)]
+S1WRONG seed 40 query (30,19) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #448 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=335 counter=6 indep=64 int=329 transfer 62/62 utility 274b (int 274b) origin Generated
+S1WRONG   law #20621 act21 : r0.c10=622 & r1.c10=622 => t15015 => Some(1) | LICENSED | n=139 counter=1 indep=64 int=138 transfer 62/62 utility 75b (int 75b) origin Refined { parent: 6945 }
+S1WRONG   all matching licensed: [(6294, 0), (448, 1), (20621, 1), (46884, 0), (14533, 0), (21554, 0), (46887, 0)]
+S1WRONG seed 40 query (36,19) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #448 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=335 counter=6 indep=64 int=329 transfer 62/62 utility 274b (int 274b) origin Generated
+S1WRONG   law #20621 act21 : r0.c10=622 & r1.c10=622 => t15015 => Some(1) | LICENSED | n=139 counter=1 indep=64 int=138 transfer 62/62 utility 75b (int 75b) origin Refined { parent: 6945 }
+S1WRONG   all matching licensed: [(6294, 0), (448, 1), (20621, 1), (46884, 0), (14533, 0), (21554, 0), (46887, 0)]
+S1WRONG seed 40 query (37,8) truth 0 answered 1; misreads of the query's own arguments [] (all [])
+S1WRONG   law #448 act21 : same(r0,r1;c10) => t15015 => Some(1) | LICENSED | n=335 counter=6 indep=64 int=329 transfer 62/62 utility 274b (int 274b) origin Generated
+S1WRONG   law #217291 act21 : r0.c10=547 & r1.c10=547 => t15015 => Some(1) | LICENSED | n=35 counter=0 indep=21 int=35 transfer 30/30 utility 23b (int 23b) origin Refined { parent: 3037 }
+S1WRONG   all matching licensed: [(6294, 0), (6296, 0), (6298, 0), (448, 1), (217291, 1), (46884, 0), (14533, 0), (21554, 0), (46887, 0)]
