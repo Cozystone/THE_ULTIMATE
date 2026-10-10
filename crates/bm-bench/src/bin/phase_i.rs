@@ -85,6 +85,11 @@ struct Outcome {
     diag_new_when_offered: u32,
     steps_no_informative: u32,
     steps: u32,
+    /// D061 evidence quality of answered conflicts: audited items, verified, truly in region.
+    ev_items: u32,
+    ev_verified: u32,
+    ev_region: u32,
+    end_unverified: u32,
 }
 
 impl Outcome {
@@ -107,6 +112,10 @@ impl Outcome {
         self.diag_new_when_offered += o.diag_new_when_offered;
         self.steps_no_informative += o.steps_no_informative;
         self.steps += o.steps;
+        self.ev_items += o.ev_items;
+        self.ev_verified += o.ev_verified;
+        self.ev_region += o.ev_region;
+        self.end_unverified += o.end_unverified;
     }
     /// PREREG: correctly resolved = S + D-active for the agent; for baselines every correct
     /// resolution (S + D) is counted, which is conservative for the agent-vs-baseline gap.
@@ -218,7 +227,7 @@ fn setup(variant: Variant, seed: u64) -> Setup {
             }
         }
         match a.rel.predict(&q, t) {
-            Answer::Abstain(Abstain::Conflict) => {
+            Answer::Abstain(Abstain::Conflict) | Answer::Abstain(Abstain::Unverified) => {
                 conflict += 1;
                 saved.push((q, t, tv));
             }
@@ -377,6 +386,13 @@ fn run_policy(seed: u64, base: &Setup, pol: Policy, log: bool) -> Outcome {
                 let ans = s.a.rel.predict(q, *t);
                 let Answer::Value { val, laws, .. } = ans else { continue };
                 done[k] = true;
+                for it in s.a.rel.settlement_audit(q, *t) {
+                    o.ev_items += 1;
+                    o.ev_verified += it.verified as u32;
+                    if let Some(Some(p)) = s.prov.get(it.episode as usize) {
+                        o.ev_region += p.region as u32;
+                    }
+                }
                 if std::env::var("DIAG_TRACE").is_ok() && pol == Policy::Agent {
                     trace_settlement(seed, &mut s.a, &s.prov, q, *t, *tv, val);
                 }
@@ -403,6 +419,11 @@ fn run_policy(seed: u64, base: &Setup, pol: Policy, log: bool) -> Outcome {
         }
     }
     o.unresolved = done.iter().filter(|d| !**d).count() as u32;
+    for (k, (q, t, _)) in s.saved.iter().enumerate() {
+        if !done[k] && s.a.rel.predict(q, *t) == Answer::Abstain(Abstain::Unverified) {
+            o.end_unverified += 1;
+        }
+    }
     o
 }
 
@@ -445,6 +466,10 @@ fn main() {
         let base = setup(variant, seed);
         let _ = writeln!(Flush(&mut report), "\n===== seed {seed}: {}", base.stage1);
         for (pol, t) in tot.iter_mut() {
+            let only = std::env::var("POLICY").ok();
+            if only.as_deref().map(|x| !format!("{pol:?}").eq_ignore_ascii_case(x)).unwrap_or(false) {
+                continue;
+            }
             if std::env::var("DIAG_TOL").is_ok() || (std::env::var("DIAG_TRACE").is_ok() && *pol != Policy::Agent) {
                 continue;
             }
@@ -452,7 +477,7 @@ fn main() {
             let o = run_policy(seed, &base, *pol, log);
             let _ = writeln!(
                 Flush(&mut report),
-                "  {:<6} saved {}: settled-correct {} (active {}), dissolved-correct {} (active {}), wrong {} (while unresolved {}), unsettled answers {}, unresolved {}, leakage {}; region probes {}; chosen diagnostic-new {} redundant {} non-diagnostic {}; steps with an informative candidate {} (diagnostic-new taken {}), with none {}; actions {}; {:.1} s",
+                "  {:<6} saved {}: settled-correct {} (active {}), dissolved-correct {} (active {}), wrong {} (while unresolved {}), unsettled answers {}, unresolved {}, leakage {}; region probes {}; chosen diagnostic-new {} redundant {} non-diagnostic {}; steps with an informative candidate {} (diagnostic-new taken {}), with none {}; actions {}; evidence items {} (verified {}, truly in region {}); unresolved needing re-observation {}; {:.1} s",
                 format!("{pol:?}"),
                 o.saved,
                 o.s_ok,
@@ -472,6 +497,10 @@ fn main() {
                 o.diag_new_when_offered,
                 o.steps_no_informative,
                 o.steps,
+                o.ev_items,
+                o.ev_verified,
+                o.ev_region,
+                o.end_unverified,
                 t0.elapsed().as_secs_f64()
             );
             t.add(&o);
