@@ -37,7 +37,31 @@ defect is real but sits one layer higher.
 | 6. independence | D050 units = bindings over the *union* of every group law's relevant roles (bystander roles included, through the bystander laws) | units over the roles of the laws actually compared | **promotion error 2:** units inherit roles from laws that are not part of the comparison |
 | 7. settlement | 3 distinct units, value 1 happened in 2 or 3 → answer 1 (truth 0) | abstain: the coating law was never tested against 3540 on a single shared case | wrong settlement |
 
-### A3. Why noise matters, though not through the shared episodes
+### A3a. Measured (review condition 1, 2026-10-10; `results/i4_diag/tol_I4_605.*`, `tol_I1_605.*`)
+
+Same world and seed (605), with and without noise, stage 1, all 11 region queries:
+
+| | I1 (no noise) | I4 (1% noise) |
+|---|---|---|
+| licensed laws applying to the queries | 25 (about 2.3 per query) | **155 (about 14 per query)** |
+| of these with counterexamples | 3 | **137** |
+| applied tolerance (`policy_for`) | 1/100 (floor) | 3/100 (D040: latent repeat noise 29 in 1,383) |
+| applications licensed under the 1% floor alone | 25 of 25 | **152 of 155** |
+
+**The inference in A3 below, that D040 kept the sloppy laws licensed, is refuted.**
+* Law 703577 (8 counterexamples in 121 cases) is licensed even at the floor: the floor
+  allowance (mean + 3 sigma of Binomial(121, 1%)) is exactly 8.
+* Only 3 of 155 applications (all on the value-1 side, weight delta and order laws) need the
+  raised tolerance.
+
+The amplifier is noise-driven proliferation: noise creates several times more licensed laws
+with tolerated exceptions (refined conjunctions, bystander-relative and particular laws), all
+inside the floor allowance. They crowd every query's value groups, and group-level D041
+counts their exceptions against the query's claim. The tolerance mechanism (the floor
+allowance at small n) is recorded as a separate open question; it is not changed in this
+version.
+
+### A3. Why noise matters, though not through the shared episodes (first inference; see A3a)
 
 * The bystander-relative and particular laws are licensed despite real exceptions. Law 703577
   has 8 counterexamples in 121 cases (6.6%). At the agent's 1% floor the allowance would be
@@ -115,6 +139,27 @@ rate or a world.
 
    Otherwise: abstain. The abstention reports which opposing laws are undefeated and why
    (too few units; units unverified; not robust).
+
+   **Scope of "every opposing law" (review condition 2, 2026-10-10).** The laws that must be
+   defeated are exactly the opposing laws that *apply to the current query Q*:
+   * licensed in Q's context and in scope (`applicable`);
+   * binding Q (`binds`);
+   * with their condition holding on Q's own percepts.
+
+   Laws that do not apply to Q are never required to be defeated, however many there are and
+   whatever their state. A law unrelated to Q can therefore never keep Q in abstention.
+
+   The comparison is bounded by |A(Q)| x |B(Q)|: the laws applying to Q, typically tens and
+   never the whole law base. Pair records are computed lazily, per query, from the two laws'
+   own episode lists. No persistent pair table is kept, so no pair explosion is possible.
+
+   If an opposing law applies to Q only through a percept of Q that is *unverified* (for
+   example a completed or unrecognised filler, or an identity below the D036 confidence), Q
+   gets the outcome **"query percept needs re-observation"** and abstains. That law does not
+   join the set to be defeated, and no evidence is required against it.
+   This keeps the two failure modes apart:
+   * "the conflict is not settled", where evidence is lacking;
+   * "we are not sure what Q is", where perception is lacking.
 5. **Action selection (D060 on the ledger)**:
    * a candidate's value = expected number of new verified units for undefeated (w, o) pairs
      at live saved queries, per unit cost;
@@ -136,7 +181,10 @@ rate or a world.
 4. **Evidence about other claims never settles this claim.** If only laws other than a pair
    (w, o) applied in an episode, that episode adds nothing to (w, o). This is a reproduction
    test of the 605 pattern.
-5. **Every opposing law must be individually defeated** before an answer; otherwise abstain.
+5. **Every opposing law that applies to Q must be individually defeated** before an answer;
+   otherwise abstain. Opposing laws that do not apply to Q are never required. Tests:
+   * an unrelated, never-tested opposing law elsewhere does not block a well-supported answer;
+   * the number of pair records examined per query is bounded by |A(Q)| x |B(Q)|.
 6. **Unstable or contradictory percepts route to re-verification, not evidence.** An item with
    an `Unverified` standing is reported as "needs re-verification" and is excluded.
 7. **Fragility check before every settlement:** the decision must survive removing any single
@@ -159,6 +207,19 @@ None of these is chosen from I4.
 
 Sensitivity plan (development worlds only, reported, never tuned on hold-out): margin 0/1/2;
 posterior threshold at the D036 value and one step either side.
+
+## D2. Review condition 1: D040 tolerance as the amplifier
+
+Before implementation, a read-only diagnostic (`DIAG_TOL`, `results/i4_diag/tol_*`) prints, for
+every I4 and I1 stage-1 query target:
+* the applied tolerance (`policy_for`);
+* its source (the agent floor, or latent repeat noise);
+* for each law applying to Q: counterexamples against the allowance under the applied
+  tolerance and under the floor alone.
+
+The result is recorded in section A3 before any learner change. The design does not depend on
+it: claim-relative settlement is required either way. It determines only whether the
+tolerance mechanism also needs its own review.
 
 ## E. Memory
 

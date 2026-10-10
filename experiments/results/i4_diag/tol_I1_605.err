@@ -1,0 +1,36 @@
+TOL seed 47 query (0,26) target 15015: applied tolerance 1/100, floor 1/100, latent repeat noise (mismatch, trials) [(0, 1439)]
+TOL   law #4309 predicts 0: n 128 counters 0; allowance applied 8, floor-only 8; licensed under floor only: true | act21 : r1.c11=558 => t15015
+TOL   law #3540 predicts 1: n 388 counters 0; allowance applied 10, floor-only 10; licensed under floor only: true | act21 : same(r0,r1;c10) => t15015
+TOL   law #10785 predicts 1: n 204 counters 4; allowance applied 9, floor-only 9; licensed under floor only: true | act21 : delta(r0,r1;c14)=-2 => t15015
+TOL seed 47 query (4,15) target 15015: applied tolerance 1/100, floor 1/100, latent repeat noise (mismatch, trials) [(0, 1439)]
+TOL   law #4309 predicts 0: n 128 counters 0; allowance applied 8, floor-only 8; licensed under floor only: true | act21 : r1.c11=558 => t15015
+TOL   law #3540 predicts 1: n 388 counters 0; allowance applied 10, floor-only 10; licensed under floor only: true | act21 : same(r0,r1;c10) => t15015
+TOL seed 47 query (18,12) target 15015: applied tolerance 1/100, floor 1/100, latent repeat noise (mismatch, trials) [(0, 1439)]
+TOL   law #4309 predicts 0: n 128 counters 0; allowance applied 8, floor-only 8; licensed under floor only: true | act21 : r1.c11=558 => t15015
+TOL   law #3540 predicts 1: n 388 counters 0; allowance applied 10, floor-only 10; licensed under floor only: true | act21 : same(r0,r1;c10) => t15015
+TOL seed 47 query (20,12) target 15015: applied tolerance 1/100, floor 1/100, latent repeat noise (mismatch, trials) [(0, 1439)]
+TOL   law #4309 predicts 0: n 128 counters 0; allowance applied 8, floor-only 8; licensed under floor only: true | act21 : r1.c11=558 => t15015
+TOL   law #3540 predicts 1: n 388 counters 0; allowance applied 10, floor-only 10; licensed under floor only: true | act21 : same(r0,r1;c10) => t15015
+TOL seed 47 query (22,15) target 15015: applied tolerance 1/100, floor 1/100, latent repeat noise (mismatch, trials) [(0, 1439)]
+TOL   law #4309 predicts 0: n 128 counters 0; allowance applied 8, floor-only 8; licensed under floor only: true | act21 : r1.c11=558 => t15015
+TOL   law #3540 predicts 1: n 388 counters 0; allowance applied 10, floor-only 10; licensed under floor only: true | act21 : same(r0,r1;c10) => t15015
+TOL seed 47 query (24,15) target 15015: applied tolerance 1/100, floor 1/100, latent repeat noise (mismatch, trials) [(0, 1439)]
+TOL   law #4309 predicts 0: n 128 counters 0; allowance applied 8, floor-only 8; licensed under floor only: true | act21 : r1.c11=558 => t15015
+TOL   law #3540 predicts 1: n 388 counters 0; allowance applied 10, floor-only 10; licensed under floor only: true | act21 : same(r0,r1;c10) => t15015
+TOL seed 47 query (27,12) target 15015: applied tolerance 1/100, floor 1/100, latent repeat noise (mismatch, trials) [(0, 1439)]
+TOL   law #4309 predicts 0: n 128 counters 0; allowance applied 8, floor-only 8; licensed under floor only: true | act21 : r1.c11=558 => t15015
+TOL   law #3540 predicts 1: n 388 counters 0; allowance applied 10, floor-only 10; licensed under floor only: true | act21 : same(r0,r1;c10) => t15015
+TOL seed 47 query (33,26) target 15015: applied tolerance 1/100, floor 1/100, latent repeat noise (mismatch, trials) [(0, 1439)]
+TOL   law #4309 predicts 0: n 128 counters 0; allowance applied 8, floor-only 8; licensed under floor only: true | act21 : r1.c11=558 => t15015
+TOL   law #3540 predicts 1: n 388 counters 0; allowance applied 10, floor-only 10; licensed under floor only: true | act21 : same(r0,r1;c10) => t15015
+TOL seed 47 query (37,15) target 15015: applied tolerance 1/100, floor 1/100, latent repeat noise (mismatch, trials) [(0, 1439)]
+TOL   law #4309 predicts 0: n 128 counters 0; allowance applied 8, floor-only 8; licensed under floor only: true | act21 : r1.c11=558 => t15015
+TOL   law #3540 predicts 1: n 388 counters 0; allowance applied 10, floor-only 10; licensed under floor only: true | act21 : same(r0,r1;c10) => t15015
+TOL   law #10785 predicts 1: n 204 counters 4; allowance applied 9, floor-only 9; licensed under floor only: true | act21 : delta(r0,r1;c14)=-2 => t15015
+TOL   law #11487 predicts 1: n 323 counters 6; allowance applied 10, floor-only 10; licensed under floor only: true | act21 : order(r0,r3;c14)> & order(r1,r3;c14)< => t15015
+TOL seed 47 query (39,15) target 15015: applied tolerance 1/100, floor 1/100, latent repeat noise (mismatch, trials) [(0, 1439)]
+TOL   law #4309 predicts 0: n 128 counters 0; allowance applied 8, floor-only 8; licensed under floor only: true | act21 : r1.c11=558 => t15015
+TOL   law #3540 predicts 1: n 388 counters 0; allowance applied 10, floor-only 10; licensed under floor only: true | act21 : same(r0,r1;c10) => t15015
+TOL seed 47 query (43,26) target 15015: applied tolerance 1/100, floor 1/100, latent repeat noise (mismatch, trials) [(0, 1439)]
+TOL   law #4309 predicts 0: n 128 counters 0; allowance applied 8, floor-only 8; licensed under floor only: true | act21 : r1.c11=558 => t15015
+TOL   law #3540 predicts 1: n 388 counters 0; allowance applied 10, floor-only 10; licensed under floor only: true | act21 : same(r0,r1;c10) => t15015

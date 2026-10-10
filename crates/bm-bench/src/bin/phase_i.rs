@@ -202,6 +202,21 @@ fn setup(variant: Variant, seed: u64) -> Setup {
                 }
             }
         }
+        if std::env::var("DIAG_TOL").is_ok() {
+            // D040 check (read-only): the tolerance actually applied to this target, its source,
+            // and every applicable licensed law's counterexamples against the allowance under the
+            // applied tolerance and under the agent's floor alone
+            let pol = a.rel.policy_for(t);
+            let lat: Vec<(u64, u64)> = a.rel.latent.iter().filter(|x| x.target == t).map(|x| x.repeat_noise()).collect();
+            eprintln!("TOL seed {} query ({i},{j}) target {t}: applied tolerance {}/{}, floor {}/{}, latent repeat noise (mismatch, trials) {:?}", w.objs.len(), pol.noise_tol_num, pol.noise_tol_den, a.rel.policy.noise_tol_num, a.rel.policy.noise_tol_den, lat);
+            for (l, v) in a.rel.explain(&q, t) {
+                let Some(e) = a.rel.laws[l].ctx(w.context) else { continue };
+                let (n, c) = (e.total(), e.counters());
+                let applied = bm_relation::noise_allowance(n, &pol);
+                let floor = bm_relation::noise_allowance(n, &a.rel.policy);
+                eprintln!("TOL   law #{l} predicts {v}: n {n} counters {c}; allowance applied {applied}, floor-only {floor}; licensed under floor only: {} | {}", c as u64 <= floor, a.rel.laws[l].describe());
+            }
+        }
         match a.rel.predict(&q, t) {
             Answer::Abstain(Abstain::Conflict) => {
                 conflict += 1;
@@ -430,7 +445,7 @@ fn main() {
         let base = setup(variant, seed);
         let _ = writeln!(Flush(&mut report), "\n===== seed {seed}: {}", base.stage1);
         for (pol, t) in tot.iter_mut() {
-            if std::env::var("DIAG_TRACE").is_ok() && *pol != Policy::Agent {
+            if std::env::var("DIAG_TOL").is_ok() || (std::env::var("DIAG_TRACE").is_ok() && *pol != Policy::Agent) {
                 continue;
             }
             let t0 = std::time::Instant::now();
