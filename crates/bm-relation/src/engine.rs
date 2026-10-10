@@ -11,6 +11,8 @@ use std::collections::HashMap;
 
 /// D041a: independent shared situations needed before a conflict between licensed laws is settled.
 pub const MIN_SHARED_INDEPENDENT: u32 = 3;
+/// D061: bound on the open-question registry (pairs of laws applying to conflicted queries).
+pub const LIVE_PAIR_CAP: usize = 65_536;
 
 /// Why the engine refused to answer. Silence is preferred to confident wrongness.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -19,8 +21,11 @@ pub enum Abstain {
     NoLicensedLaw,
     /// A matching law is licensed, but not in this context (D013).
     OutOfScope,
-    /// Licensed laws disagree.
+    /// Licensed laws disagree, and not every opposing law has been individually defeated.
     Conflict,
+    /// D061: licensed laws disagree and a law applies to the query only through an unverified
+    /// percept of the query; the query must be observed again before evidence can decide.
+    Unverified,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -48,6 +53,9 @@ pub struct ObserveReport {
 
 #[derive(Clone)]
 pub struct RelationEngine {
+    /// D061: open questions: law pairs found undecided at a conflicted query (unordered, bounded
+    /// by `LIVE_PAIR_CAP`; a pair leaves when decided or when a law is no longer licensed).
+    pub live_pairs: std::collections::BTreeSet<(usize, usize)>,
     pub cb: Codebook,
     pub policy: LicensePolicy,
     pub laws: Vec<RelationLaw>,
@@ -99,20 +107,54 @@ pub struct Uncertainty {
     pub licence_k: Vec<u32>,
 }
 
-/// D060: one pair of disagreeing licensed value groups at a candidate probe.
+/// D060/D061: one pair of disagreeing licensed laws at a candidate probe.
 #[derive(Clone, Debug)]
 pub struct ProbePair {
     pub val_a: i64,
     pub val_b: i64,
     pub laws_a: Vec<usize>,
     pub laws_b: Vec<usize>,
-    /// Independent shared units of the pair before the probe (D041a/D050, no query exception).
+    /// Verified independent shared units of the law pair before the probe (D061).
     pub units_before: u32,
-    /// The probe's relevant binding (union of both groups' relevant roles).
+    /// The probe's relevant binding (both laws' relevant roles plus the probe's arguments).
     pub unit: u64,
-    /// The binding is not yet among the pair's shared units.
+    /// The binding is not yet among the pair's verified shared units.
     pub new_unit: bool,
+    /// D061: both laws' conditions read verified percepts in the probe's preview.
+    pub verified: bool,
+    /// D061: the pair is an open question of the agent: it was undecided at a conflicted query.
+    pub live: bool,
+    /// D061: one law already defeats the other (no further evidence needed).
+    pub decided: bool,
 }
+
+/// D061: one claim-relative evidence item: episode `episode` tested both `law_a` and `law_b`.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct EvidenceItem {
+    pub episode: u64,
+    pub law_a: usize,
+    pub law_b: usize,
+    pub unit: u64,
+    pub outcome: Option<i64>,
+    /// Both laws' conditions read verified percepts in this episode.
+    pub verified: bool,
+}
+
+/// D061: record of one law pair on their shared verified cases.
+#[derive(Clone, Debug, Default)]
+pub struct PairRecord {
+    pub units: u32,
+    /// Units in which law a's / law b's value happened.
+    pub right_a: u32,
+    pub right_b: u32,
+    /// Shared episodes excluded because a condition read an unverified percept.
+    pub unverified: u32,
+    pub unit_set: std::collections::HashSet<u64>,
+}
+
+/// D061: margin (in units) by which a law must out-score an opposing law, so that the
+/// decision survives one erroneous observation.
+pub const SETTLE_MARGIN: u32 = 2;
 
 /// D060: what a candidate probe could tell about live conflicts among licensed laws.
 #[derive(Clone, Debug, Default)]
@@ -121,10 +163,10 @@ pub struct ConflictProbe {
 }
 
 impl ConflictProbe {
-    /// Pairs the probe can advance: they disagree here, are still below the D041 threshold, and
-    /// the probe's relevant binding would be a new independent shared unit.
+    /// D061: pairs the probe can advance: an open (live), undecided law pair disagrees here, both
+    /// conditions read verified percepts, and the probe's relevant binding is a new unit.
     pub fn informative_pairs(&self) -> usize {
-        self.pairs.iter().filter(|p| p.new_unit && p.units_before < MIN_SHARED_INDEPENDENT).count()
+        self.pairs.iter().filter(|p| p.new_unit && p.verified && p.live && !p.decided).count()
     }
     pub fn disagrees(&self) -> bool {
         !self.pairs.is_empty()
@@ -195,6 +237,7 @@ impl RelationEngine {
             laws: Vec::new(),
             index: HashMap::new(),
             store: EpisodeStore::new(),
+            live_pairs: std::collections::BTreeSet::new(),
             feat_kinds: Vec::new(),
             alphabet: HashMap::new(),
             per_target: HashMap::new(),
@@ -1520,169 +1563,266 @@ impl RelationEngine {
                 Answer::Value { val: v, laws, confidence_q16: c }
             }
             _ => match self.resolve_conflict(&by_val, ctx, target, ep) {
-                Some(i) => {
+                Ok(i) => {
                     let (v, laws, c) = by_val.swap_remove(i);
                     Answer::Value { val: v, laws, confidence_q16: c }
                 }
-                None => Answer::Abstain(Abstain::Conflict),
+                Err(a) => Answer::Abstain(a),
             },
         }
     }
 
-    /// D041/D041a: settle a conflict between licensed laws by their record on the cases where both
-    /// applied. For every pair of value groups, the overlap of their laws' episodes is scored; the
-    /// group whose laws were right strictly more often (with >= 3 shared cases) wins every pairwise
-    /// comparison, otherwise the conflict stands and the engine abstains.
-    fn resolve_conflict(&self, groups: &[(i64, Vec<usize>, i64)], ctx: u64, target: u32, query: &Episode) -> Option<usize> {
-        let mut wins = vec![0usize; groups.len()];
-        for a in 0..groups.len() {
-            for b in (a + 1)..groups.len() {
-                let (indep, ra, rb) = self.shared_record(groups, a, b, ctx, target, query);
-                // D041a: the shared cases must be independent (distinct situations); repeated
-                // probes of one situation are one case
-                if indep < MIN_SHARED_INDEPENDENT {
-                    continue;
-                }
-                if ra > rb {
-                    wins[a] += 1;
-                } else if rb > ra {
-                    wins[b] += 1;
-                }
-            }
-        }
-        let need = groups.len() - 1;
-        wins.iter().position(|&w| w == need)
+    /// D061: does law `l`'s condition read only verified percepts in episode `ep`?
+    pub fn verified_at(&self, l: usize, ep: &Episode) -> bool {
+        let idc = self.identity_channel;
+        let ok = |r: u8, ch: u16| ep.roles.get(r as usize).map(|e| e.verified(ch, idc)).unwrap_or(false);
+        self.laws[l].condition.iter().all(|f| match *f {
+            FeatureKind::Abs { role, ch, .. } => ok(role, ch),
+            FeatureKind::Same { r1, r2, ch } | FeatureKind::Diff { r1, r2, ch } => ok(r1, ch) && ok(r2, ch),
+            FeatureKind::Order { r1, r2, ch, .. } | FeatureKind::Delta { r1, r2, ch, .. } => ok(r1, ch) && ok(r2, ch),
+        })
     }
 
-    /// Record of two value groups on the cases where both applied: (independent shared
-    /// situations, situations where group a's value happened, situations where group b's did).
-    fn shared_record(&self, groups: &[(i64, Vec<usize>, i64)], a: usize, b: usize, ctx: u64, target: u32, query: &Episode) -> (u32, u32, u32) {
-        let (u, ra, rb, _) = self.shared_units(groups, a, b, ctx, target, query, true);
-        (u, ra, rb)
-    }
-
-    /// D041a/D050 shared units of two value groups. With `query_exception`, the query's own
-    /// binding contributes distinct situations (settlement for that query); without it, every
-    /// unit is a relevant binding (D060 probe novelty: repeats and bystander changes count once).
-    /// Returns (units, units where a's value happened, units where b's did, the unit set).
-    #[allow(clippy::too_many_arguments)]
-    fn shared_units(&self, groups: &[(i64, Vec<usize>, i64)], a: usize, b: usize, ctx: u64, target: u32, query: &Episode, query_exception: bool) -> (u32, u32, u32, std::collections::HashSet<u64>) {
-        // D041b: per-law episode lists are capped (EP_CAP); when a list is truncated, shared cases
-        // are found by testing each law's condition against the stored features of every episode
-        // in the context, so late evidence is never invisible
+    /// D061: the episodes of `ctx` on which both laws applied (D041b: complete even when a law's
+    /// episode list is truncated).
+    fn shared_episodes(&self, a: usize, b: usize, ctx: u64, target: u32) -> Vec<u64> {
         let truncated = |l: usize| self.laws[l].ctx(ctx).map(|e| (e.all_ids().len() as u32) < e.total()).unwrap_or(false);
-        let applies = |l: usize, id: u64| -> bool {
-            let law = &self.laws[l];
-            let ep = self.store.get(id);
-            ep.action == law.action && law.condition.iter().all(|k| self.feat_kinds[id as usize].contains(k))
-        };
-        let ids = |l: usize| -> std::collections::HashSet<u64> {
-            self.laws[l].ctx(ctx).map(|e| e.all_ids().into_iter().collect()).unwrap_or_default()
-        };
-        let any_trunc = groups[a].1.iter().chain(groups[b].1.iter()).any(|&l| truncated(l));
-        let shared: Vec<u64> = if any_trunc {
-            (0..self.store.len() as u64)
+        if truncated(a) || truncated(b) {
+            let applies = |l: usize, id: u64| -> bool {
+                let law = &self.laws[l];
+                let ep = self.store.get(id);
+                ep.action == law.action && law.condition.iter().all(|k| self.feat_kinds[id as usize].contains(k))
+            };
+            return (0..self.store.len() as u64)
                 .filter(|&id| self.store.get(id).context == ctx && self.store.get(id).outcome(target).is_some())
-                .filter(|&id| groups[a].1.iter().any(|&l| applies(l, id)) && groups[b].1.iter().any(|&l| applies(l, id)))
-                .collect()
-        } else {
-            let ia: std::collections::HashSet<u64> = groups[a].1.iter().flat_map(|&l| ids(l)).collect();
-            let ib: std::collections::HashSet<u64> = groups[b].1.iter().flat_map(|&l| ids(l)).collect();
-            ia.intersection(&ib).copied().collect()
-        };
-        // D050: independence of shared cases is counted over the objects the two groups' laws
-        // connect (union of their relevant roles). Repeats of one binding count once; only for the
-        // query's own binding are distinct situations direct, separate evidence.
-        let mut roles: Vec<u8> = groups[a].1.iter().chain(groups[b].1.iter()).flat_map(|&l| self.laws[l].cond_roles()).collect();
+                .filter(|&id| applies(a, id) && applies(b, id))
+                .collect();
+        }
+        let ia: std::collections::HashSet<u64> = self.laws[a].ctx(ctx).map(|e| e.all_ids().into_iter().collect()).unwrap_or_default();
+        let mut v: Vec<u64> = self.laws[b].ctx(ctx).map(|e| e.all_ids().into_iter().filter(|id| ia.contains(id)).collect()).unwrap_or_default();
+        v.sort_unstable();
+        v
+    }
+
+    /// D061: claim-relative record of laws `a` and `b` on their shared, verified cases. Units are
+    /// relevant bindings over the two laws' roles plus the query's arguments (D050); with
+    /// `query_exception`, the query's own binding contributes distinct situations.
+    #[allow(clippy::too_many_arguments)]
+    pub fn pair_record(&self, a: usize, b: usize, ctx: u64, target: u32, query: &Episode, query_exception: bool, items: Option<&mut Vec<EvidenceItem>>) -> PairRecord {
+        let (va, vb) = (self.laws[a].ctx(ctx).and_then(|e| e.majority()).map(|m| m.0), self.laws[b].ctx(ctx).and_then(|e| e.majority()).map(|m| m.0));
+        let mut roles: Vec<u8> = self.laws[a].cond_roles();
+        roles.extend(self.laws[b].cond_roles());
         roles.extend(query.arg_roles());
         roles.sort_unstable();
         roles.dedup();
         let qk = query.binding_key(&roles);
-        let mut units: std::collections::HashSet<u64> = std::collections::HashSet::new();
+        let mut rec = PairRecord::default();
         let mut sa: std::collections::HashSet<u64> = std::collections::HashSet::new();
         let mut sb: std::collections::HashSet<u64> = std::collections::HashSet::new();
-        for e in shared {
-            let ep = self.store.get(e);
+        let mut items = items;
+        for id in self.shared_episodes(a, b, ctx, target) {
+            let ep = self.store.get(id);
+            let verified = self.verified_at(a, ep) && self.verified_at(b, ep);
             let bk = ep.binding_key(&roles);
             let unit = if bk == qk && query_exception { hdc_core::rng::mix64(ep.signature(), 0xD050) } else { bk };
-            units.insert(unit);
-            match ep.outcome(target) {
-                Some(o) if o == groups[a].0 => {
+            let out = ep.outcome(target);
+            if let Some(v) = items.as_deref_mut() {
+                v.push(EvidenceItem { episode: id, law_a: a, law_b: b, unit, outcome: out, verified });
+            }
+            if !verified {
+                rec.unverified += 1;
+                continue;
+            }
+            rec.unit_set.insert(unit);
+            match out {
+                Some(o) if Some(o) == va => {
                     sa.insert(unit);
                 }
-                Some(o) if o == groups[b].0 => {
+                Some(o) if Some(o) == vb => {
                     sb.insert(unit);
                 }
                 _ => {}
             }
         }
-        (units.len() as u32, sa.len() as u32, sb.len() as u32, units)
+        rec.units = rec.unit_set.len() as u32;
+        rec.right_a = sa.len() as u32;
+        rec.right_b = sb.len() as u32;
+        rec
     }
 
-    /// D060: evaluate a candidate probe (a previewed episode without outcomes) for `target`:
-    /// the pairs of applicable licensed value groups that predict different outcomes for it, each
-    /// with its shared units so far and whether the probe's relevant binding would be a new unit.
-    /// Read-only with respect to evidence; uses only the agent's own laws and records.
-    pub fn conflict_probe(&mut self, probe: &Episode, target: u32) -> ConflictProbe {
-        let ctx = probe.context;
-        let mut aug = probe.clone();
-        self.augment(&mut aug);
-        let m = self.matching(&aug, target);
+    /// D061: does law `w` defeat the opposing law `o`? >= MIN_SHARED_INDEPENDENT verified
+    /// independent shared units, and `w` right in at least SETTLE_MARGIN more of them.
+    fn defeats(rec: &PairRecord) -> bool {
+        rec.units >= MIN_SHARED_INDEPENDENT && rec.right_a >= rec.right_b + SETTLE_MARGIN
+    }
+
+    /// D061 (replaces group-level D041): the query is answered with group g's value only if every
+    /// opposing law applying to the query is individually defeated by some law of g on their own
+    /// shared verified cases. Laws that do not apply to the query are never consulted. If a law
+    /// applies to the query only through an unverified percept, the query needs re-observation.
+    fn resolve_conflict(&mut self, groups: &[(i64, Vec<usize>, i64)], ctx: u64, target: u32, query: &Episode) -> Result<usize, Abstain> {
+        if groups.iter().flat_map(|g| g.1.iter()).any(|&l| !self.verified_at(l, query)) {
+            return Err(Abstain::Unverified);
+        }
+        let mut winner = None;
+        let mut open: Vec<(usize, usize)> = Vec::new();
+        for (gi, g) in groups.iter().enumerate() {
+            let mut all = true;
+            for (hi, h) in groups.iter().enumerate() {
+                if hi == gi {
+                    continue;
+                }
+                for &o in &h.1 {
+                    let mut beaten = false;
+                    for &w in &g.1 {
+                        let rec = self.pair_record(w, o, ctx, target, query, true, None);
+                        if Self::defeats(&rec) {
+                            beaten = true;
+                            break;
+                        }
+                        let back = PairRecord { right_a: rec.right_b, right_b: rec.right_a, ..rec };
+                        if !Self::defeats(&back) {
+                            open.push((w.min(o), w.max(o)));
+                        }
+                    }
+                    if !beaten {
+                        all = false;
+                    }
+                }
+            }
+            if all && winner.is_none() {
+                winner = Some(gi);
+            }
+        }
+        // D061: undecided pairs at a conflicted query are the agent's open questions
+        if winner.is_none() {
+            for p in open {
+                if self.live_pairs.len() >= LIVE_PAIR_CAP {
+                    break;
+                }
+                self.live_pairs.insert(p);
+            }
+        }
+        winner.ok_or(Abstain::Conflict)
+    }
+
+    /// Licensed laws applying to `ep` for `target`, grouped by predicted value.
+    fn licensed_groups(&mut self, ep: &Episode, target: u32) -> Vec<(i64, Vec<usize>, i64)> {
+        let ctx = ep.context;
+        let m = self.matching(ep, target);
         let mut by_val: Vec<(i64, Vec<usize>, i64)> = Vec::new();
-        for l in m.into_iter().filter(|&l| self.laws[l].applicable(ctx) && self.binds(l, ctx, &aug)) {
+        for l in m.into_iter().filter(|&l| self.laws[l].applicable(ctx) && self.binds(l, ctx, ep)) {
             let Some(v) = self.laws[l].ctx(ctx).and_then(|e| e.majority()).map(|m| m.0) else { continue };
             match by_val.iter_mut().find(|x| x.0 == v) {
                 Some(x) => x.1.push(l),
                 None => by_val.push((v, vec![l], 0)),
             }
         }
+        by_val
+    }
+
+    /// D060 on the D061 ledger: what a candidate probe (a previewed episode without outcomes)
+    /// could tell about the agent's open questions. Every pair of disagreeing licensed laws
+    /// applying to the probe is listed with its verified units, the probe's relevant binding,
+    /// whether that binding is new, whether both conditions read verified percepts in the preview,
+    /// whether the pair is live (an open question) and whether it is already decided.
+    pub fn conflict_probe(&mut self, probe: &Episode, target: u32) -> ConflictProbe {
+        let ctx = probe.context;
+        let mut aug = probe.clone();
+        self.augment(&mut aug);
+        let groups = self.licensed_groups(&aug, target);
         let mut out = ConflictProbe::default();
-        for a in 0..by_val.len() {
-            for b in (a + 1)..by_val.len() {
-                let (units_before, _, _, set) = self.shared_units(&by_val, a, b, ctx, target, &aug, false);
-                let mut roles: Vec<u8> = by_val[a].1.iter().chain(by_val[b].1.iter()).flat_map(|&l| self.laws[l].cond_roles()).collect();
-                roles.extend(aug.arg_roles());
-                roles.sort_unstable();
-                roles.dedup();
-                let unit = aug.binding_key(&roles);
-                out.pairs.push(ProbePair {
-                    val_a: by_val[a].0,
-                    val_b: by_val[b].0,
-                    laws_a: by_val[a].1.clone(),
-                    laws_b: by_val[b].1.clone(),
-                    units_before,
-                    unit,
-                    new_unit: !set.contains(&unit),
-                });
+        for a in 0..groups.len() {
+            for b in (a + 1)..groups.len() {
+                for &w in &groups[a].1 {
+                    for &o in &groups[b].1 {
+                        let live = self.live_pairs.contains(&(w.min(o), w.max(o)));
+                        if !live {
+                            continue;
+                        }
+                        let rec = self.pair_record(w, o, ctx, target, &aug, false, None);
+                        let back = PairRecord { right_a: rec.right_b, right_b: rec.right_a, ..rec.clone() };
+                        let decided = Self::defeats(&rec) || Self::defeats(&back);
+                        if decided {
+                            self.live_pairs.remove(&(w.min(o), w.max(o)));
+                        }
+                        let mut roles: Vec<u8> = self.laws[w].cond_roles();
+                        roles.extend(self.laws[o].cond_roles());
+                        roles.extend(aug.arg_roles());
+                        roles.sort_unstable();
+                        roles.dedup();
+                        let unit = aug.binding_key(&roles);
+                        out.pairs.push(ProbePair {
+                            val_a: groups[a].0,
+                            val_b: groups[b].0,
+                            laws_a: vec![w],
+                            laws_b: vec![o],
+                            units_before: rec.units,
+                            unit,
+                            new_unit: !rec.unit_set.contains(&unit),
+                            verified: self.verified_at(w, &aug) && self.verified_at(o, &aug),
+                            live,
+                            decided,
+                        });
+                    }
+                }
             }
         }
         out
     }
 
     /// Diagnostic and evaluation view of a conflict for a query: for every pair of disagreeing
-    /// licensed value groups, (value a, value b, independent shared situations, right a, right b).
-    /// Empty when the licensed laws agree or nothing is licensed.
+    /// licensed value groups, (value a, value b, verified units of the binding opposing law,
+    /// right a, right b). The binding law pair is the opposing law of group b that group a is
+    /// furthest from defeating (fewest verified units against its best opponent in a). Empty when
+    /// the licensed laws agree or nothing is licensed.
     pub fn conflict_evidence(&mut self, ep: &Episode, target: u32) -> Vec<(i64, i64, u32, u32, u32)> {
         let ctx = ep.context;
         let mut aug = ep.clone();
         self.augment(&mut aug);
-        let m = self.matching(&aug, target);
-        let mut by_val: Vec<(i64, Vec<usize>, i64)> = Vec::new();
-        for l in m.into_iter().filter(|&l| self.laws[l].applicable(ctx) && self.binds(l, ctx, &aug)) {
-            let Some(v) = self.laws[l].ctx(ctx).and_then(|e| e.majority()).map(|m| m.0) else { continue };
-            match by_val.iter_mut().find(|x| x.0 == v) {
-                Some(x) => x.1.push(l),
-                None => by_val.push((v, vec![l], 0)),
-            }
-        }
+        let groups = self.licensed_groups(&aug, target);
         let mut out = Vec::new();
-        for a in 0..by_val.len() {
-            for b in (a + 1)..by_val.len() {
-                let (i, ra, rb) = self.shared_record(&by_val, a, b, ctx, target, &aug);
-                out.push((by_val[a].0, by_val[b].0, i, ra, rb));
+        for a in 0..groups.len() {
+            for b in (a + 1)..groups.len() {
+                let mut worst: Option<PairRecord> = None;
+                for &o in &groups[b].1 {
+                    let best = groups[a]
+                        .1
+                        .iter()
+                        .map(|&w| self.pair_record(w, o, ctx, target, &aug, true, None))
+                        .max_by_key(|r| (r.units, r.right_a as i64 - r.right_b as i64));
+                    if let Some(r) = best {
+                        if worst.as_ref().map(|x| r.units < x.units).unwrap_or(true) {
+                            worst = Some(r);
+                        }
+                    }
+                }
+                if let Some(r) = worst {
+                    out.push((groups[a].0, groups[b].0, r.units, r.right_a, r.right_b));
+                }
             }
         }
         out
+    }
+
+    /// D061 audit: every claim-relative evidence item behind the comparison of the licensed laws
+    /// applying to a query (all opposing law pairs), with its standing.
+    pub fn settlement_audit(&mut self, ep: &Episode, target: u32) -> Vec<EvidenceItem> {
+        let ctx = ep.context;
+        let mut aug = ep.clone();
+        self.augment(&mut aug);
+        let groups = self.licensed_groups(&aug, target);
+        let mut items = Vec::new();
+        for a in 0..groups.len() {
+            for b in (a + 1)..groups.len() {
+                for &w in &groups[a].1 {
+                    for &o in &groups[b].1 {
+                        let _ = self.pair_record(w, o, ctx, target, &aug, true, Some(&mut items));
+                    }
+                }
+            }
+        }
+        items
     }
 
     /// Competing hypotheses: other non-base laws for the same action/target sharing at least one

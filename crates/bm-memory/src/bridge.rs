@@ -11,6 +11,23 @@ use bm_relation::{Entity, Episode, Filler};
 /// Channel id used for the grounded object identity inside a role filler.
 pub const INST_CH: u16 = 1000;
 
+/// D061: an entity with its percept standing. Identity is verified when the grounder's posterior
+/// for the assigned concept reaches its D036 confidence. Property values are verified when they
+/// were observed (or corrected) under a verified identity; completed values are inferences.
+/// Without a verified identity every property value is unverified. State readings are current
+/// direct observations and count as verified; their single-reading error is what the fragility
+/// margin of settlement covers.
+fn standing(s: &crate::ground::SlotGround, fillers: Vec<Filler>) -> Entity {
+    let identity_verified = s.concept.is_some() && s.identity_q16 >= crate::ground::FILL_POSTERIOR_Q16;
+    let mut unverified: Vec<u16> = s.completed.clone();
+    if !identity_verified {
+        unverified.extend(s.props.iter().map(|p| p.0));
+    }
+    unverified.sort_unstable();
+    unverified.dedup();
+    Entity { fillers, binding: s.concept.map(|k| k as i64), unverified, identity_verified }
+}
+
 /// Target id for state channel `ch` of role `r`.
 pub fn target_id(role: usize, ch: u16) -> u32 {
     role as u32 * 10_000 + ch as u32
@@ -34,7 +51,7 @@ pub fn to_episode(g: &Grounded) -> Option<Episode> {
         for &(ch, val) in &s.pre_states {
             fillers.push(Filler { ch, val });
         }
-        roles.push(Entity { fillers, binding: s.concept.map(|k| k as i64) });
+        roles.push(standing(s, fillers));
         for &(ch, val) in &s.post_states {
             outcomes.push((target_id(r, ch), val));
         }
@@ -77,7 +94,7 @@ pub fn to_episode_scene(g: &Grounded) -> Option<Episode> {
         for &(ch, val) in &s.pre_states {
             fillers.push(Filler { ch, val });
         }
-        roles.push(Entity { fillers, binding: s.concept.map(|k| k as i64) });
+        roles.push(standing(s, fillers));
         for &(ch, val) in &s.post_states {
             outcomes.push((target_id(r, ch), val));
             if let Some(&(_, pre)) = s.pre_states.iter().find(|x| x.0 == ch) {

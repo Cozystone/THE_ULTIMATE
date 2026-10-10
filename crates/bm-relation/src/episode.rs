@@ -25,16 +25,32 @@ pub struct Entity {
     /// object). Used only to count evidence per relevant binding and to scope particular laws; it
     /// never becomes a feature. `None` falls back to a hash of the fillers.
     pub binding: Option<i64>,
+    /// D061 percept standing: channels whose value is not a verified percept (inferred,
+    /// completed, or read from an unrecognised object). Empty = every filler verified.
+    pub unverified: Vec<u16>,
+    /// D061: the producer is confident about which object this is (always true for
+    /// producer-supplied identities; for grounded objects, the identity posterior reached the
+    /// grounder's D036 confidence).
+    pub identity_verified: bool,
 }
 
 impl Entity {
     pub fn new(pairs: &[(u16, i64)]) -> Self {
-        Entity { fillers: pairs.iter().map(|&(ch, val)| Filler { ch, val }).collect(), binding: None }
+        Entity { fillers: pairs.iter().map(|&(ch, val)| Filler { ch, val }).collect(), binding: None, unverified: Vec::new(), identity_verified: true }
     }
 
     /// An entity whose object identity is known to the producer.
     pub fn bound(id: i64, pairs: &[(u16, i64)]) -> Self {
-        Entity { fillers: pairs.iter().map(|&(ch, val)| Filler { ch, val }).collect(), binding: Some(id) }
+        Entity { fillers: pairs.iter().map(|&(ch, val)| Filler { ch, val }).collect(), binding: Some(id), unverified: Vec::new(), identity_verified: true }
+    }
+
+    /// D061: is the value of channel `ch` a verified percept? Latent channels (>= 3000) and the
+    /// identity channel derive from the object's identity.
+    pub fn verified(&self, ch: u16, identity_ch: Option<u16>) -> bool {
+        if ch >= 3000 || Some(ch) == identity_ch {
+            return self.identity_verified;
+        }
+        !self.unverified.contains(&ch)
     }
 
     pub fn get(&self, ch: u16) -> Option<i64> {

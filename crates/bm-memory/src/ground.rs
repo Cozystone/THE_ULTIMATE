@@ -192,6 +192,9 @@ pub struct SlotGround {
     pub completed: Vec<u16>,
     /// Property channels whose observed value disagreed with the concept and was corrected.
     pub corrected: Vec<u16>,
+    /// D061: posterior (Q16) that the assigned concept is the true source of the observed
+    /// properties (`identity_posterior`; 0 when another concept is more probable).
+    pub identity_q16: i64,
 }
 
 #[derive(Clone, Debug)]
@@ -759,7 +762,19 @@ impl Grounder {
                 post_states: e.post.slot(s).into_iter().filter(|&(c, _)| !self.is_property(c)).collect(),
                 completed: Vec::new(),
                 corrected: Vec::new(),
+                identity_q16: 0,
             };
+            // D061: identity standing of this slot (the same posterior D036 uses for completion)
+            if let Some(k) = sg.concept {
+                let nm = match &self.nm_cache {
+                    Some(n) => n.clone(),
+                    None => self.noise_model(),
+                };
+                sg.identity_q16 = match self.identity_posterior(&props, &nm) {
+                    Some((b, p)) if b == k => p,
+                    _ => 0,
+                };
+            }
             // D036: completing a missing value is an action on an inference; only do it when the
             // identity posterior reaches the target accuracy
             let confident = match sg.concept {

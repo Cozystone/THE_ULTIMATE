@@ -123,6 +123,8 @@ fn the_fixture_conflict_forms_and_is_abstained() {
 fn a_probe_where_two_laws_disagree_is_selected() {
     let (mut e, objs) = trained();
     let r = region_pairs(&objs);
+    // D061: the conflict becomes an open question of the agent when a query meets it
+    assert_eq!(e.predict(&q(&objs, r[0].0, r[0].1), T), Answer::Abstain(Abstain::Conflict));
     let (i, j) = r[1];
     let cp = e.conflict_probe(&q(&objs, i, j), T);
     assert!(cp.disagrees() && cp.informative_pairs() >= 1, "{cp:?}");

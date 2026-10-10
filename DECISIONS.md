@@ -1019,3 +1019,45 @@ No world names, no oracle, no hidden state: only the agent's own laws and the pr
 `#[derive(Clone)]` on `RelationEngine` (also `Codebook`, `Grounder`) lets harnesses copy a
 state; it changes no behaviour.
 Tests: `crates/bm-agent/tests/conflict.rs` (7; the API does not exist on `bitmind-v0.2`).
+
+## D061 Percept standing and claim-relative settlement (observation-evidence-dev, 2026-10-10)
+Evidence: `docs/observation-evidence-design.md` (design review, approved with two conditions)
+and `experiments/results/i4_diag/`.
+* All 9 I4 wrong settlements and the 23 traced pre-action wrong answers were group-level D041
+  settlements built from other laws' exceptions.
+* No sensor misread was involved in the shared episodes.
+* Noise multiplied the licensed laws applying to each query (25 → 155 on seed 605), almost all
+  of them with tolerated exceptions inside the 1% floor allowance. D040 is not the cause
+  (152/155 of them stay licensed at the floor).
+
+Choice:
+1. **Percept standing.** Every `Entity` carries `unverified` channels and `identity_verified`.
+   The grounder computes, for each grounded slot, the posterior of its assigned concept (the
+   D036 machinery). The bridge marks an entity as follows:
+   * **identity unverified** below D036's confidence;
+   * **every property unverified** without a verified identity;
+   * **completed channels unverified** always;
+   * **corrected channels verified** under a verified identity;
+   * **state readings** count as direct observations.
+2. **Claim-relative evidence.** `pair_record(a, b)` covers the shared episodes of two laws
+   only, keeps only episodes in which both conditions read verified percepts, and counts units
+   over the two laws' roles (D050). `settlement_audit` lists every `EvidenceItem`.
+3. **Settlement** (replaces group-level D041a):
+   * a value is answered only if every opposing law **applying to the query** is defeated by
+     some law of the answer's group;
+   * defeat means >= 3 verified units, with the defeating law right in at least
+     `SETTLE_MARGIN` = 2 more units, so the decision survives one wrong observation;
+   * laws not applying to the query are never consulted;
+   * if a law applies to the query only through an unverified percept, the answer is
+     `Abstain::Unverified`.
+4. **D060 on the same ledger.** Undecided pairs met at a conflicted query become open questions
+   (`live_pairs`, at most 65,536). A probe is informative only for a live, undecided pair, with
+   verified preview percepts and a new unit.
+
+Unchanged: grounding, law generation, licensing, tolerance (D040; the floor allowance is an
+open question), MIN_SHARED_INDEPENDENT, and single-group answers.
+
+Tests: `crates/bm-agent/tests/evidence.rs` (5).
+* Test 1 reproduces the seed-605 pattern. The capability-h4 learner answers it from 25
+  group-level units, with no shared case of the two conflicting laws; D061 abstains.
+* The D060 test 1 now first lets the query meet the conflict (open question).
