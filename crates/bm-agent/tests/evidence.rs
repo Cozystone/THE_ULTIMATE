@@ -194,3 +194,16 @@ fn probes_are_informative_only_for_open_questions() {
     let cands = vec![Candidate { kind: OptionKind::Act { action: 1, args: vec![25, 3] }, episode: Some(pu), targets: vec![T], tier: 1, cost_q16: Q / 4, reliability_q16: Q }];
     assert!(choose_probe(&mut e, &cands).is_none());
 }
+
+/// 6 (D061a). A probe's evidence value counts the open queries its pair blocks: two conflicted
+/// queries blocked by the same law pair give it weight 2.
+#[test]
+fn evidence_value_counts_blocked_queries() {
+    let (mut e, objs) = trained(6);
+    let probe = ep(&objs[25], &objs[3], None, &[]);
+    assert!(e.predict(&ep(&objs[10], &objs[15], None, &[]), T).value().is_none());
+    let one = e.conflict_probe(&probe, T).evidence_value();
+    assert!(e.predict(&ep(&objs[10], &objs[35], None, &[]), T).value().is_none());
+    let two = e.conflict_probe(&probe, T).evidence_value();
+    assert!(one >= 1 && two > one, "weight grows with blocked queries: {one} -> {two}");
+}

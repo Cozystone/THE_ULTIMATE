@@ -65,7 +65,8 @@ impl Default for Preferences {
 
 #[derive(Clone, Debug, Default)]
 pub struct Score {
-    /// D060: bits of conflict-resolving evidence (one per disagreeing licensed pair the option
+    /// D060/D061a: bits of conflict-resolving evidence (one per open query advanced, summed over the
+    /// disagreeing licensed pairs the option
     /// would give a new independent shared unit).
     pub conflict_evidence: i64,
     pub risk: i64,
@@ -152,7 +153,7 @@ pub fn score(rel: &mut RelationEngine, c: &Candidate, prefs: &Preferences) -> Sc
         if let (OptionKind::Act { .. }, bm_relation::Kind::Intervention) = (&c.kind, ep.kind) {
             let mut bits = 0i64;
             for &t in &c.targets {
-                bits += rel.conflict_probe(ep, t).informative_pairs() as i64 * Q;
+                bits += rel.conflict_probe(ep, t).evidence_value() as i64 * Q;
             }
             s.conflict_evidence = bits;
             ig += bits;
@@ -197,7 +198,7 @@ pub fn choose_probe(rel: &mut RelationEngine, cands: &[Candidate]) -> Option<Pro
         }
         for &t in &c.targets {
             let cp = rel.conflict_probe(ep, t);
-            let k = cp.informative_pairs();
+            let k = cp.evidence_value() as usize;
             if k == 0 {
                 continue;
             }

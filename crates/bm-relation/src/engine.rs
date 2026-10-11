@@ -13,6 +13,8 @@ use std::collections::HashMap;
 pub const MIN_SHARED_INDEPENDENT: u32 = 3;
 /// D061: bound on the open-question registry (pairs of laws applying to conflicted queries).
 pub const LIVE_PAIR_CAP: usize = 65_536;
+/// D061a: conflicted queries remembered per open pair (the pair's evidence weight).
+pub const LIVE_QUERIES_PER_PAIR: usize = 256;
 
 /// Why the engine refused to answer. Silence is preferred to confident wrongness.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -55,7 +57,9 @@ pub struct ObserveReport {
 pub struct RelationEngine {
     /// D061: open questions: law pairs found undecided at a conflicted query (unordered, bounded
     /// by `LIVE_PAIR_CAP`; a pair leaves when decided or when a law is no longer licensed).
-    pub live_pairs: std::collections::BTreeSet<(usize, usize)>,
+    /// Each pair lists the conflicted queries (signature and target keys, at most
+    /// `LIVE_QUERIES_PER_PAIR`) it currently blocks.
+    pub live_pairs: std::collections::BTreeMap<(usize, usize), std::collections::BTreeSet<u64>>,
     pub cb: Codebook,
     pub policy: LicensePolicy,
     pub laws: Vec<RelationLaw>,
@@ -126,6 +130,8 @@ pub struct ProbePair {
     pub live: bool,
     /// D061: one law already defeats the other (no further evidence needed).
     pub decided: bool,
+    /// D061a: number of open conflicted queries this pair currently blocks.
+    pub weight: u32,
 }
 
 /// D061: one claim-relative evidence item: episode `episode` tested both `law_a` and `law_b`.
@@ -167,6 +173,10 @@ impl ConflictProbe {
     /// conditions read verified percepts, and the probe's relevant binding is a new unit.
     pub fn informative_pairs(&self) -> usize {
         self.pairs.iter().filter(|p| p.new_unit && p.verified && p.live && !p.decided).count()
+    }
+    /// D061a: evidence value of the probe: open queries advanced, summed over informative pairs.
+    pub fn evidence_value(&self) -> u32 {
+        self.pairs.iter().filter(|p| p.new_unit && p.verified && p.live && !p.decided).map(|p| p.weight).sum()
     }
     pub fn disagrees(&self) -> bool {
         !self.pairs.is_empty()
@@ -237,7 +247,7 @@ impl RelationEngine {
             laws: Vec::new(),
             index: HashMap::new(),
             store: EpisodeStore::new(),
-            live_pairs: std::collections::BTreeSet::new(),
+            live_pairs: std::collections::BTreeMap::new(),
             feat_kinds: Vec::new(),
             alphabet: HashMap::new(),
             per_target: HashMap::new(),
@@ -1694,14 +1704,24 @@ impl RelationEngine {
                 winner = Some(gi);
             }
         }
-        // D061: undecided pairs at a conflicted query are the agent's open questions
+        // D061: undecided pairs at a conflicted query are the agent's open questions; D061a: each
+        // remembers which queries it blocks. An answered query leaves every pair.
+        let qkey = hdc_core::rng::mix64(hdc_core::rng::mix64(query.signature(), query.binding_key(&query.arg_roles())), target as u64);
         if winner.is_none() {
             for p in open {
-                if self.live_pairs.len() >= LIVE_PAIR_CAP {
-                    break;
+                if !self.live_pairs.contains_key(&p) && self.live_pairs.len() >= LIVE_PAIR_CAP {
+                    continue;
                 }
-                self.live_pairs.insert(p);
+                let qs = self.live_pairs.entry(p).or_default();
+                if qs.len() < LIVE_QUERIES_PER_PAIR {
+                    qs.insert(qkey);
+                }
             }
+        } else {
+            self.live_pairs.retain(|_, qs| {
+                qs.remove(&qkey);
+                !qs.is_empty()
+            });
         }
         winner.ok_or(Abstain::Conflict)
     }
@@ -1736,7 +1756,8 @@ impl RelationEngine {
             for b in (a + 1)..groups.len() {
                 for &w in &groups[a].1 {
                     for &o in &groups[b].1 {
-                        let live = self.live_pairs.contains(&(w.min(o), w.max(o)));
+                        let weight = self.live_pairs.get(&(w.min(o), w.max(o))).map(|q| q.len() as u32).unwrap_or(0);
+                        let live = weight > 0;
                         if !live {
                             continue;
                         }
@@ -1763,6 +1784,7 @@ impl RelationEngine {
                             verified: self.verified_at(w, &aug) && self.verified_at(o, &aug),
                             live,
                             decided,
+                            weight,
                         });
                     }
                 }
@@ -1772,10 +1794,10 @@ impl RelationEngine {
     }
 
     /// Diagnostic and evaluation view of a conflict for a query: for every pair of disagreeing
-    /// licensed value groups, (value a, value b, verified units of the binding opposing law,
-    /// right a, right b). The binding law pair is the opposing law of group b that group a is
-    /// furthest from defeating (fewest verified units against its best opponent in a). Empty when
-    /// the licensed laws agree or nothing is licensed.
+    /// licensed value groups, (value x, value y, units, right x, right y), oriented towards the side
+    /// closer to settlement: group x's weakest point is the opposing law of y it is furthest from
+    /// defeating (fewest verified units against its best opponent in x). Empty when the licensed
+    /// laws agree or nothing is licensed.
     pub fn conflict_evidence(&mut self, ep: &Episode, target: u32) -> Vec<(i64, i64, u32, u32, u32)> {
         let ctx = ep.context;
         let mut aug = ep.clone();
@@ -1784,21 +1806,53 @@ impl RelationEngine {
         let mut out = Vec::new();
         for a in 0..groups.len() {
             for b in (a + 1)..groups.len() {
-                let mut worst: Option<PairRecord> = None;
-                for &o in &groups[b].1 {
-                    let best = groups[a]
-                        .1
-                        .iter()
-                        .map(|&w| self.pair_record(w, o, ctx, target, &aug, true, None))
-                        .max_by_key(|r| (r.units, r.right_a as i64 - r.right_b as i64));
-                    if let Some(r) = best {
-                        if worst.as_ref().map(|x| r.units < x.units).unwrap_or(true) {
-                            worst = Some(r);
+                let mut dirs: Vec<(i64, i64, PairRecord)> = Vec::new();
+                for (x, y) in [(a, b), (b, a)] {
+                    let mut worst: Option<PairRecord> = None;
+                    for &o in &groups[y].1 {
+                        let best = groups[x]
+                            .1
+                            .iter()
+                            .map(|&w| self.pair_record(w, o, ctx, target, &aug, true, None))
+                            .max_by_key(|r| (Self::defeats(r), r.units, r.right_a as i64 - r.right_b as i64));
+                        if let Some(r) = best {
+                            if worst.as_ref().map(|w| (Self::defeats(&r), r.units) < (Self::defeats(w), w.units)).unwrap_or(true) {
+                                worst = Some(r);
+                            }
                         }
                     }
+                    if let Some(r) = worst {
+                        dirs.push((groups[x].0, groups[y].0, r));
+                    }
                 }
-                if let Some(r) = worst {
-                    out.push((groups[a].0, groups[b].0, r.units, r.right_a, r.right_b));
+                if let Some((x, y, r)) = dirs.into_iter().max_by_key(|d| (Self::defeats(&d.2), d.2.units)) {
+                    out.push((x, y, r.units, r.right_a, r.right_b));
+                }
+            }
+        }
+        out
+    }
+
+    /// D061: is `val` an answer every opposing law applying to the query has been individually
+    /// defeated against (the settlement rule, as an external audit)? Returns the undefeated
+    /// opposing laws with their best record.
+    pub fn undefeated_against(&mut self, ep: &Episode, target: u32, val: i64) -> Vec<(usize, Option<usize>, PairRecord)> {
+        let ctx = ep.context;
+        let mut aug = ep.clone();
+        self.augment(&mut aug);
+        let groups = self.licensed_groups(&aug, target);
+        let mine: Vec<usize> = groups.iter().filter(|g| g.0 == val).flat_map(|g| g.1.clone()).collect();
+        let mut out = Vec::new();
+        for g in groups.iter().filter(|g| g.0 != val) {
+            for &o in &g.1 {
+                let best = mine
+                    .iter()
+                    .map(|&w| (w, self.pair_record(w, o, ctx, target, &aug, true, None)))
+                    .max_by_key(|(_, r)| (Self::defeats(r), r.units, r.right_a as i64 - r.right_b as i64));
+                match best {
+                    Some((_, r)) if Self::defeats(&r) => {}
+                    Some((w, r)) => out.push((o, Some(w), r)),
+                    None => out.push((o, None, PairRecord::default())),
                 }
             }
         }

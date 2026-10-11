@@ -1061,3 +1061,24 @@ Tests: `crates/bm-agent/tests/evidence.rs` (5).
 * Test 1 reproduces the seed-605 pattern. The capability-h4 learner answers it from 25
   group-level units, with no shared case of the two conflicting laws; D061 abstains.
 * The D060 test 1 now first lets the query meet the conflict (open question).
+
+## D061a Open questions are weighted by the queries they block (2026-10-11)
+Evidence: development round 1 (`results/oe_dev1/SUMMARY.txt`, `results/oe_diag1/`).
+* I4 had 0 wrong settlements, but resolved only 40.8% of the saved conflicts.
+* The unresolved queries are blocked by specific opposing laws that do apply to them:
+  object-specific laws about the second argument (mark and identity channels),
+  material-specific laws, and bystander-conditioned laws.
+* Each of these had 0-2 verified units. The agent spread its probes, because every open pair
+  counted one bit.
+
+Choice: each open pair remembers the conflicted queries it blocks. A query's key is its
+signature, its argument bindings and its target, so different objects are different questions.
+* A probe's evidence value is the sum over its informative pairs of the queries they block.
+* An answered query leaves every pair.
+
+The settlement rule is unchanged. Test 6 in `evidence.rs`.
+
+Also from round 1: the 4 remaining pre-action wrong answers (I4 seeds 609 and 614) are not
+settlements. Every licensed law applying to those queries predicts the same value, and the
+true value holds in a region no law has observed: a single-law extrapolation, outside D061's
+scope, reported as wrong.

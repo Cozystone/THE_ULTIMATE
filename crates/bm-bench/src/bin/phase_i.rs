@@ -400,7 +400,9 @@ fn run_policy(seed: u64, base: &Setup, pol: Policy, log: bool) -> Outcome {
                     o.leakage += 1;
                 }
                 let active = diag_so_far && pol == Policy::Agent;
-                if !ce.is_empty() && !settled {
+                // D061 external audit: every opposing law applying to the query defeated
+                let audit_fail = !ce.is_empty() && !s.a.rel.undefeated_against(q, *t, val).is_empty();
+                if audit_fail {
                     o.unsettled_answers += 1;
                     if val != *tv {
                         o.wrong_unresolved += 1;
@@ -411,7 +413,7 @@ fn run_policy(seed: u64, base: &Setup, pol: Policy, log: bool) -> Outcome {
                 } else if ce.is_empty() {
                     o.d_ok += 1;
                     o.d_active += active as u32;
-                } else if settled {
+                } else if settled || !audit_fail {
                     o.s_ok += 1;
                     o.s_active += active as u32;
                 }
@@ -419,6 +421,18 @@ fn run_policy(seed: u64, base: &Setup, pol: Policy, log: bool) -> Outcome {
         }
     }
     o.unresolved = done.iter().filter(|d| !**d).count() as u32;
+    if std::env::var("DIAG_UNRES").is_ok() && pol == Policy::Agent {
+        for (k, (q, t, tv)) in s.saved.clone().iter().enumerate() {
+            if done[k] {
+                continue;
+            }
+            let un = s.a.rel.undefeated_against(q, *t, *tv);
+            eprintln!("UNRES seed {seed} query {k} truth {tv}: {} opposing laws undefeated for the true value", un.len());
+            for (o, w, r) in un.iter().take(6) {
+                eprintln!("UNRES   o={} | best w={} | units {} right_w {} right_o {} unverified {}", s.a.rel.laws[*o].describe(), w.map(|w| s.a.rel.laws[w].describe()).unwrap_or_default(), r.units, r.right_a, r.right_b, r.unverified);
+            }
+        }
+    }
     for (k, (q, t, _)) in s.saved.iter().enumerate() {
         if !done[k] && s.a.rel.predict(q, *t) == Answer::Abstain(Abstain::Unverified) {
             o.end_unverified += 1;
