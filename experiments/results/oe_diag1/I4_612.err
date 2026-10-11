@@ -1,0 +1,19 @@
+UNRES seed 612 query 0 truth 1: 1 opposing laws undefeated for the true value
+UNRES   o=act21 : r1.c13=970547 => t15015 | best w=act21 : r0.c10=520 & r1.c10=520 => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES seed 612 query 1 truth 1: 2 opposing laws undefeated for the true value
+UNRES   o=act21 : r1.c13=588000 => t15015 | best w=act21 : same(r0,r1;c10) => t15015 | units 1 right_w 1 right_o 0 unverified 0
+UNRES   o=act21 : r1.c1000=90 => t15015 | best w=act21 : same(r0,r1;c10) => t15015 | units 1 right_w 1 right_o 0 unverified 0
+UNRES seed 612 query 2 truth 1: 1 opposing laws undefeated for the true value
+UNRES   o=act21 : r1.c13=970547 => t15015 | best w=act21 : r0.c10=520 & r1.c10=520 => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES seed 612 query 3 truth 1: 1 opposing laws undefeated for the true value
+UNRES   o=act21 : r1.c13=970547 => t15015 | best w=act21 : r0.c10=520 & r1.c10=520 => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES seed 612 query 4 truth 1: 1 opposing laws undefeated for the true value
+UNRES   o=act21 : r1.c13=970547 => t15015 | best w=act21 : r0.c10=520 & r1.c10=520 => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES seed 612 query 5 truth 1: 1 opposing laws undefeated for the true value
+UNRES   o=act21 : r1.c13=970547 => t15015 | best w=act21 : r0.c10=520 & r1.c10=520 => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES seed 612 query 6 truth 1: 2 opposing laws undefeated for the true value
+UNRES   o=act21 : r1.c13=447446 => t15015 | best w=act21 : same(r0,r1;c10) => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES   o=act21 : r1.c1000=44 => t15015 | best w=act21 : same(r0,r1;c10) => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES seed 612 query 7 truth 1: 2 opposing laws undefeated for the true value
+UNRES   o=act21 : r1.c13=447446 => t15015 | best w=act21 : same(r0,r1;c10) => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES   o=act21 : r1.c1000=44 => t15015 | best w=act21 : same(r0,r1;c10) => t15015 | units 2 right_w 2 right_o 0 unverified 0

@@ -1,0 +1,19 @@
+I-series I1, frozen learner bitmind-capability-h4-v0.1, budget 300
+
+===== seed 605: 47 objects, region pairs 22 (queries 11), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 11, answered correct 0, answered wrong 0, other abstentions 0
+  Agent  saved 11: settled-correct 11 (active 11), dissolved-correct 0 (active 0), wrong 0 (while unresolved 0), unsettled answers 0, unresolved 0, leakage 0; region probes 3; chosen diagnostic-new 3 redundant 0 non-diagnostic 97; steps with an informative candidate 3 (diagnostic-new taken 3), with none 97; actions 100; evidence items 49 (verified 49, truly in region 35); unresolved needing re-observation 0; 89.0 s
+
+===== totals I1 (seeds 1)
+  Agent  saved 11 | resolved correctly 11 (100.0%; settled 11, dissolved 0; agent-active 11) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 0 (0.0%) | leakage 0 | diagnostic-new 100.0% of steps with an informative candidate | no informative candidate in 97.0% of steps
+  Random saved 0 | resolved correctly 0 (0.0%; settled 0, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 0 (0.0%) | leakage 0 | diagnostic-new 0.0% of steps with an informative candidate | no informative candidate in 0.0% of steps
+  Wait   saved 0 | resolved correctly 0 (0.0%; settled 0, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 0 (0.0%) | leakage 0 | diagnostic-new 0.0% of steps with an informative candidate | no informative candidate in 0.0% of steps
+
+===== pre-registered criteria I1
+  PASS resolved correctly 100.0% >= 80%
+  PASS wrong while unresolved 0 = 0
+  PASS wrong 0.0% of answers <= 2%
+  PASS agent 100.0% >= random 0.0% + 30 pp
+  PASS WAIT-only resolves 0.0% <= 10%
+  PASS leakage 0 = 0
+  I1 overall: PASS
+resources: wall 567.8 s, peak working set 7234 MB

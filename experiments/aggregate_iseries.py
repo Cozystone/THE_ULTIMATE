@@ -4,8 +4,8 @@ Usage: python experiments/aggregate_iseries.py experiments/results/iseries > SUM
 import re, sys, os, glob, collections
 
 D = sys.argv[1]
-LINE = re.compile(r'^\s+(Agent|Random|Wait)\s+saved (\d+): settled-correct (\d+) \(active (\d+)\), dissolved-correct (\d+) \(active (\d+)\), wrong (\d+) \(while unresolved (\d+)\), unsettled answers (\d+), unresolved (\d+), leakage (\d+); region probes (\d+); chosen diagnostic-new (\d+) redundant (\d+) non-diagnostic (\d+); steps with an informative candidate (\d+) \(diagnostic-new taken (\d+)\), with none (\d+); actions (\d+); ([\d.]+) s')
-KEYS = ['saved', 's_ok', 's_act', 'd_ok', 'd_act', 'wrong', 'wrong_unres', 'unsettled', 'unresolved', 'leak', 'region', 'dnew', 'dred', 'nond', 'inf_steps', 'dnew_offered', 'none_steps', 'steps', 'secs']
+LINE = re.compile(r'^\s+(Agent|Random|Wait)\s+saved (\d+): settled-correct (\d+) \(active (\d+)\), dissolved-correct (\d+) \(active (\d+)\), wrong (\d+) \(while unresolved (\d+)\), unsettled answers (\d+), unresolved (\d+), leakage (\d+); region probes (\d+); chosen diagnostic-new (\d+) redundant (\d+) non-diagnostic (\d+); steps with an informative candidate (\d+) \(diagnostic-new taken (\d+)\), with none (\d+); actions (\d+);(?: evidence items (\d+) \(verified (\d+), truly in region (\d+)\); unresolved needing re-observation (\d+);)? ([\d.]+) s')
+KEYS = ['saved', 's_ok', 's_act', 'd_ok', 'd_act', 'wrong', 'wrong_unres', 'unsettled', 'unresolved', 'leak', 'region', 'dnew', 'dred', 'nond', 'inf_steps', 'dnew_offered', 'none_steps', 'steps', 'ev_items', 'ev_ver', 'ev_reg', 'end_unver', 'secs']
 
 
 def pct(a, b):
@@ -21,13 +21,13 @@ for W in ['I1', 'I2', 'I3', 'I4']:
     peaks = []
     walls = []
     for f in files:
-        seed = f.rsplit('_', 1)[1][:-4]
+        seed = os.path.basename(f)[len(W) + 1:-4]
         for line in open(f, encoding='utf-8', errors='replace'):
             m = LINE.match(line)
             if m:
                 p = m.group(1)
                 for k, v in zip(KEYS, m.groups()[1:]):
-                    tot[p][k] += float(v)
+                    tot[p][k] += float(v or 0)
             m2 = re.search(r'===== seed \d+: (.*)$', line)
             if m2:
                 stage1.append(f'{seed}: {m2.group(1)}')
@@ -42,7 +42,7 @@ for W in ['I1', 'I2', 'I3', 'I4']:
         t = tot[p]
         res = t['s_ok'] + (t['d_act'] if p == 'Agent' else t['d_ok'])
         ans = t['s_ok'] + t['d_ok'] + t['wrong']
-        print(f"  {p:<6} saved {int(t['saved'])}: resolved correctly {int(res)} ({pct(res, t['saved']):.1f}%) [settled {int(t['s_ok'])}, dissolved {int(t['d_ok'])} (agent-active {int(t['d_act'])})], wrong {int(t['wrong'])} ({pct(t['wrong'], ans):.1f}% of answers; while unresolved {int(t['wrong_unres'])}), unsettled answers {int(t['unsettled'])}, still abstaining {int(t['unresolved'])} ({pct(t['unresolved'], t['saved']):.1f}%), leakage {int(t['leak'])}; region probes {int(t['region'])}; chosen diagnostic-new {int(t['dnew'])} / redundant {int(t['dred'])} / non-diagnostic {int(t['nond'])}; diagnostic-new taken in {pct(t['dnew_offered'], t['inf_steps']):.1f}% of {int(t['inf_steps'])} steps with an informative candidate; no informative candidate in {pct(t['none_steps'], t['steps']):.1f}% of {int(t['steps'])} steps; policy time {t['secs']:.0f} s")
+        print(f"  {p:<6} saved {int(t['saved'])}: resolved correctly {int(res)} ({pct(res, t['saved']):.1f}%) [settled {int(t['s_ok'])}, dissolved {int(t['d_ok'])} (agent-active {int(t['d_act'])})], wrong {int(t['wrong'])} ({pct(t['wrong'], ans):.1f}% of answers; while unresolved {int(t['wrong_unres'])}), unsettled answers {int(t['unsettled'])}, still abstaining {int(t['unresolved'])} ({pct(t['unresolved'], t['saved']):.1f}%), leakage {int(t['leak'])}; region probes {int(t['region'])}; chosen diagnostic-new {int(t['dnew'])} / redundant {int(t['dred'])} / non-diagnostic {int(t['nond'])}; diagnostic-new taken in {pct(t['dnew_offered'], t['inf_steps']):.1f}% of {int(t['inf_steps'])} steps with an informative candidate; no informative candidate in {pct(t['none_steps'], t['steps']):.1f}% of {int(t['steps'])} steps; evidence items {int(t['ev_items'])} (verified {int(t['ev_ver'])}, truly in region {int(t['ev_reg'])}); unresolved needing re-observation {int(t['end_unver'])}; policy time {t['secs']:.0f} s")
     ag, rd, wt = tot['Agent'], tot['Random'], tot['Wait']
     r_ag = pct(ag['s_ok'] + ag['d_act'], ag['saved'])
     r_rd = pct(rd['s_ok'] + rd['d_ok'], rd['saved'])

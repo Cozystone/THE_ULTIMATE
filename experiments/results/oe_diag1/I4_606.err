@@ -1,0 +1,26 @@
+UNRES seed 606 query 0 truth 0: 1 opposing laws undefeated for the true value
+UNRES   o=act21 : r0.c10=613 & r1.c10=613 => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 0 right_w 0 right_o 0 unverified 0
+UNRES seed 606 query 1 truth 0: 2 opposing laws undefeated for the true value
+UNRES   o=act21 : r0.c10=518 & r1.c10=518 => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES   o=act21 : same(r0,r3;c10) & same(r1,r3;c10) => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 0 right_w 0 right_o 0 unverified 0
+UNRES seed 606 query 2 truth 0: 1 opposing laws undefeated for the true value
+UNRES   o=act21 : r0.c10=613 & r1.c10=613 => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 0 right_w 0 right_o 0 unverified 0
+UNRES seed 606 query 3 truth 0: 1 opposing laws undefeated for the true value
+UNRES   o=act21 : r0.c10=518 & r1.c10=518 => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES seed 606 query 4 truth 0: 3 opposing laws undefeated for the true value
+UNRES   o=act21 : delta(r0,r1;c14)=-8 => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 0 right_w 0 right_o 0 unverified 0
+UNRES   o=act21 : r0.c10=613 & r1.c10=613 => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 0 right_w 0 right_o 0 unverified 0
+UNRES   o=act21 : same(r0,r2;c10) & same(r1,r2;c10) => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 1 right_w 1 right_o 0 unverified 0
+UNRES seed 606 query 5 truth 0: 2 opposing laws undefeated for the true value
+UNRES   o=act21 : r0.c10=518 & r1.c10=518 => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES   o=act21 : same(r0,r2;c10) & same(r1,r2;c10) => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 1 right_w 1 right_o 0 unverified 0
+UNRES seed 606 query 6 truth 0: 1 opposing laws undefeated for the true value
+UNRES   o=act21 : r0.c10=518 & r1.c10=518 => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES seed 606 query 7 truth 0: 1 opposing laws undefeated for the true value
+UNRES   o=act21 : r0.c10=518 & r1.c10=518 => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES seed 606 query 8 truth 0: 2 opposing laws undefeated for the true value
+UNRES   o=act21 : delta(r0,r1;c14)=-8 => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 0 right_w 0 right_o 0 unverified 0
+UNRES   o=act21 : r0.c10=613 & r1.c10=613 => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 0 right_w 0 right_o 0 unverified 0
+UNRES seed 606 query 9 truth 0: 2 opposing laws undefeated for the true value
+UNRES   o=act21 : r0.c10=518 & r1.c10=518 => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 2 right_w 2 right_o 0 unverified 0
+UNRES   o=act21 : same(r0,r2;c10) & same(r1,r2;c10) => t15015 | best w=act21 : r2.c11=529 & diff(r1,r2;c11) => t15015 | units 1 right_w 1 right_o 0 unverified 0
