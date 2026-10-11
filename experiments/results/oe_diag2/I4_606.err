@@ -1,0 +1,11 @@
+MISS seed 606 step 3 region pair [18, 3]: licensed laws 2 values {0, 1} (unverified at probe 1); pairs 1 live 1 verified 0 new 1 decided 0; open pairs total 8
+MISS seed 606 step 49 region pair [24, 3]: licensed laws 2 values {0, 1} (unverified at probe 0); pairs 0 live 0 verified 0 new 0 decided 0; open pairs total 7
+MISS seed 606 step 72 region pair [13, 3]: licensed laws 2 values {0, 1} (unverified at probe 0); pairs 0 live 0 verified 0 new 0 decided 0; open pairs total 7
+MISS seed 606 step 107 region pair [20, 3]: licensed laws 3 values {0, 1} (unverified at probe 0); pairs 0 live 0 verified 0 new 0 decided 0; open pairs total 7
+MISS seed 606 step 129 region pair [18, 3]: licensed laws 3 values {0, 1} (unverified at probe 0); pairs 0 live 0 verified 0 new 0 decided 0; open pairs total 12
+MISS seed 606 step 160 region pair [16, 3]: licensed laws 3 values {0, 1} (unverified at probe 0); pairs 0 live 0 verified 0 new 0 decided 0; open pairs total 12
+MISS seed 606 step 177 region pair [29, 10]: licensed laws 5 values {0, 1} (unverified at probe 3); pairs 2 live 2 verified 0 new 2 decided 0; open pairs total 12
+MISS seed 606 step 191 region pair [16, 3]: licensed laws 3 values {0, 1} (unverified at probe 0); pairs 0 live 0 verified 0 new 0 decided 0; open pairs total 12
+MISS seed 606 step 196 region pair [24, 3]: licensed laws 2 values {0, 1} (unverified at probe 0); pairs 0 live 0 verified 0 new 0 decided 0; open pairs total 12
+MISS seed 606 step 242 region pair [18, 3]: licensed laws 3 values {0, 1} (unverified at probe 0); pairs 0 live 0 verified 0 new 0 decided 0; open pairs total 12
+MISS seed 606 step 277 region pair [4, 10]: licensed laws 3 values {0, 1} (unverified at probe 0); pairs 1 live 1 verified 1 new 0 decided 0; open pairs total 12

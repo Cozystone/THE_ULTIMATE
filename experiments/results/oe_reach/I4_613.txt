@@ -1,0 +1,7 @@
+I-series I4, frozen learner bitmind-capability-h4-v0.1, budget 300
+
+===== seed 613: 44 objects, region pairs 19 (queries 10), region truth lights false, tolerance 1/100; stage 1: conflict abstentions 10, answered correct 0, answered wrong 0, other abstentions 0
+  Oracle saved 10: settled-correct 7 (active 0), dissolved-correct 0 (active 0), wrong 0 (while unresolved 0), unsettled answers 0, unresolved 3, leakage 0; region probes 14; chosen diagnostic-new 0 redundant 0 non-diagnostic 0; steps with an informative candidate 0 (diagnostic-new taken 0), with none 0; actions 300; evidence items 37 (verified 37, truly in region 37); unresolved needing re-observation 3; 246.4 s
+
+===== totals I4 (seeds 1)
+  Oracle saved 10 | resolved correctly 7 (70.0%; settled 7, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 3 (30.0%) | leakage 0 | diagnostic-new 0.0% of steps with an informative candidate | no informative candidate in 0.0% of steps

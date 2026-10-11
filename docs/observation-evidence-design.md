@@ -305,3 +305,33 @@ chooses actions for reliable evidence, and abstains when that evidence is lackin
 * ledger-based action value.
 
 Any future sensor or action plugs into these.
+
+## I. Development results (2026-10-12; I1-I4 are development data)
+
+| world (seeds 601-615, budget 300) | agent resolved | wrong | random | WAIT | harness-only region oracle |
+|---|---|---|---|---|---|
+| I1 | 147/147 (100%) | 0 | - | - | - |
+| I2 | 147/147 (100%) | 0 | - | - | - |
+| I3 | 0/147, 100% safe abstention | 0 | - | - | - |
+| I4, capability-h4 (D060 only) | 72.4% | **9 wrong settlements, 37 pre-action wrong** | 35.5% (18 wrong) | 0 | - |
+| I4, D061 | 40.8% (audit-corrected 48.6%) | **0 settlements wrong; 4 pre-action wrong (single-law extrapolation, not settlement)** | 3.5% | 0 | - |
+| I4, D061 + D061a | 49.3% | 0 settlements wrong; same 4 pre-action wrong | 6.3% | 0 | **71.8% (0 wrong)** |
+
+The region oracle picks any offered pair truly in the conflict region (world truth). It shows
+that under the D061 rule, with the same offers and budget, about 72% of the I4 conflicts are
+reachable. The old 80% criterion is unreachable once every opposing law applying to a query must
+be beaten on its own verified cases.
+
+The agent reaches about 69% of that bound. The missed region probes (`results/oe_diag2`) are:
+* probes whose disagreeing laws are not the ones blocking any saved query (object- or
+  material-specific laws of other objects): an access limit;
+* previews with an unverified percept (single noisy reading);
+* a different offer stream after the agent's own actions, so the comparison with the oracle is
+  approximate.
+
+These are not tuned further on I4, to avoid fitting development data.
+
+Open issues carried forward:
+* single-law extrapolation into unobserved regions (4 wrong in I4);
+* the floor tolerance allowance at small n;
+* the value of a probe whose preview percept is unverified (currently 0).

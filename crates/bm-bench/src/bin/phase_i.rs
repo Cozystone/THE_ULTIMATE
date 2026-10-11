@@ -63,6 +63,9 @@ enum Policy {
     Agent,
     Random,
     Wait,
+    /// Harness-only reachability bound (never a learner policy): picks an offered pair truly in the
+    /// conflict region, preferring pairs not yet probed; otherwise WAIT. Uses world truth.
+    Oracle,
 }
 
 #[derive(Default, Debug, Clone)]
@@ -312,6 +315,7 @@ fn run_policy(seed: u64, base: &Setup, pol: Policy, log: bool) -> Outcome {
     let mut prng = hdc_core::Rng::new(seed ^ 0xBA5E_1);
     let prefs = Preferences::default();
     let mut diag_so_far = false;
+    let mut oracle_seen: std::collections::HashSet<(usize, usize)> = std::collections::HashSet::new();
     for step in 0..BUDGET {
         if done.iter().all(|d| *d) {
             break;
@@ -321,6 +325,17 @@ fn run_policy(seed: u64, base: &Setup, pol: Policy, log: bool) -> Outcome {
         let (act, args) = match pol {
             Policy::Wait => (hi::WAIT, vec![]),
             Policy::Random => offers[prng.below(offers.len() as u64) as usize].clone(),
+            Policy::Oracle => {
+                let reg: Vec<&(u16, Vec<usize>)> = offers.iter().filter(|(a, x)| *a == hi::PRESS && s.w.in_region(x[0], x[1])).collect();
+                let fresh = reg.iter().find(|(_, x)| !oracle_seen.contains(&(x[0], x[1])));
+                match fresh.or(reg.first()) {
+                    Some((a, x)) => {
+                        oracle_seen.insert((x[0], x[1]));
+                        (*a, x.clone())
+                    }
+                    None => (hi::WAIT, vec![]),
+                }
+            }
             Policy::Agent => {
                 let mut cands = Vec::new();
                 let mut idx = Vec::new();
@@ -341,6 +356,22 @@ fn run_policy(seed: u64, base: &Setup, pol: Policy, log: bool) -> Outcome {
                     })
                     .collect();
                 let informative = cps.iter().any(|x| x.0 > 0);
+                if std::env::var("DIAG_MISS").is_ok() {
+                    // harness-only: region pairs offered that the agent judged uninformative, and why
+                    for (ci, c) in cands.iter().enumerate() {
+                        let (act, args) = &offers[idx[ci]];
+                        if *act != hi::PRESS || !s.w.in_region(args[0], args[1]) || cps[ci].0 > 0 {
+                            continue;
+                        }
+                        let (Some(ep), Some(&t)) = (&c.episode, c.targets.first()) else { continue };
+                        let cp = s.a.rel.conflict_probe(ep, t);
+                        let groups = s.a.rel.explain(ep, t);
+                        let vals: std::collections::BTreeSet<i64> = groups.iter().map(|x| x.1).collect();
+                        let unver = groups.iter().filter(|g| !s.a.rel.verified_at(g.0, ep)).count();
+                        eprintln!("MISS seed {seed} step {step} region pair {args:?}: licensed laws {} values {:?} (unverified at probe {}); pairs {} live {} verified {} new {} decided {}; open pairs total {}",
+                            groups.len(), vals, unver, cp.pairs.len(), cp.pairs.iter().filter(|p| p.live).count(), cp.pairs.iter().filter(|p| p.verified).count(), cp.pairs.iter().filter(|p| p.new_unit).count(), cp.pairs.iter().filter(|p| p.decided).count(), s.a.rel.live_pairs.len());
+                    }
+                }
                 if informative {
                     o.steps_informative_offered += 1;
                 } else {
@@ -474,6 +505,9 @@ fn main() {
     let log = std::env::var("PROBELOG").is_ok();
     let mut report = String::new();
     let mut tot: Vec<(Policy, Outcome)> = vec![(Policy::Agent, Outcome::default()), (Policy::Random, Outcome::default()), (Policy::Wait, Outcome::default())];
+    if std::env::var("POLICY").map(|p| p.eq_ignore_ascii_case("oracle")).unwrap_or(false) {
+        tot = vec![(Policy::Oracle, Outcome::default())];
+    }
     let _ = writeln!(Flush(&mut report), "I-series {variant:?}, frozen learner bitmind-capability-h4-v0.1, budget {BUDGET}");
     for &seed in &seeds {
         let _guard = bm_bench::SeedGuard::new(seed);

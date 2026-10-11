@@ -4,7 +4,7 @@ Usage: python experiments/aggregate_iseries.py experiments/results/iseries > SUM
 import re, sys, os, glob, collections
 
 D = sys.argv[1]
-LINE = re.compile(r'^\s+(Agent|Random|Wait)\s+saved (\d+): settled-correct (\d+) \(active (\d+)\), dissolved-correct (\d+) \(active (\d+)\), wrong (\d+) \(while unresolved (\d+)\), unsettled answers (\d+), unresolved (\d+), leakage (\d+); region probes (\d+); chosen diagnostic-new (\d+) redundant (\d+) non-diagnostic (\d+); steps with an informative candidate (\d+) \(diagnostic-new taken (\d+)\), with none (\d+); actions (\d+);(?: evidence items (\d+) \(verified (\d+), truly in region (\d+)\); unresolved needing re-observation (\d+);)? ([\d.]+) s')
+LINE = re.compile(r'^\s+(Agent|Random|Wait|Oracle)\s+saved (\d+): settled-correct (\d+) \(active (\d+)\), dissolved-correct (\d+) \(active (\d+)\), wrong (\d+) \(while unresolved (\d+)\), unsettled answers (\d+), unresolved (\d+), leakage (\d+); region probes (\d+); chosen diagnostic-new (\d+) redundant (\d+) non-diagnostic (\d+); steps with an informative candidate (\d+) \(diagnostic-new taken (\d+)\), with none (\d+); actions (\d+);(?: evidence items (\d+) \(verified (\d+), truly in region (\d+)\); unresolved needing re-observation (\d+);)? ([\d.]+) s')
 KEYS = ['saved', 's_ok', 's_act', 'd_ok', 'd_act', 'wrong', 'wrong_unres', 'unsettled', 'unresolved', 'leak', 'region', 'dnew', 'dred', 'nond', 'inf_steps', 'dnew_offered', 'none_steps', 'steps', 'ev_items', 'ev_ver', 'ev_reg', 'end_unver', 'secs']
 
 
@@ -16,7 +16,7 @@ for W in ['I1', 'I2', 'I3', 'I4']:
     files = sorted(glob.glob(os.path.join(D, f'{W}_*.txt')))
     if not files:
         continue
-    tot = {p: collections.Counter() for p in ['Agent', 'Random', 'Wait']}
+    tot = {p: collections.Counter() for p in ['Agent', 'Random', 'Wait', 'Oracle']}
     stage1 = []
     peaks = []
     walls = []
@@ -38,7 +38,7 @@ for W in ['I1', 'I2', 'I3', 'I4']:
     print(f'===== {W}: {len(files)} seeds')
     for s in stage1:
         print('  stage 1 seed', s)
-    for p in ['Agent', 'Random', 'Wait']:
+    for p in ['Agent', 'Random', 'Wait', 'Oracle']:
         t = tot[p]
         res = t['s_ok'] + (t['d_act'] if p == 'Agent' else t['d_ok'])
         ans = t['s_ok'] + t['d_ok'] + t['wrong']

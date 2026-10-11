@@ -1,0 +1,19 @@
+I-series I4, frozen learner bitmind-capability-h4-v0.1, budget 300
+
+===== seed 601: 36 objects, region pairs 17 (queries 9), region truth lights true, tolerance 1/100; stage 1: conflict abstentions 9, answered correct 0, answered wrong 0, other abstentions 0
+  Agent  saved 9: settled-correct 5 (active 5), dissolved-correct 0 (active 0), wrong 0 (while unresolved 0), unsettled answers 0, unresolved 4, leakage 0; region probes 7; chosen diagnostic-new 9 redundant 0 non-diagnostic 291; steps with an informative candidate 9 (diagnostic-new taken 9), with none 291; actions 300; evidence items 203 (verified 161, truly in region 138); unresolved needing re-observation 2; 89.8 s
+  Random saved 9: settled-correct 4 (active 0), dissolved-correct 0 (active 0), wrong 0 (while unresolved 0), unsettled answers 0, unresolved 5, leakage 0; region probes 4; chosen diagnostic-new 0 redundant 0 non-diagnostic 0; steps with an informative candidate 0 (diagnostic-new taken 0), with none 0; actions 300; evidence items 106 (verified 74, truly in region 70); unresolved needing re-observation 2; 48.1 s
+  Wait   saved 9: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0 (while unresolved 0), unsettled answers 0, unresolved 9, leakage 0; region probes 0; chosen diagnostic-new 0 redundant 0 non-diagnostic 0; steps with an informative candidate 0 (diagnostic-new taken 0), with none 0; actions 300; evidence items 0 (verified 0, truly in region 0); unresolved needing re-observation 2; 52.5 s
+
+===== totals I4 (seeds 1)
+  Agent  saved 9 | resolved correctly 5 (55.6%; settled 5, dissolved 0; agent-active 5) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 4 (44.4%) | leakage 0 | diagnostic-new 100.0% of steps with an informative candidate | no informative candidate in 97.0% of steps
+  Random saved 9 | resolved correctly 4 (44.4%; settled 4, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 5 (55.6%) | leakage 0 | diagnostic-new 0.0% of steps with an informative candidate | no informative candidate in 0.0% of steps
+  Wait   saved 9 | resolved correctly 0 (0.0%; settled 0, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 9 (100.0%) | leakage 0 | diagnostic-new 0.0% of steps with an informative candidate | no informative candidate in 0.0% of steps
+
+===== pre-registered criteria I4
+  FAIL resolved correctly 55.6% >= 80%
+  PASS settlement route 100.0% of correct resolutions >= 70%
+  PASS settlement audit (answers under < 3 units) 0 = 0
+  FAIL agent 55.6% >= random 44.4% + 30 pp
+  I4 overall: FAIL
+resources: wall 506.8 s, peak working set 4727 MB

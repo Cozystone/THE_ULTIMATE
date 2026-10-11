@@ -1,0 +1,4 @@
+
+thread 'main' (19616) panicked at crates\bm-bench\src\bin\phase_i.rs:567:18:
+index out of bounds: the len is 1 but the index is 1
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
