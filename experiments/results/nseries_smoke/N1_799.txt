@@ -1,0 +1,10 @@
+N-series N1, frozen learner bitmind-oe-v0.1, budget 300
+
+===== seed 799: 34 objects, region pairs 52 (queries 26), region truth lights true, tolerance 1/100; objects perceived under more than one identity 28 of 34; stage 1: conflict abstentions 26, answered correct 0, answered wrong 0, other abstentions 0
+  Wait   saved 26: settled-correct 0 (active 0), dissolved-correct 0 (active 0), wrong 0 (while unresolved 0), unsettled answers 0, unresolved 26, leakage 0; region probes 0; chosen diagnostic-new 0 redundant 0 non-diagnostic 0; steps with an informative candidate 0 (diagnostic-new taken 0), with none 0; actions 300; evidence items 0 (verified 0, truly in region 0); unresolved needing re-observation 3; reliable-vs-cheap steps 0 (chose LINK 0); 72.1 s
+
+===== totals N1 (seeds 1)
+  Agent  saved 0 | resolved correctly 0 (0.0%; settled 0, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 0 (0.0%) | leakage 0 | diagnostic-new 0.0% of steps with an informative candidate | no informative candidate in 0.0% of steps
+  Random saved 0 | resolved correctly 0 (0.0%; settled 0, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 0 (0.0%) | leakage 0 | diagnostic-new 0.0% of steps with an informative candidate | no informative candidate in 0.0% of steps
+  Wait   saved 26 | resolved correctly 0 (0.0%; settled 0, dissolved 0; agent-active 0) | wrong 0 (0.0% of answers; while unresolved 0) | unsettled answers 0 | still abstaining 26 (100.0%) | leakage 0 | diagnostic-new 0.0% of steps with an informative candidate | no informative candidate in 0.0% of steps
+resources: wall 413.2 s, peak working set 4986 MB
