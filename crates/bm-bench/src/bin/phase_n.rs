@@ -1,0 +1,624 @@
+//! observation-evidence formal held-out N-series (PREREG-observation-evidence), run on the frozen
+//! learner `bitmind-oe-v0.1`. Same protocol as `phase_i`:
+//! * stage 0: 3,000 actions, the conflict region never touched;
+//! * stage 1: region queries classified; conflict (and needs-re-observation) abstentions saved;
+//! * stage 2: from identical copies of the stage-1 state, agent / random / wait (and, with
+//!   POLICY=oracle, the harness-only region oracle) act for 300 actions; saved queries are
+//!   re-judged every 10 actions.
+//!
+//! Criteria are evaluated over all seeds by `experiments/aggregate_nseries.py`.
+//! Usage: `phase_n <N0..N4> <seeds>`. Floats only for reporting.
+
+use bm_agent::*;
+use bm_memory::*;
+use bm_relation::{Abstain, Answer, Episode, FeatureKind, RelationEngine};
+use bm_worlds::heldout_n::{self as hn, Family, NWorld};
+use hdc_core::fixed::Q;
+use std::fmt::Write as _;
+
+const BUDGET: u32 = 300;
+const STAGE0: u32 = 3000;
+
+#[derive(Clone)]
+struct Agent {
+    g: Grounder,
+    rel: RelationEngine,
+    fed: u32,
+}
+
+impl Agent {
+    fn new(seed: u64) -> Self {
+        let mut rel = RelationEngine::new(seed ^ 0x1C4);
+        rel.identity_channel = Some(INST_CH);
+        bm_bench::declare(&mut rel, hn::ORDINAL);
+        Agent { g: Grounder::new(seed), rel, fed: 0 }
+    }
+    /// Agent assembly (as CW and Phase B, D020): licensing noise tolerance = the grounder's own
+    /// measured noise floor (minimum 1%), refreshed every 100 grounded episodes.
+    fn feed(&mut self, ev: Event) {
+        if let Some(gr) = self.g.observe(ev) {
+            self.fed += 1;
+            if self.fed % 100 == 0 {
+                self.rel.policy.noise_tol_num = self.g.noise_floor_pct().max(1);
+                self.rel.policy.noise_tol_den = 100;
+            }
+            if let Some(ep) = to_episode_scene(&gr) {
+                self.rel.observe(ep);
+            }
+        }
+    }
+    fn query(&mut self, ev: &Event, truth: &[(u16, usize)], obj: usize, ch: u16) -> Option<(Episode, u32)> {
+        let gr = self.g.ground(ev);
+        let slot = truth.iter().find(|x| x.1 == obj)?.0;
+        let r = scene_role_order(&gr)?.iter().position(|&s| s == slot)?;
+        let ep = to_episode_scene(&gr)?.without_outcomes();
+        Some((ep, target_id(r, ch) + CHANGE))
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Debug)]
+enum Policy {
+    Agent,
+    Random,
+    Wait,
+    /// Harness-only reachability bound (never a learner policy): picks an offered pair truly in the
+    /// conflict region, preferring pairs not yet probed; otherwise WAIT. Uses world truth.
+    Oracle,
+}
+
+#[derive(Default, Debug, Clone)]
+struct Outcome {
+    saved: u32,
+    s_ok: u32,
+    s_active: u32,
+    d_ok: u32,
+    d_active: u32,
+    wrong: u32,
+    wrong_unresolved: u32,
+    unsettled_answers: u32,
+    unresolved: u32,
+    leakage: u32,
+    region_probes: u32,
+    diag_new: u32,
+    diag_redundant: u32,
+    non_diag: u32,
+    steps_informative_offered: u32,
+    diag_new_when_offered: u32,
+    steps_no_informative: u32,
+    steps: u32,
+    /// D061 evidence quality of answered conflicts: audited items, verified, truly in region.
+    ev_items: u32,
+    ev_verified: u32,
+    ev_region: u32,
+    end_unverified: u32,
+    /// N4: steps where an informative LINK and a TUG on a region pair were both offered, and the
+    /// steps among them where the agent chose a LINK.
+    n4_both: u32,
+    n4_link: u32,
+}
+
+impl Outcome {
+    fn add(&mut self, o: &Outcome) {
+        self.saved += o.saved;
+        self.s_ok += o.s_ok;
+        self.s_active += o.s_active;
+        self.d_ok += o.d_ok;
+        self.d_active += o.d_active;
+        self.wrong += o.wrong;
+        self.wrong_unresolved += o.wrong_unresolved;
+        self.unsettled_answers += o.unsettled_answers;
+        self.unresolved += o.unresolved;
+        self.leakage += o.leakage;
+        self.region_probes += o.region_probes;
+        self.diag_new += o.diag_new;
+        self.diag_redundant += o.diag_redundant;
+        self.non_diag += o.non_diag;
+        self.steps_informative_offered += o.steps_informative_offered;
+        self.diag_new_when_offered += o.diag_new_when_offered;
+        self.steps_no_informative += o.steps_no_informative;
+        self.steps += o.steps;
+        self.ev_items += o.ev_items;
+        self.ev_verified += o.ev_verified;
+        self.ev_region += o.ev_region;
+        self.end_unverified += o.end_unverified;
+        self.n4_both += o.n4_both;
+        self.n4_link += o.n4_link;
+    }
+    /// PREREG: correctly resolved = S + D-active for the agent; for baselines every correct
+    /// resolution (S + D) is counted, which is conservative for the agent-vs-baseline gap.
+    fn resolved_ok(&self, pol: Policy) -> u32 {
+        if pol == Policy::Agent {
+            self.s_ok + self.d_active
+        } else {
+            self.s_ok + self.d_ok
+        }
+    }
+}
+
+/// Diagnostic provenance of one stored episode (DIAG_TRACE; grading only): the executed action,
+/// whether it was truly in the conflict region, its true effect and the sensor misreads.
+#[derive(Clone, Debug)]
+struct Prov {
+    act: u16,
+    args: Vec<usize>,
+    region: bool,
+    effect: Option<bool>,
+    misreads: Vec<(usize, u16)>,
+}
+
+thread_local! {
+    /// Validity check (grading only): bindings under which each world object was perceived as an
+    /// action argument.
+    static BINDS: std::cell::RefCell<std::collections::HashMap<usize, std::collections::HashMap<i64, u32>>> = std::cell::RefCell::new(std::collections::HashMap::new());
+}
+
+fn step_traced(w: &mut NWorld, a: &mut Agent, prov: &mut Vec<Option<Prov>>, act: u16, args: Vec<usize>) {
+    let _ = w.take_misreads();
+    let region = act == hn::LINK && w.in_region(args[0], args[1]);
+    let effect = if act == hn::LINK { Some(w.effect(args[0], args[1])) } else { None };
+    let (ev, _) = w.step(act, args.clone());
+    let misreads = w.take_misreads();
+    let before = a.rel.store.len();
+    a.feed(ev);
+    while prov.len() < before {
+        prov.push(None);
+    }
+    if a.rel.store.len() > before {
+        let e = a.rel.store.get(before as u64);
+        BINDS.with(|b| {
+            let mut b = b.borrow_mut();
+            for (r, &obj) in args.iter().enumerate() {
+                if let Some(k) = e.roles.get(r).and_then(|x| x.binding) {
+                    *b.entry(obj).or_default().entry(k).or_insert(0) += 1;
+                }
+            }
+        });
+    }
+    for _ in before..a.rel.store.len() {
+        prov.push(Some(Prov { act, args: args.clone(), region, effect, misreads: misreads.clone() }));
+    }
+}
+
+#[derive(Clone)]
+struct Setup {
+    w: NWorld,
+    a: Agent,
+    queries: Vec<(usize, usize)>,
+    saved: Vec<(Episode, u32, i64)>,
+    stage1: String,
+    prov: Vec<Option<Prov>>,
+}
+
+fn setup(family: Family, seed: u64) -> Setup {
+    let mut w = NWorld::new(family, seed);
+    let mut a = Agent::new(seed);
+    let region = w.region_pairs();
+    let queries: Vec<(usize, usize)> = region.iter().copied().enumerate().filter(|(k, _)| k % 2 == 0).map(|x| x.1).collect();
+    let n = w.objs.len();
+    let mut fed = 0;
+    let mut prov: Vec<Option<Prov>> = Vec::new();
+    while fed < STAGE0 {
+        let r = w.rng().below(100);
+        let (act, args) = if r < 80 {
+            let p = w.rng().sample_distinct(n, 2);
+            if w.in_region(p[0], p[1]) {
+                continue;
+            }
+            (hn::LINK, p)
+        } else if r < 87 {
+            (hn::HUM, vec![w.rng().below(n as u64) as usize])
+        } else if r < 94 {
+            let p = w.rng().sample_distinct(n, 2);
+            if w.in_region(p[0], p[1]) {
+                continue;
+            }
+            (if family == Family::N4 { hn::TUG } else { hn::LINK }, p)
+        } else {
+            (hn::WAIT, vec![])
+        };
+        step_traced(&mut w, &mut a, &mut prov, act, args);
+        fed += 1;
+    }
+    let mut saved = Vec::new();
+    let (mut conflict, mut answered_ok, mut answered_wrong, mut other) = (0, 0, 0, 0);
+    for &(i, j) in &queries {
+        let _ = w.take_misreads();
+        let (ev, truth) = w.preview(hn::LINK, vec![i, j]);
+        let qmis = w.take_misreads();
+        let Some((q, t)) = a.query(&ev, &truth, j, hn::OPEN) else { other += 1; continue };
+        let tv = w.effect(i, j) as i64;
+        if std::env::var("DIAG_TRACE").is_ok() {
+            if let Answer::Value { val, laws, .. } = a.rel.predict(&q, t) {
+                if val != tv {
+                    let args_mis: Vec<(usize, u16)> = qmis.iter().copied().filter(|m| m.0 == i || m.0 == j).collect();
+                    eprintln!("S1WRONG seed {} query ({i},{j}) truth {tv} answered {val}; misreads of the query's own arguments {:?} (all {:?})", w.objs.len(), args_mis, qmis);
+                    for l in laws {
+                        eprintln!("S1WRONG   law {}", a.rel.summary(l, w.context));
+                    }
+                    eprintln!("S1WRONG   all matching licensed: {:?}", a.rel.explain(&q, t));
+                }
+            }
+        }
+        if std::env::var("DIAG_TOL").is_ok() {
+            // D040 check (read-only): the tolerance actually applied to this target, its source,
+            // and every applicable licensed law's counterexamples against the allowance under the
+            // applied tolerance and under the agent's floor alone
+            let pol = a.rel.policy_for(t);
+            let lat: Vec<(u64, u64)> = a.rel.latent.iter().filter(|x| x.target == t).map(|x| x.repeat_noise()).collect();
+            eprintln!("TOL seed {} query ({i},{j}) target {t}: applied tolerance {}/{}, floor {}/{}, latent repeat noise (mismatch, trials) {:?}", w.objs.len(), pol.noise_tol_num, pol.noise_tol_den, a.rel.policy.noise_tol_num, a.rel.policy.noise_tol_den, lat);
+            for (l, v) in a.rel.explain(&q, t) {
+                let Some(e) = a.rel.laws[l].ctx(w.context) else { continue };
+                let (n, c) = (e.total(), e.counters());
+                let applied = bm_relation::noise_allowance(n, &pol);
+                let floor = bm_relation::noise_allowance(n, &a.rel.policy);
+                eprintln!("TOL   law #{l} predicts {v}: n {n} counters {c}; allowance applied {applied}, floor-only {floor}; licensed under floor only: {} | {}", c as u64 <= floor, a.rel.laws[l].describe());
+            }
+        }
+        match a.rel.predict(&q, t) {
+            Answer::Abstain(Abstain::Conflict) | Answer::Abstain(Abstain::Unverified) => {
+                conflict += 1;
+                saved.push((q, t, tv));
+            }
+            Answer::Value { val, .. } if val == tv => answered_ok += 1,
+            Answer::Value { .. } => answered_wrong += 1,
+            Answer::Abstain(_) => other += 1,
+        }
+    }
+    let (confused, seen) = BINDS.with(|b| {
+        let b = b.borrow();
+        (b.values().filter(|m| m.len() > 1).count(), b.len())
+    });
+    let stage1 = format!(
+        "{} objects, region pairs {} (queries {}), region truth lights {}, tolerance {}/{}; objects perceived under more than one identity {confused} of {seen}; stage 1: conflict abstentions {conflict}, answered correct {answered_ok}, answered wrong {answered_wrong}, other abstentions {other}",
+        w.objs.len(),
+        region.len(),
+        queries.len(),
+        w.region_toggles,
+        a.rel.policy.noise_tol_num,
+        a.rel.policy.noise_tol_den
+    );
+    Setup { w, a, queries, saved, stage1, prov }
+}
+
+fn candidate(a: &mut Agent, w: &mut NWorld, act: u16, args: &[usize]) -> Option<Candidate> {
+    if act == hn::WAIT {
+        let (ev, _) = w.preview(hn::WAIT, vec![]);
+        let gr = a.g.ground(&ev);
+        let ep = to_episode_scene(&gr).map(|e| e.without_outcomes());
+        return Some(Candidate { kind: OptionKind::Wait, episode: ep, targets: vec![], tier: 0, cost_q16: Q / 4, reliability_q16: Q });
+    }
+    let (obj, ch) = match act {
+        hn::HUM => (args[0], hn::HUMS),
+        _ => (args[1], hn::OPEN),
+    };
+    let (ev, truth) = w.preview(act, args.to_vec());
+    let (ep, t) = a.query(&ev, &truth, obj, ch)?;
+    // the cheap TUG costs half of LINK
+    let cost = if act == hn::TUG { Q / 8 } else { Q / 4 };
+    Some(Candidate { kind: OptionKind::Act { action: act, args: args.to_vec() }, episode: Some(ep), targets: vec![t], tier: 1, cost_q16: cost, reliability_q16: Q })
+}
+
+fn names_identity(rel: &RelationEngine, laws: &[usize]) -> bool {
+    // identity-specific answer: every answering law names a mark or a grounded identity
+    !laws.is_empty()
+        && laws.iter().all(|&l| rel.laws[l].condition.iter().any(|f| matches!(f, FeatureKind::Abs { ch, .. } if *ch == hn::MARK || *ch == INST_CH)))
+}
+
+/// DIAG_TRACE: the shared episodes behind one answer (both disagreeing value groups applied),
+/// with their true provenance.
+fn trace_settlement(seed: u64, a: &mut Agent, prov: &[Option<Prov>], q: &Episode, t: u32, tv: i64, val: i64) {
+    let groups = a.rel.explain(q, t);
+    let vals: std::collections::BTreeSet<i64> = groups.iter().map(|x| x.1).collect();
+    eprintln!("SETTLE seed {seed} answer {val} truth {tv} ({}) groups {:?} ce {:?}", if val == tv { "correct" } else { "WRONG" }, groups, a.rel.conflict_evidence(q, t));
+    if std::env::var("DIAG_LAWS").is_ok() {
+        for (l, v) in &groups {
+            eprintln!("SETTLE   group law (predicts {v}): {}", a.rel.summary(*l, q.context));
+        }
+    }
+    let (mut n, mut nreg, mut nmis) = (0, 0, 0);
+    for id in 0..a.rel.store.len() as u64 {
+        let e = a.rel.store.get(id).clone();
+        if e.context != q.context || e.action != q.action {
+            continue;
+        }
+        let Some(out) = e.outcome(t) else { continue };
+        let ex = a.rel.explain(&e.without_outcomes(), t);
+        let hit: std::collections::BTreeSet<i64> = ex.iter().filter(|x| groups.iter().any(|g| g.0 == x.0)).map(|x| x.1).collect();
+        if vals.len() < 2 || hit.len() < 2 {
+            continue;
+        }
+        n += 1;
+        let p = prov.get(id as usize).cloned().flatten();
+        let (reg, mis) = p.as_ref().map(|p| (p.region, !p.misreads.is_empty())).unwrap_or((false, false));
+        nreg += reg as u32;
+        nmis += mis as u32;
+        let members: Vec<(usize, i64)> = ex.iter().filter(|x| groups.iter().any(|g| g.0 == x.0)).copied().collect();
+        eprintln!("SETTLE   shared episode {id}: observed outcome {out}; members applying {:?}; provenance {:?}", members, p);
+    }
+    eprintln!("SETTLE seed {seed} summary: shared episodes {n}, truly in region {nreg}, with misreads {nmis}");
+}
+
+fn run_policy(seed: u64, base: &Setup, pol: Policy, log: bool) -> Outcome {
+    let mut s = base.clone();
+    let mut o = Outcome { saved: s.saved.len() as u32, ..Default::default() };
+    let mut done = vec![false; s.saved.len()];
+    let mut prng = hdc_core::Rng::new(seed ^ 0xBA5E_1);
+    let prefs = Preferences::default();
+    let mut diag_so_far = false;
+    let mut oracle_seen: std::collections::HashSet<(usize, usize)> = std::collections::HashSet::new();
+    for step in 0..BUDGET {
+        if done.iter().all(|d| *d) {
+            break;
+        }
+        o.steps += 1;
+        let offers = s.w.offers(&s.queries);
+        let (act, args) = match pol {
+            Policy::Wait => (hn::WAIT, vec![]),
+            Policy::Random => offers[prng.below(offers.len() as u64) as usize].clone(),
+            Policy::Oracle => {
+                let reg: Vec<&(u16, Vec<usize>)> = offers.iter().filter(|(a, x)| *a == hn::LINK && s.w.in_region(x[0], x[1])).collect();
+                let fresh = reg.iter().find(|(_, x)| !oracle_seen.contains(&(x[0], x[1])));
+                match fresh.or(reg.first()) {
+                    Some((a, x)) => {
+                        oracle_seen.insert((x[0], x[1]));
+                        (*a, x.clone())
+                    }
+                    None => (hn::WAIT, vec![]),
+                }
+            }
+            Policy::Agent => {
+                let mut cands = Vec::new();
+                let mut idx = Vec::new();
+                for (k, (act, args)) in offers.iter().enumerate() {
+                    if let Some(c) = candidate(&mut s.a, &mut s.w, *act, args) {
+                        cands.push(c);
+                        idx.push(k);
+                    }
+                }
+                let cps: Vec<(usize, bool)> = cands
+                    .iter()
+                    .map(|c| match (&c.episode, c.targets.first()) {
+                        (Some(ep), Some(&t)) if !matches!(c.kind, OptionKind::Wait) => {
+                            let cp = s.a.rel.conflict_probe(ep, t);
+                            (cp.informative_pairs(), cp.disagrees())
+                        }
+                        _ => (0, false),
+                    })
+                    .collect();
+                let informative = cps.iter().any(|x| x.0 > 0);
+                if std::env::var("DIAG_MISS").is_ok() {
+                    // harness-only: region pairs offered that the agent judged uninformative, and why
+                    for (ci, c) in cands.iter().enumerate() {
+                        let (act, args) = &offers[idx[ci]];
+                        if *act != hn::LINK || !s.w.in_region(args[0], args[1]) || cps[ci].0 > 0 {
+                            continue;
+                        }
+                        let (Some(ep), Some(&t)) = (&c.episode, c.targets.first()) else { continue };
+                        let cp = s.a.rel.conflict_probe(ep, t);
+                        let groups = s.a.rel.explain(ep, t);
+                        let vals: std::collections::BTreeSet<i64> = groups.iter().map(|x| x.1).collect();
+                        let unver = groups.iter().filter(|g| !s.a.rel.verified_at(g.0, ep)).count();
+                        eprintln!("MISS seed {seed} step {step} region pair {args:?}: licensed laws {} values {:?} (unverified at probe {}); pairs {} live {} verified {} new {} decided {}; open pairs total {}",
+                            groups.len(), vals, unver, cp.pairs.len(), cp.pairs.iter().filter(|p| p.live).count(), cp.pairs.iter().filter(|p| p.verified).count(), cp.pairs.iter().filter(|p| p.new_unit).count(), cp.pairs.iter().filter(|p| p.decided).count(), s.a.rel.live_pairs.len());
+                    }
+                }
+                if informative {
+                    o.steps_informative_offered += 1;
+                } else {
+                    o.steps_no_informative += 1;
+                }
+                let pick = choose(&mut s.a.rel, &cands, &prefs).map(|x| x.0);
+                let link_inf = cands.iter().enumerate().any(|(ci, _)| offers[idx[ci]].0 == hn::LINK && cps[ci].0 > 0);
+                let tug_region = cands.iter().enumerate().any(|(ci, _)| offers[idx[ci]].0 == hn::TUG && s.w.in_region(offers[idx[ci]].1[0], offers[idx[ci]].1[1]));
+                if link_inf && tug_region {
+                    o.n4_both += 1;
+                    if pick.map(|p| offers[idx[p]].0 == hn::LINK).unwrap_or(false) {
+                        o.n4_link += 1;
+                    }
+                }
+                match pick {
+                    Some(p) => {
+                        match cps[p] {
+                            (k, _) if k > 0 => {
+                                o.diag_new += 1;
+                                diag_so_far = true;
+                                if informative {
+                                    o.diag_new_when_offered += 1;
+                                }
+                            }
+                            (_, true) => o.diag_redundant += 1,
+                            _ => o.non_diag += 1,
+                        }
+                        if log && cps[p].1 {
+                            let (Some(ep), Some(&t)) = (&cands[p].episode, cands[p].targets.first()) else { unreachable!() };
+                            let cp = s.a.rel.conflict_probe(ep, t);
+                            let (x, y) = (offers[idx[p]].1.first().copied(), offers[idx[p]].1.get(1).copied());
+                            let region = matches!((x, y), (Some(x), Some(y)) if offers[idx[p]].0 == hn::LINK && s.w.in_region(x, y));
+                            eprintln!("PROBE seed {seed} step {step} action {:?} region {region} predicted {:?}", offers[idx[p]], cp.pairs.iter().map(|q| (q.val_a, q.val_b, q.units_before, q.new_unit)).collect::<Vec<_>>());
+                        }
+                        offers[idx[p]].clone()
+                    }
+                    None => (hn::WAIT, vec![]),
+                }
+            }
+        };
+        if act == hn::LINK && s.w.in_region(args[0], args[1]) {
+            o.region_probes += 1;
+        }
+        step_traced(&mut s.w, &mut s.a, &mut s.prov, act, args);
+        if (step + 1) % 10 == 0 || step + 1 == BUDGET {
+            for (k, (q, t, tv)) in s.saved.iter().enumerate() {
+                if done[k] {
+                    continue;
+                }
+                let ce = s.a.rel.conflict_evidence(q, *t);
+                let settled = ce.iter().all(|c| c.2 >= bm_relation::engine::MIN_SHARED_INDEPENDENT);
+                let ans = s.a.rel.predict(q, *t);
+                let Answer::Value { val, laws, .. } = ans else { continue };
+                done[k] = true;
+                for it in s.a.rel.settlement_audit(q, *t) {
+                    o.ev_items += 1;
+                    o.ev_verified += it.verified as u32;
+                    if let Some(Some(p)) = s.prov.get(it.episode as usize) {
+                        o.ev_region += p.region as u32;
+                    }
+                }
+                if std::env::var("DIAG_TRACE").is_ok() && pol == Policy::Agent {
+                    trace_settlement(seed, &mut s.a, &s.prov, q, *t, *tv, val);
+                }
+                if names_identity(&s.a.rel, &laws) {
+                    o.leakage += 1;
+                }
+                let active = diag_so_far && pol == Policy::Agent;
+                // D061 external audit: every opposing law applying to the query defeated
+                let audit_fail = !ce.is_empty() && !s.a.rel.undefeated_against(q, *t, val).is_empty();
+                if audit_fail {
+                    o.unsettled_answers += 1;
+                    if val != *tv {
+                        o.wrong_unresolved += 1;
+                    }
+                }
+                if val != *tv {
+                    o.wrong += 1;
+                } else if ce.is_empty() {
+                    o.d_ok += 1;
+                    o.d_active += active as u32;
+                } else if settled || !audit_fail {
+                    o.s_ok += 1;
+                    o.s_active += active as u32;
+                }
+            }
+        }
+    }
+    o.unresolved = done.iter().filter(|d| !**d).count() as u32;
+    if std::env::var("DIAG_UNRES").is_ok() && pol == Policy::Agent {
+        for (k, (q, t, tv)) in s.saved.clone().iter().enumerate() {
+            if done[k] {
+                continue;
+            }
+            let un = s.a.rel.undefeated_against(q, *t, *tv);
+            eprintln!("UNRES seed {seed} query {k} truth {tv}: {} opposing laws undefeated for the true value", un.len());
+            for (o, w, r) in un.iter().take(6) {
+                eprintln!("UNRES   o={} | best w={} | units {} right_w {} right_o {} unverified {}", s.a.rel.laws[*o].describe(), w.map(|w| s.a.rel.laws[w].describe()).unwrap_or_default(), r.units, r.right_a, r.right_b, r.unverified);
+            }
+        }
+    }
+    for (k, (q, t, _)) in s.saved.iter().enumerate() {
+        if !done[k] && s.a.rel.predict(q, *t) == Answer::Abstain(Abstain::Unverified) {
+            o.end_unverified += 1;
+        }
+    }
+    o
+}
+
+struct Flush<'a>(&'a mut String);
+
+impl std::fmt::Write for Flush<'_> {
+    fn write_str(&mut self, x: &str) -> std::fmt::Result {
+        use std::io::Write as _;
+        print!("{x}");
+        let _ = std::io::stdout().flush();
+        self.0.push_str(x);
+        Ok(())
+    }
+}
+
+fn pct(a: u32, b: u32) -> f64 {
+    if b == 0 {
+        0.0
+    } else {
+        100.0 * a as f64 / b as f64
+    }
+}
+
+fn main() {
+    let started = std::time::Instant::now();
+    let args: Vec<String> = std::env::args().collect();
+    let family = match args.get(1).map(|s| s.as_str()) {
+        Some("N1") => Family::N1,
+        Some("N2") => Family::N2,
+        Some("N3") => Family::N3,
+        Some("N4") => Family::N4,
+        _ => Family::N0,
+    };
+    let seeds: Vec<u64> = args.get(2).map(|s| s.split(',').filter_map(|x| x.parse().ok()).collect()).unwrap_or(vec![601]);
+    let log = std::env::var("PROBELOG").is_ok();
+    let mut report = String::new();
+    let mut tot: Vec<(Policy, Outcome)> = vec![(Policy::Agent, Outcome::default()), (Policy::Random, Outcome::default()), (Policy::Wait, Outcome::default())];
+    if std::env::var("POLICY").map(|p| p.eq_ignore_ascii_case("oracle")).unwrap_or(false) {
+        tot = vec![(Policy::Oracle, Outcome::default())];
+    }
+    let _ = writeln!(Flush(&mut report), "N-series {family:?}, frozen learner bitmind-oe-v0.1, budget {BUDGET}");
+    for &seed in &seeds {
+        let _guard = bm_bench::SeedGuard::new(seed);
+        let base = setup(family, seed);
+        let _ = writeln!(Flush(&mut report), "\n===== seed {seed}: {}", base.stage1);
+        for (pol, t) in tot.iter_mut() {
+            let only = std::env::var("POLICY").ok();
+            if only.as_deref().map(|x| !format!("{pol:?}").eq_ignore_ascii_case(x)).unwrap_or(false) {
+                continue;
+            }
+            if std::env::var("DIAG_TOL").is_ok() || (std::env::var("DIAG_TRACE").is_ok() && *pol != Policy::Agent) {
+                continue;
+            }
+            let t0 = std::time::Instant::now();
+            let o = run_policy(seed, &base, *pol, log);
+            let _ = writeln!(
+                Flush(&mut report),
+                "  {:<6} saved {}: settled-correct {} (active {}), dissolved-correct {} (active {}), wrong {} (while unresolved {}), unsettled answers {}, unresolved {}, leakage {}; region probes {}; chosen diagnostic-new {} redundant {} non-diagnostic {}; steps with an informative candidate {} (diagnostic-new taken {}), with none {}; actions {}; evidence items {} (verified {}, truly in region {}); unresolved needing re-observation {}; reliable-vs-cheap steps {} (chose LINK {}); {:.1} s",
+                format!("{pol:?}"),
+                o.saved,
+                o.s_ok,
+                o.s_active,
+                o.d_ok,
+                o.d_active,
+                o.wrong,
+                o.wrong_unresolved,
+                o.unsettled_answers,
+                o.unresolved,
+                o.leakage,
+                o.region_probes,
+                o.diag_new,
+                o.diag_redundant,
+                o.non_diag,
+                o.steps_informative_offered,
+                o.diag_new_when_offered,
+                o.steps_no_informative,
+                o.steps,
+                o.ev_items,
+                o.ev_verified,
+                o.ev_region,
+                o.end_unverified,
+                o.n4_both,
+                o.n4_link,
+                t0.elapsed().as_secs_f64()
+            );
+            t.add(&o);
+        }
+    }
+    let _ = writeln!(Flush(&mut report), "\n===== totals {family:?} (seeds {})", seeds.len());
+    for (p, o) in &tot {
+        let answers = o.s_ok + o.d_ok + o.wrong;
+        let _ = writeln!(
+            Flush(&mut report),
+            "  {:<6} saved {} | resolved correctly {} ({:.1}%; settled {}, dissolved {}; agent-active {}) | wrong {} ({:.1}% of answers; while unresolved {}) | unsettled answers {} | still abstaining {} ({:.1}%) | leakage {} | diagnostic-new {:.1}% of steps with an informative candidate | no informative candidate in {:.1}% of steps",
+            format!("{p:?}"),
+            o.saved,
+            o.resolved_ok(*p),
+            pct(o.resolved_ok(*p), o.saved),
+            o.s_ok,
+            o.d_ok,
+            o.s_active + o.d_active,
+            o.wrong,
+            pct(o.wrong, answers),
+            o.wrong_unresolved,
+            o.unsettled_answers,
+            o.unresolved,
+            pct(o.unresolved, o.saved),
+            o.leakage,
+            pct(o.diag_new_when_offered, o.steps_informative_offered),
+            pct(o.steps_no_informative, o.steps)
+        );
+    }
+    println!("{}", bm_bench::resources_line(started));
+}
