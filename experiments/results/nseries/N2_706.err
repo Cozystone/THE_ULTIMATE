@@ -1,0 +1,11 @@
+SEED_START 706
+PROBE seed 706 step 4 action (31, [9, 6]) region true predicted [(1, 0, 0, true)]
+PROBE seed 706 step 8 action (31, [29, 20]) region true predicted [(1, 0, 1, true)]
+PROBE seed 706 step 12 action (31, [18, 31]) region true predicted [(1, 0, 2, true)]
+PROBE seed 706 step 14 action (31, [9, 23]) region false predicted [(0, 1, 2, true)]
+PROBE seed 706 step 18 action (31, [41, 16]) region true predicted [(1, 0, 0, true)]
+PROBE seed 706 step 50 action (31, [19, 15]) region true predicted [(1, 0, 0, true)]
+PROBE seed 706 step 116 action (31, [12, 15]) region true predicted [(1, 0, 1, true)]
+PROBE seed 706 step 208 action (31, [37, 17]) region true predicted [(1, 0, 1, true), (1, 0, 0, true), (1, 0, 0, true)]
+PROBE seed 706 step 219 action (31, [16, 41]) region true predicted [(1, 0, 2, true)]
+SEED_END 706 wall 720.3 s working set 34 MB peak 6707 MB

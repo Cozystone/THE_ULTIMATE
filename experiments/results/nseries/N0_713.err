@@ -1,0 +1,5 @@
+SEED_START 713
+PROBE seed 713 step 6 action (31, [28, 25]) region true predicted [(1, 0, 0, true)]
+PROBE seed 713 step 8 action (31, [9, 6]) region true predicted [(1, 0, 1, true)]
+PROBE seed 713 step 29 action (31, [6, 9]) region true predicted [(1, 0, 2, true)]
+SEED_END 713 wall 390.6 s working set 29 MB peak 4877 MB

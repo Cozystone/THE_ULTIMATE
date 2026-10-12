@@ -1,0 +1,12 @@
+SEED_START 708
+PROBE seed 708 step 5 action (31, [36, 22]) region true predicted [(1, 0, 0, true)]
+PROBE seed 708 step 28 action (31, [14, 20]) region true predicted [(1, 0, 1, true), (1, 0, 0, true), (1, 0, 0, true)]
+PROBE seed 708 step 32 action (31, [1, 26]) region true predicted [(1, 0, 2, true), (1, 0, 1, true), (1, 0, 0, true), (1, 0, 0, true), (1, 0, 0, true)]
+PROBE seed 708 step 48 action (31, [1, 26]) region true predicted [(1, 0, 2, true), (1, 0, 1, true), (1, 0, 1, true)]
+PROBE seed 708 step 63 action (31, [3, 33]) region true predicted [(1, 0, 2, true)]
+PROBE seed 708 step 70 action (31, [28, 0]) region false predicted [(0, 1, 0, true)]
+PROBE seed 708 step 97 action (31, [14, 20]) region true predicted [(1, 0, 3, true)]
+PROBE seed 708 step 143 action (31, [33, 0]) region true predicted [(1, 0, 3, true)]
+PROBE seed 708 step 211 action (31, [33, 0]) region true predicted [(1, 0, 0, true)]
+PROBE seed 708 step 256 action (31, [7, 32]) region true predicted [(1, 0, 0, true), (1, 0, 0, true)]
+SEED_END 708 wall 336.8 s working set 23 MB peak 3485 MB

@@ -1,0 +1,11 @@
+SEED_START 704
+PROBE seed 704 step 19 action (31, [25, 9]) region true predicted [(1, 0, 0, true), (1, 0, 0, true)]
+PROBE seed 704 step 33 action (31, [24, 23]) region true predicted [(1, 0, 1, true), (1, 0, 1, true)]
+PROBE seed 704 step 54 action (31, [40, 28]) region true predicted [(1, 0, 2, true), (1, 0, 0, true)]
+PROBE seed 704 step 58 action (31, [41, 18]) region true predicted [(1, 0, 1, true), (1, 0, 2, true), (1, 0, 0, true)]
+PROBE seed 704 step 62 action (31, [20, 0]) region true predicted [(1, 0, 2, true)]
+PROBE seed 704 step 180 action (31, [12, 9]) region true predicted [(1, 0, 0, true)]
+PROBE seed 704 step 205 action (31, [18, 34]) region true predicted [(1, 0, 0, true)]
+PROBE seed 704 step 243 action (31, [37, 33]) region false predicted [(0, 1, 2, true), (0, 1, 2, true)]
+PROBE seed 704 step 255 action (31, [9, 12]) region true predicted [(1, 0, 0, true)]
+SEED_END 704 wall 732.2 s working set 30 MB peak 5759 MB
