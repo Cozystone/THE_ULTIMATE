@@ -776,3 +776,16 @@ Frozen learner `bitmind-capability-h4-v0.1`; seeds 601-615; `results/iseries/SUM
 | I4 | **FAIL** | agent 72.4% correct (< 80%), 9 wrong settlements caused by misperceived conditions under 1% sensor noise; 37 wrong stage-1 answers (a v0.2 weakness under noise); seed 606 aborted on memory allocation |
 
 Report: `experiments/REPORT-capability-h4.md`.
+
+## Observation-evidence phase (branch `observation-evidence-dev`, from `bitmind-capability-h4-v0.1`)
+Design: `docs/observation-evidence-design.md` (reviewed; two conditions applied). Decisions:
+* D061: percept standing and claim-relative settlement;
+* D061a: open pairs weighted by the queries they block.
+
+Development (I1-I4 are now development data; `results/oe_dev1`, `oe_dev2`, `oe_reach`):
+* I1-I3 unchanged (100% resolved, 0 wrong; I3 100% safe abstention);
+* I4: 0 wrong settlements (was 9), 4 pre-action wrong (was 37; single-law extrapolation, not
+  settlement), 49.3% resolved, against a harness-only region-oracle bound of 71.8%.
+
+Regression of the D061a build (`results/oe_reg1/COMPARISON.txt`): 0 violations, every phase total
+identical to the v0.2 record, peak 6.8 GB.

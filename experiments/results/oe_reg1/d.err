@@ -1,0 +1,30 @@
+SEED_START 1
+SEED_END 1 wall 122.5 s working set 10 MB peak 189 MB
+SEED_START 2
+SEED_END 2 wall 195.3 s working set 11 MB peak 301 MB
+SEED_START 3
+SEED_END 3 wall 229.6 s working set 11 MB peak 374 MB
+SEED_START 4
+SEED_END 4 wall 115.2 s working set 11 MB peak 374 MB
+SEED_START 5
+SEED_END 5 wall 123.2 s working set 11 MB peak 374 MB
+SEED_START 6
+SEED_END 6 wall 132.1 s working set 11 MB peak 374 MB
+SEED_START 7
+SEED_END 7 wall 122.6 s working set 11 MB peak 374 MB
+SEED_START 8
+SEED_END 8 wall 119.0 s working set 11 MB peak 374 MB
+SEED_START 9
+SEED_END 9 wall 121.1 s working set 11 MB peak 374 MB
+SEED_START 10
+SEED_END 10 wall 119.3 s working set 11 MB peak 374 MB
+SEED_START 11
+SEED_END 11 wall 131.7 s working set 11 MB peak 374 MB
+SEED_START 12
+SEED_END 12 wall 114.3 s working set 10 MB peak 374 MB
+SEED_START 13
+SEED_END 13 wall 116.2 s working set 12 MB peak 374 MB
+SEED_START 14
+SEED_END 14 wall 110.3 s working set 11 MB peak 374 MB
+SEED_START 15
+SEED_END 15 wall 169.7 s working set 12 MB peak 401 MB
